@@ -5,23 +5,6 @@
 %}
 
 /*Tokens*/
-DIGIT               [0-9]
-LETTER              [a-zA-Z]
-LETTER_             {LETTER}|_
-CHAR                {LETTER_}|{DIGIT}
-DELIM               [ \r\n\t]
-WS                  {DELIM}+
-
-
-
-DEC_INT             [1-9][0-9]*|0
-OCT_INT             0[0-7]+
-HEX_INT             0[xX][0-9a-fA-F]+
-
-ID                  {LETTER_}{CHAR}*
-INT                 {DEC_INT}|{OCT_INT}|{HEX_INT}
-INVALID_TOKEN       {DIGIT}{CHAR}+
-
 SEMI                ;
 COMMA               ,
 ASSIGNOP            =
@@ -46,6 +29,26 @@ RETURN              return
 IF                  if
 ELSE                else
 WHILE               while
+
+DIGIT               [0-9]
+LETTER              [a-zA-Z]
+LETTER_             {LETTER}|_
+CHAR                {LETTER_}|{DIGIT}
+DELIM               [ \r\n\t]
+WS                  {DELIM}+
+
+DEC_INT             [1-9][0-9]*|0
+OCT_INT             0[0-7]+
+HEX_INT             0[xX][0-9a-fA-F]+
+
+FLOAT_NRM           ({DIGIT}*{DOT}{DIGIT}+)|({DIGIT}+{DOT})
+FLOAT_SCI           {FLOAT_NRM}[eE][+-]?{DIGIT}+
+FLOAT               {FLOAT_NRM}|{FLOAT_SCI}
+
+
+ID                  {LETTER_}{CHAR}*
+INT                 {DEC_INT}|{OCT_INT}|{HEX_INT}
+INVALID_TOKEN       {DIGIT}{CHAR}+
 
 COMMENT_LINE        \/\/
 COMMENT_BLOCK       \/\*
@@ -79,6 +82,7 @@ COMMENT_BLOCK       \/\*
 
 {ID}                { printf("<ID, %s>\n", yytext); }
 {INT}               { printf("<INT, %s>\n", yytext); }
+{FLOAT}             { printf("<FLOAT, %s>\n", yytext); }
 {INVALID_TOKEN}     { report_error("Invalid token", 'A'); }
 
 {COMMENT_LINE}      { char c = input(); while (c != '\n') c = input(); }
