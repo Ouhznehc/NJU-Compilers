@@ -29,10 +29,17 @@ lexical: $(LFILE)
 syntax-c: $(YFILE)
 	$(BISON) -o $(YFC) -d -v $(YFILE)
 
+scanner: 
+	$(FLEX) lexical.l
+	$(CC) main.c lex.yy.c -lfl -o scanner
+
+toy-test: scanner
+	./scanner ../Test/test1.cmm
+
 -include $(patsubst %.o, %.d, $(OBJS))
 
 # 定义的一些伪目标
-.PHONY: clean test
+.PHONY: clean test scanner toy-test
 test:
 	./parser ../Test/test1.cmm
 clean:
