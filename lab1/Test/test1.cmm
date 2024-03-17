@@ -1,21 +1,10 @@
-/***comment
-still
-*/
-/* ////\\asfdlkajhsldf\\\\<>@#$
-*/
-int main() //a function
-{
-    float h, s; int i;
-    h = s = 100 //;
-    h = h / 2; // first
-    i = 2;
-    /* a new comment*/
-    while (i <= 10) //\\\//\\/*
-    {
-        s = s + 2 * h;
-        h = h / 2 /*\/\/\/\/\*\/\/\\****\/*/;
-        i = i + 1;
-    }
-    return 0;
+int main(){
+  12.E3;
+  .12E3;
+  .1E-2;
+  123.321E-1;
+
+  001.100;
+  0.0023;
+  12.0;
 }
-/**end ~??
