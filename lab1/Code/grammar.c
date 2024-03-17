@@ -47,8 +47,8 @@ void print_syntax_tree(syntax_t* node, int indent) {
 
     if (node->symbol.type == SYMBOL) printf("%s (%d)", node->symbol.name, node->symbol.lineno);
     else if (node->token.type == TOKEN_ID || node->token.type == TOKEN_TYPE) printf("%s: %s", node->token.name, node->token.value.sval);
-    else if (node->token.type == TOKEN_INT) printf("%s: %s", node->token.name, node->token.value.ival);
-    else if (node->token.type == TOKEN_FLOAT) printf("%s: %s", node->token.name, node->token.value.fval);
+    else if (node->token.type == TOKEN_INT) printf("%s: %d", node->token.name, node->token.value.ival);
+    else if (node->token.type == TOKEN_FLOAT) printf("%s: %f", node->token.name, node->token.value.fval);
     printf("\n");
 
     if (node->symbol.type == SYMBOL)
