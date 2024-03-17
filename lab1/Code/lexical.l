@@ -2,6 +2,14 @@
 
 %{
     void report_error(const char* msg, char type);
+
+    int yycolumn = 1;
+    #define YY_USER_ACTION \
+        yylloc.first_line = yylloc.last_line = yylineno; \
+        yylloc.first_column = yycolumn; \
+        yylloc.last_column = yycolumn + yyleng - 1; \
+        yycolumn += yyleng;
+
 %}
 
 /*Tokens*/
@@ -36,6 +44,7 @@ LETTER_             {LETTER}|_
 CHAR                {LETTER_}|{DIGIT}
 DELIM               [ \r\n\t]
 WS                  {DELIM}+
+NEW_LINE            \n
 
 DEC_INT             [1-9][0-9]*|0
 OCT_INT             0[0-7]+
@@ -54,6 +63,7 @@ COMMENT_LINE        \/\/
 COMMENT_BLOCK       \/\*
 
 %%
+{NEW_LINE}          { yycolumn = 1; }
 {SEMI}              { printf("<';', >\n"); }
 {COMMA}             { printf("<',', >\n"); }
 {ASSIGNOP}          { printf("<'=', >\n"); }
