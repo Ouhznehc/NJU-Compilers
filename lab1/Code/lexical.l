@@ -4,7 +4,7 @@
     #include "syntax.tab.h"
     #include "grammar.h"
 
-    void report_error(const char* msg, char type);
+    void report_error(const char* msg);
     value_t new_value(char* name, int type);
 
     int yycolumn = 1;
@@ -107,15 +107,16 @@ COMMENT_BLOCK       \/\*
                         while (prev != '*' || curr != '/') {
                             prev = curr; curr = input();
                             if (!curr || curr == EOF)
-                                report_error("Invalid comment", 'A');
+                                report_error("Invalid comment");
+                                yyterminate();
                         } 
                     }
 
-.                   { report_error("Mysterious character", 'A'); }
+.                   { report_error("Mysterious character"); }
 %%
 
-void report_error(const char* msg, char type) {
-    printf("Error type %c at line %d: { %s, \'%s\' }\n", type, yylineno, msg, yytext);
+void report_error(const char* msg) {
+    printf("Error type A at line %d: { %s, \'%s\' }\n", yylineno, msg, yytext);
 }
 
 

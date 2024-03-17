@@ -530,7 +530,7 @@ char *yytext;
     #include "syntax.tab.h"
     #include "grammar.h"
 
-    void report_error(const char* msg, char type);
+    void report_error(const char* msg);
     value_t new_value(char* name, int type);
 
     int yycolumn = 1;
@@ -998,21 +998,22 @@ YY_RULE_SETUP
                         while (prev != '*' || curr != '/') {
                             prev = curr; curr = input();
                             if (!curr || curr == EOF)
-                                report_error("Invalid comment", 'A');
+                                report_error("Invalid comment");
+                                yyterminate();
                         } 
                     }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 114 "./lexical.l"
-{ report_error("Mysterious character", 'A'); }
+#line 115 "./lexical.l"
+{ report_error("Mysterious character"); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 115 "./lexical.l"
+#line 116 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1016 "./lex.yy.c"
+#line 1017 "./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2029,11 +2030,11 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 115 "./lexical.l"
+#line 116 "./lexical.l"
 
 
-void report_error(const char* msg, char type) {
-    printf("Error type %c at line %d: { %s, \'%s\' }\n", type, yylineno, msg, yytext);
+void report_error(const char* msg) {
+    printf("Error type A at line %d: { %s, \'%s\' }\n", yylineno, msg, yytext);
 }
 
 

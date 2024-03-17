@@ -20,7 +20,6 @@ YFO = $(YFC:.c=.o)
 COMPILE_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
 
 auto-commit:
-	@echo "auto commit: $(COMPILE_TIME)"
 	@git add --all
 	@git commit -m "auto commit: $(COMPILE_TIME)"
 
