@@ -109,9 +109,10 @@ COMMENT_BLOCK       \/\*
                         while (prev != '*' || curr != '/') {
                             printf("%c", curr);
                             prev = curr; curr = input();
-                            if (curr == EOF)
+                            if (curr == EOF){
                                 report_error("Invalid comment");
                                 break;
+                            }
                         } 
                     }
 
