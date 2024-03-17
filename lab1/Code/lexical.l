@@ -104,10 +104,8 @@ COMMENT_BLOCK       \/\*
 
 {COMMENT_LINE}      { char c = input(); while (c != '\n') c = input(); }
 {COMMENT_BLOCK}     { 
-                        printf("check comment block\n");
                         char curr = input(), prev = curr; 
                         while (prev != '*' || curr != '/') {
-                            printf("%c", curr);
                             prev = curr; curr = input();
                             if (curr == EOF){
                                 report_error("Invalid comment");

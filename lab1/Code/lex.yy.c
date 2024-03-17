@@ -995,10 +995,8 @@ case 33:
 YY_RULE_SETUP
 #line 106 "./lexical.l"
 { 
-                        printf("check comment block\n");
                         char curr = input(), prev = curr; 
                         while (prev != '*' || curr != '/') {
-                            printf("%c", curr);
                             prev = curr; curr = input();
                             if (curr == EOF){
                                 report_error("Invalid comment");
@@ -1009,15 +1007,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 119 "./lexical.l"
+#line 117 "./lexical.l"
 { report_error("Mysterious character"); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 120 "./lexical.l"
+#line 118 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1021 "./lex.yy.c"
+#line 1019 "./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2034,7 +2032,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 120 "./lexical.l"
+#line 118 "./lexical.l"
 
 
 void report_error(const char* msg) {
