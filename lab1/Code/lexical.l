@@ -108,7 +108,7 @@ COMMENT_BLOCK       \/\*
                         char curr = input(), prev = curr; 
                         while (prev != '*' || curr != '/') {
                             prev = curr; curr = input();
-                            if (!curr || curr == EOF)
+                            if (curr == EOF)
                                 report_error("Invalid comment");
                                 break;
                         } 
