@@ -94,7 +94,10 @@
 %%
 
 /*High-level Definitions*/
-Program : ExtDefList { $$ = new_symbol("Program", @$.first_line, 1, $1); root = $$; }
+Program : ExtDefList { 
+                        $$ = new_symbol("Program", @$.first_line, 1, $1); root = $$; 
+                        
+                     }
 	;
 ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2, $1, $2); }
 	| /*empty*/ { $$ = NULL; }
