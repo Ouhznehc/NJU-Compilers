@@ -55,6 +55,7 @@ HEX_INT             0[xX][0-9a-fA-F]+
 
 FLOAT_NRM           {DEC_INT}{DOT}{DIGIT}+
 FLOAT_SCI           ({DIGIT}*{DOT}{DIGIT}+|{DIGIT}+{DOT})[eE][+-]?{DIGIT}+
+FLOAT               {FLOAT_NRM}|{FLOAT_SCI}
 
 ID                  {LETTER_}{CHAR}*
 
@@ -93,12 +94,11 @@ COMMENT_BLOCK       \/\*
 
 {ID}                { yyval.syntax = new_token("ID", TOKEN_ID, yylineno, yytext); return ID; }
 
-{DEC_INT}           { yyval.syntax = new_token("INT", TOKEN_INT, yylineno, yytext); return INT; }
-{OCT_INT}           { yyval.syntax = new_token("INT", TOKEN_INT, yylineno, yytext); return INT; }
-{HEX_INT}           { yyval.syntax = new_token("INT", TOKEN_INT, yylineno, yytext); return INT; }
+{DEC_INT}           { value_t value = new_value(yytext, TOKEN_INT_DEC); yyval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
+{OCT_INT}           { value_t value = new_value(yytext, TOKEN_INT_OCT); yyval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
+{HEX_INT}           { value_t value = new_value(yytext, TOKEN_INT_HEX); yyval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
 
-{FLOAT_NRM}         { yyval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, yytext); return FLOAT; }
-{FLOAT_SCI}         { yyval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, yytext); return FLOAT; }
+{FLOAT}             { value_t value = new_value(yytext, TOKEN_FLOAT); yyval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, yytext); return FLOAT; }
 
 {COMMENT_LINE}      { char c = input(); while (c != '\n') c = input(); }
 {COMMENT_BLOCK}     { 
@@ -113,6 +113,27 @@ COMMENT_BLOCK       \/\*
 .                   { report_error("Mysterious character", 'A'); }
 %%
 
-void report_error(const char* msg, char type){
+void report_error(const char* msg, char type) {
     printf("Error type %c at line %d: { %s, \'%s\' }\n", type, yylineno, msg, yytext);
+}
+
+
+value_t new_value(char* name, int type) {
+    value_t ret = 0;
+    switch (type) {
+        case TOKEN_INT_DEC:
+            ret = strtol(name, NULL, 10);
+            break;
+        case TOKEN_INT_OCT:
+            ret = strtol(name, NULL, 8);
+            break;
+        case TOKEN_INT_HEX:
+            ret = strtol(name, NULL, 16);
+            break;
+        case TOKEN_FLOAT:
+            ret = strtof(name, NULL); 
+            break;
+        default: break;
+    }
+    return ret;
 }
