@@ -2,9 +2,10 @@
 
 %{
     #include "syntax.tab.h"
-    #include "syntax.h"
+    #include "grammar.h"
 
     void report_error(const char* msg, char type);
+    value_t new_value(char* name, int type);
 
     int yycolumn = 1;
     #define YY_USER_ACTION \
@@ -64,41 +65,41 @@ COMMENT_BLOCK       \/\*
 
 %%
 {NEW_LINE}          { yycolumn = 1; }
-{SEMI}              { yyval.syntax = new_token("SEMI", TOKEN_CONST, yylineno, 0); return SEMI; }
-{COMMA}             { yyval.syntax = new_token("COMMA", TOKEN_CONST, yylineno, 0); return COMMA; }
-{ASSIGNOP}          { yyval.syntax = new_token("ASSIGNOP", TOKEN_CONST, yylineno, 0); return ASSIGNOP; }
-{RELOP}             { yyval.syntax = new_token("RELOP", TOKEN_CONST, yylineno, 0); return RELOP; }
-{PLUS}              { yyval.syntax = new_token("PLUS", TOKEN_CONST, yylineno, 0); return PLUS; }
-{MINUS}             { yyval.syntax = new_token("MINUS", TOKEN_CONST, yylineno, 0); return MINUS; }
-{STAR}              { yyval.syntax = new_token("STAR", TOKEN_CONST, yylineno, 0); return STAR; }
-{DIV}               { yyval.syntax = new_token("DIV", TOKEN_CONST, yylineno, 0); return DIV; }
-{AND}               { yyval.syntax = new_token("AND", TOKEN_CONST, yylineno, 0); return AND; }
-{OR}                { yyval.syntax = new_token("OR", TOKEN_CONST, yylineno, 0); return OR; }
-{DOT}               { yyval.syntax = new_token("DOT", TOKEN_CONST, yylineno, 0); return DOT; }
-{NOT}               { yyval.syntax = new_token("NOT", TOKEN_CONST, yylineno, 0); return NOT; }
+{SEMI}              { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("SEMI", TOKEN_CONST, yylineno, value); return SEMI; }
+{COMMA}             { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("COMMA", TOKEN_CONST, yylineno, value); return COMMA; }
+{ASSIGNOP}          { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("ASSIGNOP", TOKEN_CONST, yylineno, value); return ASSIGNOP; }
+{RELOP}             { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RELOP", TOKEN_CONST, yylineno, value); return RELOP; }
+{PLUS}              { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("PLUS", TOKEN_CONST, yylineno, value); return PLUS; }
+{MINUS}             { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("MINUS", TOKEN_CONST, yylineno, value); return MINUS; }
+{STAR}              { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("STAR", TOKEN_CONST, yylineno, value); return STAR; }
+{DIV}               { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("DIV", TOKEN_CONST, yylineno, value); return DIV; }
+{AND}               { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("AND", TOKEN_CONST, yylineno, value); return AND; }
+{OR}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("OR", TOKEN_CONST, yylineno, value); return OR; }
+{DOT}               { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("DOT", TOKEN_CONST, yylineno, value); return DOT; }
+{NOT}               { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("NOT", TOKEN_CONST, yylineno, value); return NOT; }
 
-{TYPE}              { yyval.syntax = new_token("TYPE", TOKEN_TYPE, yylineno, yytext); return TYPE; }
+{TYPE}              { value_t value = new_value(yytext, TOKEN_TYPE); yylval.syntax = new_token("TYPE", TOKEN_TYPE, yylineno, value); return TYPE; }
 
-{LP}                { yyval.syntax = new_token("LP", TOKEN_CONST, yylineno, 0); return LP; }
-{RP}                { yyval.syntax = new_token("RP", TOKEN_CONST, yylineno, 0); return RP; }
-{LB}                { yyval.syntax = new_token("LB", TOKEN_CONST, yylineno, 0); return LB; }
-{RB}                { yyval.syntax = new_token("RB", TOKEN_CONST, yylineno, 0); return RB; }
-{LC}                { yyval.syntax = new_token("LC", TOKEN_CONST, yylineno, 0); return LC; }
-{RC}                { yyval.syntax = new_token("RC", TOKEN_CONST, yylineno, 0); return RC; }
-{STRUCT}            { yyval.syntax = new_token("STRUCT", TOKEN_CONST, yylineno, 0); return STRUCT; }
-{RETURN}            { yyval.syntax = new_token("RETURN", TOKEN_CONST, yylineno, 0); return RETURN; }
-{IF}                { yyval.syntax = new_token("IF", TOKEN_CONST, yylineno, 0); return IF; }
-{ELSE}              { yyval.syntax = new_token("ELSE", TOKEN_CONST, yylineno, 0); return ELSE; }
-{WHILE}             { yyval.syntax = new_token("WHILE", TOKEN_CONST, yylineno, 0); return WHILE; }
+{LP}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("LP", TOKEN_CONST, yylineno, value); return LP; }
+{RP}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RP", TOKEN_CONST, yylineno, value); return RP; }
+{LB}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("LB", TOKEN_CONST, yylineno, value); return LB; }
+{RB}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RB", TOKEN_CONST, yylineno, value); return RB; }
+{LC}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("LC", TOKEN_CONST, yylineno, value); return LC; }
+{RC}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RC", TOKEN_CONST, yylineno, value); return RC; }
+{STRUCT}            { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("STRUCT", TOKEN_CONST, yylineno, value); return STRUCT; }
+{RETURN}            { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RETURN", TOKEN_CONST, yylineno, value); return RETURN; }
+{IF}                { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("IF", TOKEN_CONST, yylineno, value); return IF; }
+{ELSE}              { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("ELSE", TOKEN_CONST, yylineno, value); return ELSE; }
+{WHILE}             { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("WHILE", TOKEN_CONST, yylineno, value); return WHILE; }
 {WS}                { /* no action and no return */ }
 
-{ID}                { yyval.syntax = new_token("ID", TOKEN_ID, yylineno, yytext); return ID; }
+{ID}                { value_t value = new_value(yytext, TOKEN_ID); yylval.syntax = new_token("ID", TOKEN_ID, yylineno, value); return ID; }
 
-{DEC_INT}           { value_t value = new_value(yytext, TOKEN_INT_DEC); yyval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
-{OCT_INT}           { value_t value = new_value(yytext, TOKEN_INT_OCT); yyval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
-{HEX_INT}           { value_t value = new_value(yytext, TOKEN_INT_HEX); yyval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
+{DEC_INT}           { value_t value = new_value(yytext, TOKEN_INT_DEC); yylval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
+{OCT_INT}           { value_t value = new_value(yytext, TOKEN_INT_OCT); yylval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
+{HEX_INT}           { value_t value = new_value(yytext, TOKEN_INT_HEX); yylval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
 
-{FLOAT}             { value_t value = new_value(yytext, TOKEN_FLOAT); yyval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, yytext); return FLOAT; }
+{FLOAT}             { value_t value = new_value(yytext, TOKEN_FLOAT); yylval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, value); return FLOAT; }
 
 {COMMENT_LINE}      { char c = input(); while (c != '\n') c = input(); }
 {COMMENT_BLOCK}     { 
@@ -119,21 +120,27 @@ void report_error(const char* msg, char type) {
 
 
 value_t new_value(char* name, int type) {
-    value_t ret = 0;
+    value_t ret;
     switch (type) {
         case TOKEN_INT_DEC:
-            ret = strtol(name, NULL, 10);
+            ret.ival = strtol(name, NULL, 10);
             break;
         case TOKEN_INT_OCT:
-            ret = strtol(name, NULL, 8);
+            ret.ival = strtol(name, NULL, 8);
             break;
         case TOKEN_INT_HEX:
-            ret = strtol(name, NULL, 16);
+            ret.ival = strtol(name, NULL, 16);
             break;
         case TOKEN_FLOAT:
-            ret = strtof(name, NULL); 
+            ret.fval = strtof(name, NULL); 
             break;
-        default: break;
+        case TOKEN_TYPE:
+        case TOKEN_ID:
+            strcpy(ret.sval, name);
+            break;
+        default:
+            memset(&ret, 0, sizeof(ret)); 
+            break;
     }
     return ret;
 }

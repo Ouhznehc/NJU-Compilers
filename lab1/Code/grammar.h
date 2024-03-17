@@ -1,8 +1,12 @@
-#ifndef __SYNTAX_H__
-#define __SYNTAX_H__
+#ifndef __GRAMMAR_H__
+#define __GRAMMAR_H__
 
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+
 
 enum {
     TOKEN_ID,
@@ -23,7 +27,7 @@ union value_t {
 typedef union value_t value_t;
 
 struct token_t {
-    const char name[64];
+    char name[64];
     int type;
     int lineno;
     union value_t value;
@@ -32,7 +36,7 @@ typedef struct token_t token_t;
 
 
 struct symbol_t {
-    const char name[64];
+    char name[64];
     int lineno;
     int size;
     union syntax_t** child; 
@@ -46,7 +50,7 @@ union syntax_t {
 };
 typedef union syntax_t syntax_t;
 
-token_t* new_token(char *name, int type, int lineno, value_t value);
-symbol_t* new_symbol(char* name, int lineno, int size, ...);
+syntax_t* new_token(char *name, int type, int lineno, value_t value);
+syntax_t* new_symbol(char* name, int lineno, int size, ...);
 
 #endif

@@ -19,9 +19,14 @@ YFO = $(YFC:.c=.o)
 
 COMPILE_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
 
+auto-commit:
+	@echo "auto commit: $(COMPILE_TIME)"
+	@git add --all
+	@git commit -m "auto commit: $(COMPILE_TIME)"
+
 parser: syntax $(filter-out $(LFO),$(OBJS))
 	$(CC) -o parser $(filter-out $(LFO),$(OBJS)) -lfl -ly
-	@auto-commit
+	@make auto-commit
 
 syntax: lexical syntax-c
 	$(CC) -c $(YFC) -o $(YFO)
@@ -35,7 +40,7 @@ syntax-c: $(YFILE)
 -include $(patsubst %.o, %.d, $(OBJS))
 
 # 定义的一些伪目标
-.PHONY: clean test parser
+.PHONY: clean test parser auto-commit
 
 test:
 	./parser ../Test/test1.cmm
@@ -45,7 +50,3 @@ clean:
 	rm -f $(LFC) $(YFC) $(YFC:.c=.h)
 	rm -f *~
 
-auto-commit:
-	@echo "auto commit: $(COMPILE_TIME)"
-	@git add --all
-	@git commit -m "auto commit: $(COMPILE_TIME)"
