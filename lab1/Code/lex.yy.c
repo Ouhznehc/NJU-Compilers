@@ -532,7 +532,7 @@ char *yytext;
 #line 1 "./lexical.l"
 #line 4 "./lexical.l"
     #include "syntax.tab.h"
-    #include "token.h"
+    #include "syntax.h"
 
     void report_error(const char* msg, char type);
 
@@ -840,7 +840,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 70 "./lexical.l"
-{ printf("<';', >\n"); }
+{ yyval.syntax = new_token("SEMI", TOKEN_CONST, yylineno, 0); return SEMI;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP

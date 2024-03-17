@@ -2,7 +2,7 @@
 
 %{
     #include "syntax.tab.h"
-    #include "token.h"
+    #include "syntax.h"
 
     void report_error(const char* msg, char type);
 
@@ -55,58 +55,58 @@ HEX_INT             0[xX][0-9a-fA-F]+
 
 FLOAT_NRM           {DEC_INT}{DOT}{DIGIT}+
 FLOAT_SCI           ({DIGIT}*{DOT}{DIGIT}+|{DIGIT}+{DOT})[eE][+-]?{DIGIT}+
-FLOAT               {FLOAT_NRM}|{FLOAT_SCI}
-
 
 ID                  {LETTER_}{CHAR}*
-INT                 {DEC_INT}|{OCT_INT}|{HEX_INT}
-INVALID_TOKEN       {DIGIT}{CHAR}+
 
 COMMENT_LINE        \/\/
 COMMENT_BLOCK       \/\*
 
 %%
 {NEW_LINE}          { yycolumn = 1; }
-{SEMI}              { printf("<';', >\n"); }
-{COMMA}             { printf("<',', >\n"); }
-{ASSIGNOP}          { printf("<'=', >\n"); }
-{RELOP}             { printf("<RELOP, %s>\n", yytext); }
-{PLUS}              { printf("<'+', >\n"); }
-{MINUS}             { printf("<'-', >\n"); }
-{STAR}              { printf("<'*', >\n"); }
-{DIV}               { printf("<'/', >\n"); }
-{AND}               { printf("<'&&', >\n"); }
-{OR}                { printf("<'||', >\n"); }
-{DOT}               { printf("<'.', >\n"); }
-{NOT}               { printf("<'!', >\n"); }
-{TYPE}              { printf("<TYPE, %s>\n", yytext); }
-{LP}                { printf("<'(', >\n"); }
-{RP}                { printf("<')', >\n"); }
-{LB}                { printf("<'[', >\n"); }
-{RB}                { printf("<']', >\n"); }
-{LC}                { printf("<'{', >\n"); }
-{RC}                { printf("<'}', >\n"); }
-{STRUCT}            { printf("<STRUCT, >\n"); }
-{RETURN}            { printf("<RETURN, >\n"); }
-{IF}                { printf("<IF, >\n"); }
-{ELSE}              { printf("<ELSE, >\n"); }
-{WHILE}             { printf("<WHILE, >\n"); }
+{SEMI}              { yyval.syntax = new_token("SEMI", TOKEN_CONST, yylineno, 0); return SEMI; }
+{COMMA}             { yyval.syntax = new_token("COMMA", TOKEN_CONST, yylineno, 0); return COMMA; }
+{ASSIGNOP}          { yyval.syntax = new_token("ASSIGNOP", TOKEN_CONST, yylineno, 0); return ASSIGNOP; }
+{RELOP}             { yyval.syntax = new_token("RELOP", TOKEN_CONST, yylineno, 0); return RELOP; }
+{PLUS}              { yyval.syntax = new_token("PLUS", TOKEN_CONST, yylineno, 0); return PLUS; }
+{MINUS}             { yyval.syntax = new_token("MINUS", TOKEN_CONST, yylineno, 0); return MINUS; }
+{STAR}              { yyval.syntax = new_token("STAR", TOKEN_CONST, yylineno, 0); return STAR; }
+{DIV}               { yyval.syntax = new_token("DIV", TOKEN_CONST, yylineno, 0); return DIV; }
+{AND}               { yyval.syntax = new_token("AND", TOKEN_CONST, yylineno, 0); return AND; }
+{OR}                { yyval.syntax = new_token("OR", TOKEN_CONST, yylineno, 0); return OR; }
+{DOT}               { yyval.syntax = new_token("DOT", TOKEN_CONST, yylineno, 0); return DOT; }
+{NOT}               { yyval.syntax = new_token("NOT", TOKEN_CONST, yylineno, 0); return NOT; }
+
+{TYPE}              { yyval.syntax = new_token("TYPE", TOKEN_TYPE, yylineno, yytext); return TYPE; }
+
+{LP}                { yyval.syntax = new_token("LP", TOKEN_CONST, yylineno, 0); return LP; }
+{RP}                { yyval.syntax = new_token("RP", TOKEN_CONST, yylineno, 0); return RP; }
+{LB}                { yyval.syntax = new_token("LB", TOKEN_CONST, yylineno, 0); return LB; }
+{RB}                { yyval.syntax = new_token("RB", TOKEN_CONST, yylineno, 0); return RB; }
+{LC}                { yyval.syntax = new_token("LC", TOKEN_CONST, yylineno, 0); return LC; }
+{RC}                { yyval.syntax = new_token("RC", TOKEN_CONST, yylineno, 0); return RC; }
+{STRUCT}            { yyval.syntax = new_token("STRUCT", TOKEN_CONST, yylineno, 0); return STRUCT; }
+{RETURN}            { yyval.syntax = new_token("RETURN", TOKEN_CONST, yylineno, 0); return RETURN; }
+{IF}                { yyval.syntax = new_token("IF", TOKEN_CONST, yylineno, 0); return IF; }
+{ELSE}              { yyval.syntax = new_token("ELSE", TOKEN_CONST, yylineno, 0); return ELSE; }
+{WHILE}             { yyval.syntax = new_token("WHILE", TOKEN_CONST, yylineno, 0); return WHILE; }
 {WS}                { /* no action and no return */ }
 
-{ID}                { printf("<ID, %s>\n", yytext); }
-{INT}               { printf("<INT, %s>\n", yytext); }
-{FLOAT}             { printf("<FLOAT, %s>\n", yytext); }
-{INVALID_TOKEN}     { report_error("Invalid token", 'A'); }
+{ID}                { yyval.syntax = new_token("ID", TOKEN_ID, yylineno, yytext); return ID; }
+
+{DEC_INT}           { yyval.syntax = new_token("INT", TOKEN_INT, yylineno, yytext); return INT; }
+{OCT_INT}           { yyval.syntax = new_token("INT", TOKEN_INT, yylineno, yytext); return INT; }
+{HEX_INT}           { yyval.syntax = new_token("INT", TOKEN_INT, yylineno, yytext); return INT; }
+
+{FLOAT_NRM}         { yyval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, yytext); return FLOAT; }
+{FLOAT_SCI}         { yyval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, yytext); return FLOAT; }
 
 {COMMENT_LINE}      { char c = input(); while (c != '\n') c = input(); }
 {COMMENT_BLOCK}     { 
                         char curr = input(), prev = curr; 
                         while (prev != '*' || curr != '/') {
                             prev = curr; curr = input();
-                            if (!curr || curr == EOF) {
+                            if (!curr || curr == EOF)
                                 report_error("Invalid comment", 'A');
-                                yyterminate();
-                            }
                         } 
                     }
 
