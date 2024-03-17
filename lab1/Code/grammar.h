@@ -54,5 +54,7 @@ typedef union syntax_t syntax_t;
 
 syntax_t* new_token(char *name, int type, int lineno, value_t value);
 syntax_t* new_symbol(char* name, int lineno, int size, ...);
+void print_syntax_tree(syntax_t* node, int indent);
+
 
 #endif

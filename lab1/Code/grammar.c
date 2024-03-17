@@ -40,3 +40,20 @@ syntax_t* new_symbol(char* name, int lineno, int size, ...){
 
     return ret;
 }
+
+void print_syntax_tree(syntax_t* node, int indent) {
+    if (node == NULL) return;
+    for (int i = 0; i < indent; i++) printf("  ");
+
+    if (node->symbol.type == SYMBOL) printf("%s (%d)", node->symbol.name, node->symbol.lineno);
+    else if (node->token.type == TOKEN_ID || node->token.type == TOKEN_TYPE) printf("%s: %s", node->token.name, node->token.value.sval);
+    else if (node->token.type == TOKEN_INT) printf("%s: %s", node->token.name, node->token.value.ival);
+    else if (node->token.type == TOKEN_FLOAT) printf("%s: %s", node->token.name, node->token.value.fval);
+    printf("\n");
+
+    if (node->symbol.type == SYMBOL)
+        for (int i = 0; i < node->symbol.size; i++) {
+            print_syntax_tree(node->symbol.child[i], indent + 1);
+        }
+    return;
+}
