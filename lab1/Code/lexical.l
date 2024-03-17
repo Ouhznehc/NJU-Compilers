@@ -41,8 +41,8 @@ DEC_INT             [1-9][0-9]*|0
 OCT_INT             0[0-7]+
 HEX_INT             0[xX][0-9a-fA-F]+
 
-FLOAT_NRM           ({DIGIT}*{DOT}{DIGIT}+)|({DIGIT}+{DOT})
-FLOAT_SCI           {FLOAT_NRM}[eE][+-]?{DIGIT}+
+FLOAT_NRM           {DEC_INT}{DOT}{DIGIT}+
+FLOAT_SCI           ({DIGIT}*{DOT}{DIGIT}+|{DIGIT}+{DOT})[eE][+-]?{DIGIT}+
 FLOAT               {FLOAT_NRM}|{FLOAT_SCI}
 
 
