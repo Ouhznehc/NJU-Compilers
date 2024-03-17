@@ -1000,7 +1000,7 @@ YY_RULE_SETUP
                             prev = curr; curr = input();
                             if (!curr || curr == EOF)
                                 report_error("Invalid comment");
-                                yyterminate();
+                                break;
                         } 
                     }
 	YY_BREAK

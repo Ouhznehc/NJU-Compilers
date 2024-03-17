@@ -109,7 +109,7 @@ COMMENT_BLOCK       \/\*
                             prev = curr; curr = input();
                             if (!curr || curr == EOF)
                                 report_error("Invalid comment");
-                                yyterminate();
+                                break;
                         } 
                     }
 
