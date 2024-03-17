@@ -4,6 +4,7 @@
 
 extern FILE* yyin;
 extern syntax_t* root;
+int error_no = 0;
 
 int main(int argc, char **argv) {
     if (argc <= 1) return 1;
@@ -14,6 +15,6 @@ int main(int argc, char **argv) {
     }
     yyrestart(f);
     yyparse();
-    print_syntax_tree(root, 0);
+    if(!error_no) print_syntax_tree(root, 0);
     return 0;
 }

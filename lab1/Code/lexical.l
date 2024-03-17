@@ -3,6 +3,7 @@
 %{
     #include "syntax.tab.h"
     #include "grammar.h"
+    extern int error_no;
 
     void report_error(const char* msg);
     value_t new_value(char* name, int type);
@@ -116,6 +117,7 @@ COMMENT_BLOCK       \/\*
 %%
 
 void report_error(const char* msg) {
+    error_no = 1;
     printf("Error type A at line %d: { %s, \'%s\' }\n", yylineno, msg, yytext);
 }
 

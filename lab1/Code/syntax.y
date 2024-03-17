@@ -3,8 +3,10 @@
     #include "grammar.h"
 
     syntax_t *root;
+    extern int error_no;
 
     void yyerror(char const *msg){
+        error_no = 1;
         printf("Error type B at line %d: %s.\n", yylineno, msg);
     }
 %}
