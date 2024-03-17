@@ -1,6 +1,9 @@
 %option yylineno
 
 %{
+    #include "syntax.tab.h"
+    #include "token.h"
+
     void report_error(const char* msg, char type);
 
     int yycolumn = 1;

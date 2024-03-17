@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "syntax.tab.h"
 
 extern FILE* yyin;
 
