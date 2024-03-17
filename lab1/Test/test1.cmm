@@ -1,8 +1,6 @@
 int main ()
 {
   // line commnet
-  /*
-  block cooenrfe
-  */
+  /*dasd*/
   int i = 1;
 }
