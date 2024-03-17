@@ -1,24 +1,21 @@
-/****
-* @param int a
+/***comment
+still
 */
-int main()
+/* ////\\asfdlkajhsldf\\\\<>@#$
+*/
+int main() //a function
 {
-    /*   TODO
-        	definition 12345
-    	*/
-    int day,x1,x2;
-    day = 9 /* this is okay*/;
-    x2 = 1;
-    // \\\\\/////\\\\\\~~///////\\\\\\\*/
-    while(day> /*>=<*/ 0)
+    float h, s; int i;
+    h = s = 100 //;
+    h = h / 2; // first
+    i = 2;
+    /* a new comment*/
+    while (i <= 10) //\\\//\\/*
     {
-        x1=(x2+1)*2;
-        /*
-	    //////\\\\\\\/////>
-	    /* \\\\\\\\'''''' this is not okay!! */
-        */
-        x2=x1;
-        day = day - 1; 
-    }// assert(day == ?);
-    return /*-1;*/0;
+        s = s + 2 * h;
+        h = h / 2 /*\/\/\/\/\*\/\/\\****\/*/;
+        i = i + 1;
+    }
+    return 0;
 }
+/**end ~??
