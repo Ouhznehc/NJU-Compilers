@@ -21,9 +21,9 @@ enum {
 };
 
 union value_t {
-    int   ival;
-    float fval;
-    char  sval[64];
+    unsigned int   ival;
+    float          fval;
+    char           sval[64];
 };
 typedef union value_t value_t;
 
