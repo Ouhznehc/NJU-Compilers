@@ -119,7 +119,7 @@ COMMENT_BLOCK       \/\*
 
 void report_error(const char* msg) {
     error_no = 1;
-    printf("Error type A at line %d: { %s, \'%s\' }\n", yylineno, msg, yytext);
+    printf("Error type A at line %d: { %s, \'%s\' }.\n", yylineno, msg, yytext);
 }
 
 
