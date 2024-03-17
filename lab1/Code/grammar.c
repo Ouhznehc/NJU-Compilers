@@ -26,6 +26,7 @@ syntax_t* new_symbol(char* name, int lineno, int size, ...){
     syntax_t* ret = malloc(sizeof(syntax_t));
     strcpy(ret->symbol.name, name);
     ret->symbol.lineno = lineno;
+    ret->symbol.type = SYMBOL;
 
     ret->symbol.size = size;
     ret->symbol.child = malloc(size * sizeof(syntax_t*));

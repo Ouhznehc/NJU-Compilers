@@ -16,7 +16,8 @@ enum {
     TOKEN_INT_OCT,
     TOKEN_CONST,
     TOKEN_INT,
-    TOKEN_FLOAT
+    TOKEN_FLOAT,
+    SYMBOL
 };
 
 union value_t {
@@ -39,6 +40,7 @@ struct symbol_t {
     char name[64];
     int lineno;
     int size;
+    int type;
     union syntax_t** child; 
 };
 typedef struct symbol_t symbol_t;
