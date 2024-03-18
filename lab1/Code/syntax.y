@@ -1,3 +1,5 @@
+%locations
+
 %{
     #include "lex.yy.c"
     #include "grammar.h"
