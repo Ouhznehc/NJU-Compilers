@@ -44,7 +44,7 @@ Grammar
    29 ParamDec: Specifier VarDec
 
    30 CompSt: LC DefList StmtList RC
-   31       | error LC
+   31       | error RC
 
    32 StmtList: Stmt StmtList
    33         | %empty
@@ -118,8 +118,8 @@ Terminals, with rules where they appear
     RP <syntax> (272) 23 24 25 37 38 39 51 60 63 64 71
     LB <syntax> (273) 21 65 70
     RB <syntax> (274) 21 22 65 70
-    LC <syntax> (275) 14 30 31
-    RC <syntax> (276) 4 9 14 16 30
+    LC <syntax> (275) 14 30
+    RC <syntax> (276) 4 9 14 16 30 31
     STRUCT <syntax> (277) 14 15 16
     RETURN <syntax> (278) 36
     IF <syntax> (279) 37 38
@@ -497,9 +497,9 @@ State 30
 
 State 31
 
-   31 CompSt: error . LC
+   31 CompSt: error . RC
 
-    LC  shift, and go to state 47
+    RC  shift, and go to state 47
 
 
 State 32
@@ -637,7 +637,7 @@ State 46
 
 State 47
 
-   31 CompSt: error LC .
+   31 CompSt: error RC .
 
     $default  reduce using rule 31 (CompSt)
 
@@ -769,13 +769,13 @@ State 59
 
 State 60
 
-   31 CompSt: error . LC
+   31 CompSt: error . RC
    40 Stmt: error . SEMI
    71 Exp: error . RP
 
     SEMI  shift, and go to state 81
     RP    shift, and go to state 82
-    LC    shift, and go to state 47
+    RC    shift, and go to state 47
 
 
 State 61

@@ -154,7 +154,7 @@ ParamDec : Specifier VarDec { $$ = new_symbol("ParamDec", @$.first_line, 2, $1, 
 
 /*Statements*/
 CompSt : LC DefList StmtList RC { $$ = new_symbol("CompSt", @$.first_line, 4, $1, $2, $3, $4); }
-	| error LC {}
+	| error RC {}
 	;
 StmtList : Stmt StmtList  { $$ = new_symbol("StmtList", @$.first_line, 2, $1, $2); }
 	| /*empty*/ { $$ = NULL; }
