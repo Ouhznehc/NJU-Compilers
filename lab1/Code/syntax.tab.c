@@ -1591,7 +1591,7 @@ yyreduce:
 
   case 4:
 #line 109 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { }
 #line 1596 "./syntax.tab.c"
     break;
 

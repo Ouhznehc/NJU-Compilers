@@ -21,7 +21,7 @@ COMPILE_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
 
 auto-commit:
 	@git add --all
-	@git commit -m "Auto commit message: { Compile code at $(COMPILE_TIME) }."
+	@git commit -m "Auto commit message: { Compile code at $(COMPILE_TIME) }"
 
 parser: syntax $(filter-out $(LFO),$(OBJS))
 	$(CC) -o parser $(filter-out $(LFO),$(OBJS)) -lfl -ly
