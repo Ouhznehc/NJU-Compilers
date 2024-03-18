@@ -11,7 +11,7 @@
         error_no = 1;
         printf("Error type B at line %d: %s.\n", yylineno, msg);
     }
-	
+
 %}
 
 %union {
@@ -102,7 +102,7 @@ Program : ExtDefList {
                      }
 	;
 ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2, $1, $2); }
-	| /*empty*/ { $$ = NULL; }
+	| /*empty*/ { $$ = new_symbol("ExtDefList", @$.first_line, 0); }
 	| error RC {}
 	;
 ExtDef : Specifier ExtDecList SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }

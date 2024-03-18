@@ -78,7 +78,7 @@
         error_no = 1;
         printf("Error type B at line %d: %s.\n", yylineno, msg);
     }
-	
+
 
 #line 84 "./syntax.tab.c"
 
@@ -1587,7 +1587,7 @@ yyreduce:
 
   case 4:
 #line 105 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { (yyval.syntax) = new_symbol("ExtDefList", (yyloc).first_line, 0); }
 #line 1592 "./syntax.tab.c"
     break;
 
