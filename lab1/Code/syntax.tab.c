@@ -1591,7 +1591,7 @@ yyreduce:
 
   case 4:
 #line 109 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { (yyval.syntax) = new_symbol("ExtDefList", (yyloc).first_line, 0); }
 #line 1596 "./syntax.tab.c"
     break;
 
@@ -1681,7 +1681,7 @@ yyreduce:
 
   case 19:
 #line 132 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { (yyval.syntax) = new_symbol("ExtDefList", (yyloc).first_line, 0); }
 #line 1686 "./syntax.tab.c"
     break;
 
@@ -1771,7 +1771,7 @@ yyreduce:
 
   case 34:
 #line 160 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { (yyval.syntax) = new_symbol("ExtDefList", (yyloc).first_line, 0); }
 #line 1776 "./syntax.tab.c"
     break;
 
@@ -1831,7 +1831,7 @@ yyreduce:
 
   case 44:
 #line 175 "./syntax.y"
-                   { (yyval.syntax) = NULL; }
+                   { (yyval.syntax) = new_symbol("ExtDefList", (yyloc).first_line, 0); }
 #line 1836 "./syntax.tab.c"
     break;
 
