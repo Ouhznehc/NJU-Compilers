@@ -1677,7 +1677,7 @@ yyreduce:
 
   case 19:
 #line 128 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { (yyval.syntax) = new_symbol("OptTag", (yyloc).first_line, 0); }
 #line 1682 "./syntax.tab.c"
     break;
 
@@ -1767,7 +1767,7 @@ yyreduce:
 
   case 34:
 #line 156 "./syntax.y"
-                    { (yyval.syntax) = NULL; }
+                    { (yyval.syntax) = new_symbol("StmtList", (yyloc).first_line, 0); }
 #line 1772 "./syntax.tab.c"
     break;
 
@@ -1827,7 +1827,7 @@ yyreduce:
 
   case 44:
 #line 171 "./syntax.y"
-                   { (yyval.syntax) = NULL; }
+                   { (yyval.syntax) = new_symbol("DefList", (yyloc).first_line, 0); }
 #line 1832 "./syntax.tab.c"
     break;
 
