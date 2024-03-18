@@ -105,6 +105,7 @@ ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2,
 	;
 ExtDef : Specifier ExtDecList SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }
 	| Specifier SEMI { $$ = new_symbol("ExtDef", @$.first_line, 2, $1, $2); }
+	| Specifier FunDec SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }	
 	| Specifier FunDec CompSt { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }
 	| Specifier error LC {}
 	;
@@ -190,7 +191,7 @@ Exp : Exp ASSIGNOP Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); 
 	| Exp STAR Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
 	| Exp DIV Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
 	| LP Exp RP { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
-	| MINUS Exp { $$ = new_symbol("Exp", @$.first_line, 2, $1, $2); }
+	| MINUS Exp %prec NOT { $$ = new_symbol("Exp", @$.first_line, 2, $1, $2); }
 	| NOT Exp  { $$ = new_symbol("Exp", @$.first_line, 2, $1, $2); }
 	| ID LP Args RP { $$ = new_symbol("Exp", @$.first_line, 4, $1, $2, $3, $4); }
 	| ID LP RP { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
