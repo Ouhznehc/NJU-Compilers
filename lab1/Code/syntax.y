@@ -12,7 +12,7 @@
 %}
 
 %union {
-    union syntax_t* syntax;
+    struct syntax_t* syntax;
 }
 
 

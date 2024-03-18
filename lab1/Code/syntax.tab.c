@@ -164,7 +164,7 @@ union YYSTYPE
 {
 #line 14 "./syntax.y"
 
-    union syntax_t* syntax;
+    struct syntax_t* syntax;
 
 #line 170 "./syntax.tab.c"
 

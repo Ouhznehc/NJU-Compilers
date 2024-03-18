@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <assert.h>
 
 
 enum {
@@ -17,7 +18,8 @@ enum {
     TOKEN_CONST,
     TOKEN_INT,
     TOKEN_FLOAT,
-    SYMBOL
+    SYMBOL,
+    TOKEN
 };
 
 union value_t {
@@ -40,17 +42,19 @@ struct symbol_t {
     char name[64];
     int lineno;
     int size;
-    int type;
-    union syntax_t** child; 
+    struct syntax_t** child; 
 };
 typedef struct symbol_t symbol_t;
 
 
-union syntax_t {
-    struct symbol_t symbol;
-    struct token_t token;
+struct syntax_t {
+    union{
+        struct symbol_t symbol;
+        struct token_t token;
+    };
+    int type;
 };
-typedef union syntax_t syntax_t;
+typedef struct syntax_t syntax_t;
 
 syntax_t* new_token(char *name, int type, int lineno, value_t value);
 syntax_t* new_symbol(char* name, int lineno, int size, ...);
