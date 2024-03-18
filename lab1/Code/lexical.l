@@ -112,7 +112,6 @@ COMMENT_BLOCK       \/\*
                                 break;
                             }
                         } 
-                        printf("lineno: %d\n", yylineno);
                     }
 
 .                   { report_error("Mysterious character"); }

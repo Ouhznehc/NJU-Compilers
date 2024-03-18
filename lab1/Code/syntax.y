@@ -11,11 +11,7 @@
         error_no = 1;
         printf("Error type B at line %d: %s.\n", yylineno, msg);
     }
-    #define YY_USER_ACTION \
-        yylloc.first_line = yylloc.last_line = yylineno; \
-        yylloc.first_column = yycolumn; \
-        yylloc.last_column = yycolumn + yyleng - 1; \
-        yycolumn += yyleng;
+	
 %}
 
 %union {
