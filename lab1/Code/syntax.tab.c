@@ -564,14 +564,14 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   102,   102,   106,   107,   108,   110,   111,   112,   113,
-     114,   116,   117,   122,   123,   125,   126,   127,   129,   130,
-     132,   137,   138,   139,   141,   142,   143,   145,   146,   147,
-     149,   154,   155,   157,   158,   160,   161,   162,   163,   164,
-     165,   166,   167,   172,   173,   175,   176,   178,   179,   180,
-     182,   183,   184,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   210,   211
+       0,   102,   102,   108,   109,   110,   112,   113,   114,   115,
+     116,   118,   119,   124,   125,   127,   128,   129,   131,   132,
+     134,   139,   140,   141,   143,   144,   145,   147,   148,   149,
+     151,   156,   157,   159,   160,   162,   163,   164,   165,   166,
+     167,   168,   169,   174,   175,   177,   178,   180,   181,   182,
+     184,   185,   186,   191,   192,   193,   194,   195,   196,   197,
+     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
+     208,   209,   210,   212,   213
 };
 #endif
 
@@ -1576,445 +1576,447 @@ yyreduce:
   case 2:
 #line 102 "./syntax.y"
                      { 
-                        (yyval.syntax) = new_symbol("Program", yylineno, 1, (yyvsp[0].syntax)); root = (yyval.syntax); 
+                        (yyval.syntax) = new_symbol("Program", (yyloc).first_line, 1, (yyvsp[0].syntax)); root = (yyval.syntax); 
+						/* empty file */
+						if ((yyvsp[0].syntax) == NULL) (yyval.syntax)->symbol.lineno = yylineno;
                      }
-#line 1582 "./syntax.tab.c"
+#line 1584 "./syntax.tab.c"
     break;
 
   case 3:
-#line 106 "./syntax.y"
+#line 108 "./syntax.y"
                                { (yyval.syntax) = new_symbol("ExtDefList", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1588 "./syntax.tab.c"
+#line 1590 "./syntax.tab.c"
     break;
 
   case 4:
-#line 107 "./syntax.y"
+#line 109 "./syntax.y"
                     { (yyval.syntax) = NULL; }
-#line 1594 "./syntax.tab.c"
+#line 1596 "./syntax.tab.c"
     break;
 
   case 5:
-#line 108 "./syntax.y"
+#line 110 "./syntax.y"
                    {}
-#line 1600 "./syntax.tab.c"
+#line 1602 "./syntax.tab.c"
     break;
 
   case 6:
-#line 110 "./syntax.y"
+#line 112 "./syntax.y"
                                    { (yyval.syntax) = new_symbol("ExtDef", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1606 "./syntax.tab.c"
+#line 1608 "./syntax.tab.c"
     break;
 
   case 7:
-#line 111 "./syntax.y"
+#line 113 "./syntax.y"
                          { (yyval.syntax) = new_symbol("ExtDef", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1612 "./syntax.tab.c"
+#line 1614 "./syntax.tab.c"
     break;
 
   case 8:
-#line 112 "./syntax.y"
+#line 114 "./syntax.y"
                                 { (yyval.syntax) = new_symbol("ExtDef", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1618 "./syntax.tab.c"
+#line 1620 "./syntax.tab.c"
     break;
 
   case 9:
-#line 113 "./syntax.y"
+#line 115 "./syntax.y"
                                   { (yyval.syntax) = new_symbol("ExtDef", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1624 "./syntax.tab.c"
+#line 1626 "./syntax.tab.c"
     break;
 
   case 10:
-#line 114 "./syntax.y"
+#line 116 "./syntax.y"
                              {}
-#line 1630 "./syntax.tab.c"
+#line 1632 "./syntax.tab.c"
     break;
 
   case 11:
-#line 116 "./syntax.y"
+#line 118 "./syntax.y"
                     { (yyval.syntax) = new_symbol("ExtDecList", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1636 "./syntax.tab.c"
+#line 1638 "./syntax.tab.c"
     break;
 
   case 12:
-#line 117 "./syntax.y"
+#line 119 "./syntax.y"
                                   { (yyval.syntax) = new_symbol("ExtDecList", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1642 "./syntax.tab.c"
+#line 1644 "./syntax.tab.c"
     break;
 
   case 13:
-#line 122 "./syntax.y"
+#line 124 "./syntax.y"
                  { (yyval.syntax) = new_symbol("Specifier", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1648 "./syntax.tab.c"
+#line 1650 "./syntax.tab.c"
     break;
 
   case 14:
-#line 123 "./syntax.y"
+#line 125 "./syntax.y"
                           { (yyval.syntax) = new_symbol("Specifier", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1654 "./syntax.tab.c"
+#line 1656 "./syntax.tab.c"
     break;
 
   case 15:
-#line 125 "./syntax.y"
+#line 127 "./syntax.y"
                                               { (yyval.syntax) = new_symbol("StructSpecifier", (yyloc).first_line, 5, (yyvsp[-4].syntax), (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1660 "./syntax.tab.c"
+#line 1662 "./syntax.tab.c"
     break;
 
   case 16:
-#line 126 "./syntax.y"
+#line 128 "./syntax.y"
                      { (yyval.syntax) = new_symbol("StructSpecifier", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1666 "./syntax.tab.c"
+#line 1668 "./syntax.tab.c"
     break;
 
   case 17:
-#line 127 "./syntax.y"
+#line 129 "./syntax.y"
                           {}
-#line 1672 "./syntax.tab.c"
+#line 1674 "./syntax.tab.c"
     break;
 
   case 18:
-#line 129 "./syntax.y"
+#line 131 "./syntax.y"
             { (yyval.syntax) = new_symbol("OptTag", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1678 "./syntax.tab.c"
+#line 1680 "./syntax.tab.c"
     break;
 
   case 19:
-#line 130 "./syntax.y"
+#line 132 "./syntax.y"
                     { (yyval.syntax) = NULL; }
-#line 1684 "./syntax.tab.c"
+#line 1686 "./syntax.tab.c"
     break;
 
   case 20:
-#line 132 "./syntax.y"
+#line 134 "./syntax.y"
          { (yyval.syntax) = new_symbol("Tag", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1690 "./syntax.tab.c"
+#line 1692 "./syntax.tab.c"
     break;
 
   case 21:
-#line 137 "./syntax.y"
+#line 139 "./syntax.y"
             { (yyval.syntax) = new_symbol("VarDec", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1696 "./syntax.tab.c"
+#line 1698 "./syntax.tab.c"
     break;
 
   case 22:
-#line 138 "./syntax.y"
+#line 140 "./syntax.y"
                            { (yyval.syntax) = new_symbol("VarDec", (yyloc).first_line, 4, (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1702 "./syntax.tab.c"
+#line 1704 "./syntax.tab.c"
     break;
 
   case 23:
-#line 139 "./syntax.y"
+#line 141 "./syntax.y"
                    {}
-#line 1708 "./syntax.tab.c"
+#line 1710 "./syntax.tab.c"
     break;
 
   case 24:
-#line 141 "./syntax.y"
+#line 143 "./syntax.y"
                           { (yyval.syntax) = new_symbol("FunDec", (yyloc).first_line, 4, (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1714 "./syntax.tab.c"
+#line 1716 "./syntax.tab.c"
     break;
 
   case 25:
-#line 142 "./syntax.y"
+#line 144 "./syntax.y"
                    { (yyval.syntax) = new_symbol("FunDec", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1720 "./syntax.tab.c"
+#line 1722 "./syntax.tab.c"
     break;
 
   case 26:
-#line 143 "./syntax.y"
+#line 145 "./syntax.y"
                    {}
-#line 1726 "./syntax.tab.c"
+#line 1728 "./syntax.tab.c"
     break;
 
   case 27:
-#line 145 "./syntax.y"
+#line 147 "./syntax.y"
                                  { (yyval.syntax) = new_symbol("VarList", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1732 "./syntax.tab.c"
+#line 1734 "./syntax.tab.c"
     break;
 
   case 28:
-#line 146 "./syntax.y"
+#line 148 "./syntax.y"
                    { (yyval.syntax) = new_symbol("VarList", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1738 "./syntax.tab.c"
+#line 1740 "./syntax.tab.c"
     break;
 
   case 29:
-#line 147 "./syntax.y"
+#line 149 "./syntax.y"
                       {}
-#line 1744 "./syntax.tab.c"
+#line 1746 "./syntax.tab.c"
     break;
 
   case 30:
-#line 149 "./syntax.y"
+#line 151 "./syntax.y"
                             { (yyval.syntax) = new_symbol("ParamDec", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1750 "./syntax.tab.c"
+#line 1752 "./syntax.tab.c"
     break;
 
   case 31:
-#line 154 "./syntax.y"
+#line 156 "./syntax.y"
                                 { (yyval.syntax) = new_symbol("CompSt", (yyloc).first_line, 4, (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1756 "./syntax.tab.c"
+#line 1758 "./syntax.tab.c"
     break;
 
   case 32:
-#line 155 "./syntax.y"
+#line 157 "./syntax.y"
                    {}
-#line 1762 "./syntax.tab.c"
+#line 1764 "./syntax.tab.c"
     break;
 
   case 33:
-#line 157 "./syntax.y"
+#line 159 "./syntax.y"
                           { (yyval.syntax) = new_symbol("StmtList", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1768 "./syntax.tab.c"
+#line 1770 "./syntax.tab.c"
     break;
 
   case 34:
-#line 158 "./syntax.y"
+#line 160 "./syntax.y"
                     { (yyval.syntax) = NULL; }
-#line 1774 "./syntax.tab.c"
+#line 1776 "./syntax.tab.c"
     break;
 
   case 35:
-#line 160 "./syntax.y"
+#line 162 "./syntax.y"
                  { (yyval.syntax) = new_symbol("Stmt", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1780 "./syntax.tab.c"
+#line 1782 "./syntax.tab.c"
     break;
 
   case 36:
-#line 161 "./syntax.y"
+#line 163 "./syntax.y"
                   { (yyval.syntax) = new_symbol("Stmt", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1786 "./syntax.tab.c"
+#line 1788 "./syntax.tab.c"
     break;
 
   case 37:
-#line 162 "./syntax.y"
+#line 164 "./syntax.y"
                            { (yyval.syntax) = new_symbol("Stmt", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1792 "./syntax.tab.c"
+#line 1794 "./syntax.tab.c"
     break;
 
   case 38:
-#line 163 "./syntax.y"
+#line 165 "./syntax.y"
                                                   { (yyval.syntax) = new_symbol("Stmt", (yyloc).first_line, 5, (yyvsp[-4].syntax), (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1798 "./syntax.tab.c"
+#line 1800 "./syntax.tab.c"
     break;
 
   case 39:
-#line 164 "./syntax.y"
+#line 166 "./syntax.y"
                                       { (yyval.syntax) = new_symbol("Stmt", (yyloc).first_line, 7, (yyvsp[-6].syntax), (yyvsp[-5].syntax), (yyvsp[-4].syntax), (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1804 "./syntax.tab.c"
+#line 1806 "./syntax.tab.c"
     break;
 
   case 40:
-#line 165 "./syntax.y"
+#line 167 "./syntax.y"
                                 { (yyval.syntax) = new_symbol("Stmt", (yyloc).first_line, 5, (yyvsp[-4].syntax), (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1810 "./syntax.tab.c"
+#line 1812 "./syntax.tab.c"
     break;
 
   case 41:
-#line 166 "./syntax.y"
+#line 168 "./syntax.y"
                      {}
-#line 1816 "./syntax.tab.c"
+#line 1818 "./syntax.tab.c"
     break;
 
   case 42:
-#line 167 "./syntax.y"
+#line 169 "./syntax.y"
                          {}
-#line 1822 "./syntax.tab.c"
+#line 1824 "./syntax.tab.c"
     break;
 
   case 43:
-#line 172 "./syntax.y"
+#line 174 "./syntax.y"
                        { (yyval.syntax) = new_symbol("DefList", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1828 "./syntax.tab.c"
+#line 1830 "./syntax.tab.c"
     break;
 
   case 44:
-#line 173 "./syntax.y"
+#line 175 "./syntax.y"
                    { (yyval.syntax) = NULL; }
-#line 1834 "./syntax.tab.c"
+#line 1836 "./syntax.tab.c"
     break;
 
   case 45:
-#line 175 "./syntax.y"
+#line 177 "./syntax.y"
                              { (yyval.syntax) = new_symbol("Def", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1840 "./syntax.tab.c"
+#line 1842 "./syntax.tab.c"
     break;
 
   case 46:
-#line 176 "./syntax.y"
+#line 178 "./syntax.y"
                                {}
-#line 1846 "./syntax.tab.c"
+#line 1848 "./syntax.tab.c"
     break;
 
   case 47:
-#line 178 "./syntax.y"
+#line 180 "./syntax.y"
               { (yyval.syntax) = new_symbol("DecList", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1852 "./syntax.tab.c"
+#line 1854 "./syntax.tab.c"
     break;
 
   case 48:
-#line 179 "./syntax.y"
+#line 181 "./syntax.y"
                             { (yyval.syntax) = new_symbol("DecList", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1858 "./syntax.tab.c"
+#line 1860 "./syntax.tab.c"
     break;
 
   case 49:
-#line 180 "./syntax.y"
+#line 182 "./syntax.y"
                       {}
-#line 1864 "./syntax.tab.c"
+#line 1866 "./syntax.tab.c"
     break;
 
   case 50:
-#line 182 "./syntax.y"
+#line 184 "./syntax.y"
              { (yyval.syntax) = new_symbol("Dec", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1870 "./syntax.tab.c"
+#line 1872 "./syntax.tab.c"
     break;
 
   case 51:
-#line 183 "./syntax.y"
+#line 185 "./syntax.y"
                               { (yyval.syntax) = new_symbol("Dec", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1876 "./syntax.tab.c"
+#line 1878 "./syntax.tab.c"
     break;
 
   case 52:
-#line 184 "./syntax.y"
+#line 186 "./syntax.y"
                    {}
-#line 1882 "./syntax.tab.c"
+#line 1884 "./syntax.tab.c"
     break;
 
   case 53:
-#line 189 "./syntax.y"
+#line 191 "./syntax.y"
                         { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1888 "./syntax.tab.c"
+#line 1890 "./syntax.tab.c"
     break;
 
   case 54:
-#line 190 "./syntax.y"
+#line 192 "./syntax.y"
                        { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1894 "./syntax.tab.c"
+#line 1896 "./syntax.tab.c"
     break;
 
   case 55:
-#line 191 "./syntax.y"
+#line 193 "./syntax.y"
                       { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1900 "./syntax.tab.c"
+#line 1902 "./syntax.tab.c"
     break;
 
   case 56:
-#line 192 "./syntax.y"
+#line 194 "./syntax.y"
                         { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1906 "./syntax.tab.c"
+#line 1908 "./syntax.tab.c"
     break;
 
   case 57:
-#line 193 "./syntax.y"
+#line 195 "./syntax.y"
                         { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1912 "./syntax.tab.c"
+#line 1914 "./syntax.tab.c"
     break;
 
   case 58:
-#line 194 "./syntax.y"
+#line 196 "./syntax.y"
                          { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1918 "./syntax.tab.c"
+#line 1920 "./syntax.tab.c"
     break;
 
   case 59:
-#line 195 "./syntax.y"
+#line 197 "./syntax.y"
                         { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1924 "./syntax.tab.c"
+#line 1926 "./syntax.tab.c"
     break;
 
   case 60:
-#line 196 "./syntax.y"
+#line 198 "./syntax.y"
                        { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1930 "./syntax.tab.c"
+#line 1932 "./syntax.tab.c"
     break;
 
   case 61:
-#line 197 "./syntax.y"
+#line 199 "./syntax.y"
                     { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1936 "./syntax.tab.c"
+#line 1938 "./syntax.tab.c"
     break;
 
   case 62:
-#line 198 "./syntax.y"
+#line 200 "./syntax.y"
                               { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1942 "./syntax.tab.c"
+#line 1944 "./syntax.tab.c"
     break;
 
   case 63:
-#line 199 "./syntax.y"
+#line 201 "./syntax.y"
                    { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 2, (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1948 "./syntax.tab.c"
+#line 1950 "./syntax.tab.c"
     break;
 
   case 64:
-#line 200 "./syntax.y"
+#line 202 "./syntax.y"
                         { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 4, (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1954 "./syntax.tab.c"
+#line 1956 "./syntax.tab.c"
     break;
 
   case 65:
-#line 201 "./syntax.y"
+#line 203 "./syntax.y"
                    { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1960 "./syntax.tab.c"
+#line 1962 "./syntax.tab.c"
     break;
 
   case 66:
-#line 202 "./syntax.y"
+#line 204 "./syntax.y"
                         { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 4, (yyvsp[-3].syntax), (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1966 "./syntax.tab.c"
+#line 1968 "./syntax.tab.c"
     break;
 
   case 67:
-#line 203 "./syntax.y"
+#line 205 "./syntax.y"
                      { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 1972 "./syntax.tab.c"
+#line 1974 "./syntax.tab.c"
     break;
 
   case 68:
-#line 204 "./syntax.y"
+#line 206 "./syntax.y"
               { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1978 "./syntax.tab.c"
+#line 1980 "./syntax.tab.c"
     break;
 
   case 69:
-#line 205 "./syntax.y"
+#line 207 "./syntax.y"
                { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1984 "./syntax.tab.c"
+#line 1986 "./syntax.tab.c"
     break;
 
   case 70:
-#line 206 "./syntax.y"
+#line 208 "./syntax.y"
                  { (yyval.syntax) = new_symbol("Exp", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 1990 "./syntax.tab.c"
+#line 1992 "./syntax.tab.c"
     break;
 
   case 71:
-#line 207 "./syntax.y"
+#line 209 "./syntax.y"
                           {}
-#line 1996 "./syntax.tab.c"
+#line 1998 "./syntax.tab.c"
     break;
 
   case 72:
-#line 208 "./syntax.y"
+#line 210 "./syntax.y"
                    {}
-#line 2002 "./syntax.tab.c"
+#line 2004 "./syntax.tab.c"
     break;
 
   case 73:
-#line 210 "./syntax.y"
+#line 212 "./syntax.y"
                       { (yyval.syntax) = new_symbol("Args", (yyloc).first_line, 3, (yyvsp[-2].syntax), (yyvsp[-1].syntax), (yyvsp[0].syntax)); }
-#line 2008 "./syntax.tab.c"
+#line 2010 "./syntax.tab.c"
     break;
 
   case 74:
-#line 211 "./syntax.y"
+#line 213 "./syntax.y"
               { (yyval.syntax) = new_symbol("Args", (yyloc).first_line, 1, (yyvsp[0].syntax)); }
-#line 2014 "./syntax.tab.c"
+#line 2016 "./syntax.tab.c"
     break;
 
 
-#line 2018 "./syntax.tab.c"
+#line 2020 "./syntax.tab.c"
 
       default: break;
     }
@@ -2252,6 +2254,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 214 "./syntax.y"
+#line 216 "./syntax.y"
 
 

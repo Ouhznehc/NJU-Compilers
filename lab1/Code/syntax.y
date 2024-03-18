@@ -100,7 +100,9 @@
 
 /*High-level Definitions*/
 Program : ExtDefList { 
-                        $$ = new_symbol("Program", yylineno, 1, $1); root = $$; 
+                        $$ = new_symbol("Program", @$.first_line, 1, $1); root = $$; 
+						/* empty file */
+						if ($1 == NULL) $$->symbol.lineno = yylineno;
                      }
 	;
 ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2, $1, $2); }
