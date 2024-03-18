@@ -106,14 +106,14 @@ Program : ExtDefList {
                      }
 	;
 ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2, $1, $2); }
-	| /*empty*/ { $$ = new_symbol("ExtDefList", @$.first_line, 0); }
+	| /*empty*/ { $$ = NULL; }
 	| error RC {}
 	;
 ExtDef : Specifier ExtDecList SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }
 	| Specifier SEMI { $$ = new_symbol("ExtDef", @$.first_line, 2, $1, $2); }
 	| Specifier FunDec SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }	
 	| Specifier FunDec CompSt { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }
-	| Specifier error LC {}
+	| Specifier error RC {}
 	;
 ExtDecList : VarDec { $$ = new_symbol("ExtDecList", @$.first_line, 1, $1); }
 	| VarDec COMMA ExtDecList { $$ = new_symbol("ExtDecList", @$.first_line, 3, $1, $2, $3); }
@@ -129,7 +129,7 @@ StructSpecifier : STRUCT OptTag LC DefList RC { $$ = new_symbol("StructSpecifier
 	| STRUCT error RC {}
 	;
 OptTag : ID { $$ = new_symbol("OptTag", @$.first_line, 1, $1); }
-	| /*empty*/ { $$ = new_symbol("OptTag", @$.first_line, 0); }
+	| /*empty*/ { $$ = NULL; }
 	;
 Tag : ID { $$ = new_symbol("Tag", @$.first_line, 1, $1); }
 	;
@@ -157,7 +157,7 @@ CompSt : LC DefList StmtList RC { $$ = new_symbol("CompSt", @$.first_line, 4, $1
 	| error LC {}
 	;
 StmtList : Stmt StmtList  { $$ = new_symbol("StmtList", @$.first_line, 2, $1, $2); }
-	| /*empty*/ { $$ = new_symbol("StmtList", @$.first_line, 0); }
+	| /*empty*/ { $$ = NULL; }
 	;
 Stmt : Exp SEMI  { $$ = new_symbol("Stmt", @$.first_line, 2, $1, $2); }
 	| CompSt  { $$ = new_symbol("Stmt", @$.first_line, 1, $1); }
@@ -172,7 +172,7 @@ Stmt : Exp SEMI  { $$ = new_symbol("Stmt", @$.first_line, 2, $1, $2); }
 
 /*Local Definitions*/
 DefList : Def DefList  { $$ = new_symbol("DefList", @$.first_line, 2, $1, $2); }
-	| /*empty*/{ $$ = new_symbol("DefList", @$.first_line, 0); }
+	| /*empty*/{ $$ = NULL; }
 	;
 Def : Specifier DecList SEMI { $$ = new_symbol("Def", @$.first_line, 3, $1, $2, $3); }
 	| Specifier error SEMI {}

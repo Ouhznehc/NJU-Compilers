@@ -12,7 +12,7 @@ Grammar
     6       | Specifier SEMI
     7       | Specifier FunDec SEMI
     8       | Specifier FunDec CompSt
-    9       | Specifier error LC
+    9       | Specifier error RC
 
    10 ExtDecList: VarDec
    11           | VarDec COMMA ExtDecList
@@ -118,8 +118,8 @@ Terminals, with rules where they appear
     RP <syntax> (272) 23 24 25 37 38 39 51 60 63 64 71
     LB <syntax> (273) 21 65 70
     RB <syntax> (274) 21 22 65 70
-    LC <syntax> (275) 9 14 30 31
-    RC <syntax> (276) 4 14 16 30
+    LC <syntax> (275) 14 30 31
+    RC <syntax> (276) 4 9 14 16 30
     STRUCT <syntax> (277) 14 15 16
     RETURN <syntax> (278) 36
     IF <syntax> (279) 37 38
@@ -282,7 +282,7 @@ State 7
     6       | Specifier . SEMI
     7       | Specifier . FunDec SEMI
     8       | Specifier . FunDec CompSt
-    9       | Specifier . error LC
+    9       | Specifier . error RC
 
     error  shift, and go to state 16
     SEMI   shift, and go to state 17
@@ -353,13 +353,13 @@ State 15
 
 State 16
 
-    9 ExtDef: Specifier error . LC
+    9 ExtDef: Specifier error . RC
    22 VarDec: error . RB
    25 FunDec: error . RP
 
     RP  shift, and go to state 24
     RB  shift, and go to state 25
-    LC  shift, and go to state 26
+    RC  shift, and go to state 26
 
 
 State 17
@@ -449,7 +449,7 @@ State 25
 
 State 26
 
-    9 ExtDef: Specifier error LC .
+    9 ExtDef: Specifier error RC .
 
     $default  reduce using rule 9 (ExtDef)
 

@@ -32,7 +32,6 @@ syntax_t* new_symbol(char* name, int lineno, int size, ...){
     ret->symbol.lineno = lineno;
 
     ret->symbol.size = size;
-    if(size == 0) return ret;
     ret->symbol.child = malloc(size * sizeof(syntax_t*));
     va_list args;
     va_start(args, size);
