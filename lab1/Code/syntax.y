@@ -7,6 +7,8 @@
     syntax_t *root;
     extern int error_no;
 
+	extern int yylineno;
+
     void yyerror(char const *msg){
         error_no = 1;
         printf("Error type B at line %d: %s.\n", yylineno, msg);
@@ -98,7 +100,7 @@
 
 /*High-level Definitions*/
 Program : ExtDefList { 
-                        $$ = new_symbol("Program", @$.first_line, 1, $1); root = $$; 
+                        $$ = new_symbol("Program", yylineno, 1, $1); root = $$; 
                      }
 	;
 ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2, $1, $2); }
