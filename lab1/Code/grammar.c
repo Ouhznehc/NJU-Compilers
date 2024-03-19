@@ -49,18 +49,16 @@ void print_syntax_tree(syntax_t* node, int indent) {
     for (int i = 0; i < indent; i++) printf("  ");
 
     if(node->type == TOKEN) {
-        if (node->token.type == TOKEN_ID || node->token.type == TOKEN_TYPE) printf("%s: %s", node->token.name, node->token.value.sval);
-        else if (node->token.type == TOKEN_INT) printf("%s: %u", node->token.name, node->token.value.ival);
-        else if (node->token.type == TOKEN_FLOAT) printf("%s: %f", node->token.name, node->token.value.fval);
-        else printf("%s", node->token.name);
-        printf("\n");
+        if (node->token.type == TOKEN_ID || node->token.type == TOKEN_TYPE) printf("%s: %s\n", node->token.name, node->token.value.sval);
+        else if (node->token.type == TOKEN_INT) printf("%s: %u\n", node->token.name, node->token.value.ival);
+        else if (node->token.type == TOKEN_FLOAT) printf("%s: %f\n", node->token.name, node->token.value.fval);
+        else printf("%s\n", node->token.name);
         return;
     }
 
     assert(node->type == SYMBOL);
     
-    printf("%s (%d)", node->symbol.name, node->symbol.lineno);
-    printf("\n");
+    printf("%s (%d)\n", node->symbol.name, node->symbol.lineno);
 
     for (int i = 0; i < node->symbol.size; i++)
         print_syntax_tree(node->symbol.child[i], indent + 1);
