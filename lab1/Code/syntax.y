@@ -6,10 +6,13 @@
 
     syntax_t *root;
     extern int error_no;
+	extern int error_lineno;
 
 	extern int yylineno;
 
     void yyerror(char const *msg){
+		if (yylineno == error_lineno) return;
+		error_lineno = yylineno;
         error_no = 1;
         printf("Error type B at line %d: %s.\n", yylineno, msg);
     }

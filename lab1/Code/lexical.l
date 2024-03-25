@@ -4,6 +4,7 @@
     #include "syntax.tab.h"
     #include "grammar.h"
     extern int error_no;
+    int error_lineno = 0;
 
     void report_error(const char* msg);
     value_t new_value(char* name, int type);
@@ -118,6 +119,8 @@ COMMENT_BLOCK       \/\*
 %%
 
 void report_error(const char* msg) {
+    if (yylineno == error_lineno) return;
+    error_lineno = yylineno;
     error_no = 1;
     printf("Error type A at line %d: { %s, \'%s\' }.\n", yylineno, msg, yytext);
 }

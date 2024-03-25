@@ -530,6 +530,7 @@ char *yytext;
     #include "syntax.tab.h"
     #include "grammar.h"
     extern int error_no;
+    int error_lineno = 0;
 
     void report_error(const char* msg);
     value_t new_value(char* name, int type);
@@ -541,9 +542,9 @@ char *yytext;
         yylloc.last_column = yycolumn + yyleng - 1; \
         yycolumn += yyleng;
 
-#line 545 "./lex.yy.c"
+#line 546 "./lex.yy.c"
 /*Tokens*/
-#line 547 "./lex.yy.c"
+#line 548 "./lex.yy.c"
 
 #define INITIAL 0
 
@@ -760,9 +761,9 @@ YY_DECL
 		}
 
 	{
-#line 67 "./lexical.l"
+#line 68 "./lexical.l"
 
-#line 766 "./lex.yy.c"
+#line 767 "./lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -832,168 +833,168 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 68 "./lexical.l"
+#line 69 "./lexical.l"
 { yycolumn = 1; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 69 "./lexical.l"
+#line 70 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("SEMI", TOKEN_CONST, yylineno, value); return SEMI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 70 "./lexical.l"
+#line 71 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("COMMA", TOKEN_CONST, yylineno, value); return COMMA; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 71 "./lexical.l"
+#line 72 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("ASSIGNOP", TOKEN_CONST, yylineno, value); return ASSIGNOP; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 72 "./lexical.l"
+#line 73 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RELOP", TOKEN_CONST, yylineno, value); return RELOP; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 73 "./lexical.l"
+#line 74 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("PLUS", TOKEN_CONST, yylineno, value); return PLUS; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 74 "./lexical.l"
+#line 75 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("MINUS", TOKEN_CONST, yylineno, value); return MINUS; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 75 "./lexical.l"
+#line 76 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("STAR", TOKEN_CONST, yylineno, value); return STAR; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 76 "./lexical.l"
+#line 77 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("DIV", TOKEN_CONST, yylineno, value); return DIV; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 77 "./lexical.l"
+#line 78 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("AND", TOKEN_CONST, yylineno, value); return AND; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 78 "./lexical.l"
+#line 79 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("OR", TOKEN_CONST, yylineno, value); return OR; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 79 "./lexical.l"
+#line 80 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("DOT", TOKEN_CONST, yylineno, value); return DOT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 80 "./lexical.l"
+#line 81 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("NOT", TOKEN_CONST, yylineno, value); return NOT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 82 "./lexical.l"
+#line 83 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_TYPE); yylval.syntax = new_token("TYPE", TOKEN_TYPE, yylineno, value); return TYPE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 84 "./lexical.l"
+#line 85 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("LP", TOKEN_CONST, yylineno, value); return LP; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 85 "./lexical.l"
+#line 86 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RP", TOKEN_CONST, yylineno, value); return RP; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 86 "./lexical.l"
+#line 87 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("LB", TOKEN_CONST, yylineno, value); return LB; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 87 "./lexical.l"
+#line 88 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RB", TOKEN_CONST, yylineno, value); return RB; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 88 "./lexical.l"
+#line 89 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("LC", TOKEN_CONST, yylineno, value); return LC; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 89 "./lexical.l"
+#line 90 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RC", TOKEN_CONST, yylineno, value); return RC; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 90 "./lexical.l"
+#line 91 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("STRUCT", TOKEN_CONST, yylineno, value); return STRUCT; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 91 "./lexical.l"
+#line 92 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RETURN", TOKEN_CONST, yylineno, value); return RETURN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 92 "./lexical.l"
+#line 93 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("IF", TOKEN_CONST, yylineno, value); return IF; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 93 "./lexical.l"
+#line 94 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("ELSE", TOKEN_CONST, yylineno, value); return ELSE; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 94 "./lexical.l"
+#line 95 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("WHILE", TOKEN_CONST, yylineno, value); return WHILE; }
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 95 "./lexical.l"
+#line 96 "./lexical.l"
 { /* no action and no return */ }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 97 "./lexical.l"
+#line 98 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_ID); yylval.syntax = new_token("ID", TOKEN_ID, yylineno, value); return ID; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 99 "./lexical.l"
+#line 100 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_INT_DEC); yylval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 100 "./lexical.l"
+#line 101 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_INT_OCT); yylval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 101 "./lexical.l"
+#line 102 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_INT_HEX); yylval.syntax = new_token("INT", TOKEN_INT, yylineno, value); return INT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 103 "./lexical.l"
+#line 104 "./lexical.l"
 { value_t value = new_value(yytext, TOKEN_FLOAT); yylval.syntax = new_token("FLOAT", TOKEN_FLOAT, yylineno, value); return FLOAT; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 105 "./lexical.l"
+#line 106 "./lexical.l"
 { char c = input(); while (c != '\n') c = input(); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 106 "./lexical.l"
+#line 107 "./lexical.l"
 { 
                         char curr = input(), prev = curr; 
                         while (prev != '*' || curr != '/') {
@@ -1007,15 +1008,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 117 "./lexical.l"
+#line 118 "./lexical.l"
 { report_error("Mysterious character"); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 118 "./lexical.l"
+#line 119 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1019 "./lex.yy.c"
+#line 1020 "./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2032,10 +2033,12 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 118 "./lexical.l"
+#line 119 "./lexical.l"
 
 
 void report_error(const char* msg) {
+    if (yylineno == error_lineno) return;
+    error_lineno = yylineno;
     error_no = 1;
     printf("Error type A at line %d: { %s, \'%s\' }.\n", yylineno, msg, yytext);
 }
