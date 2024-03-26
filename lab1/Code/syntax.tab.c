@@ -1598,7 +1598,7 @@ yyreduce:
 
   case 5:
 #line 113 "./syntax.y"
-                   {}
+                   { yyerrok; }
 #line 1603 "./syntax.tab.c"
     break;
 
