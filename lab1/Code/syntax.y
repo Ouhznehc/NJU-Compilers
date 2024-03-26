@@ -116,7 +116,10 @@ ExtDef : Specifier ExtDecList SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3,
 	| Specifier SEMI { $$ = new_symbol("ExtDef", @$.first_line, 2, $1, $2); }
 	| Specifier FunDec SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }	
 	| Specifier FunDec CompSt { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }
-	| Specifier error RC { yyerrok; }
+	| error RC { yyerrok; }
+	| error RB { yyerrok; }
+	| error RP { yyerrok; }
+	| error SEMI { yyerrok; }
 	;
 ExtDecList : VarDec { $$ = new_symbol("ExtDecList", @$.first_line, 1, $1); }
 	| VarDec COMMA ExtDecList { $$ = new_symbol("ExtDecList", @$.first_line, 3, $1, $2, $3); }
@@ -124,74 +127,92 @@ ExtDecList : VarDec { $$ = new_symbol("ExtDecList", @$.first_line, 1, $1); }
 
 
 /*Specifiers*/
-Specifier : TYPE { $$ = new_symbol("Specifier", @$.first_line, 1, $1); }
+Specifier 
+	: TYPE { $$ = new_symbol("Specifier", @$.first_line, 1, $1); }
 	| StructSpecifier { $$ = new_symbol("Specifier", @$.first_line, 1, $1); }
 	;
-StructSpecifier : STRUCT OptTag LC DefList RC { $$ = new_symbol("StructSpecifier", @$.first_line, 5, $1, $2, $3, $4, $5); }
+StructSpecifier 
+	: STRUCT OptTag LC DefList RC { $$ = new_symbol("StructSpecifier", @$.first_line, 5, $1, $2, $3, $4, $5); }
 	| STRUCT Tag { $$ = new_symbol("StructSpecifier", @$.first_line, 2, $1, $2); }
 	| STRUCT error RC { yyerrok; }
 	;
-OptTag : ID { $$ = new_symbol("OptTag", @$.first_line, 1, $1); }
+OptTag 
+	: ID { $$ = new_symbol("OptTag", @$.first_line, 1, $1); }
 	| /*empty*/ { $$ = NULL; }
 	;
-Tag : ID { $$ = new_symbol("Tag", @$.first_line, 1, $1); }
+Tag 
+	: ID { $$ = new_symbol("Tag", @$.first_line, 1, $1); }
 	;
 
 
 /*Declarators*/
-VarDec : ID { $$ = new_symbol("VarDec", @$.first_line, 1, $1); }
+VarDec 
+	: ID { $$ = new_symbol("VarDec", @$.first_line, 1, $1); }
 	| VarDec LB INT RB { $$ = new_symbol("VarDec", @$.first_line, 4, $1, $2, $3, $4); }
-	| error RB { yyerrok; }
+	| VarDec LB error RB { yyerrok; }
 	;
-FunDec : ID LP VarList RP { $$ = new_symbol("FunDec", @$.first_line, 4, $1, $2, $3, $4); }
+FunDec 
+	: ID LP VarList RP { $$ = new_symbol("FunDec", @$.first_line, 4, $1, $2, $3, $4); }
 	| ID LP RP { $$ = new_symbol("FunDec", @$.first_line, 3, $1, $2, $3); }
 	| error RP { yyerrok; }
 	;
-VarList : ParamDec COMMA VarList { $$ = new_symbol("VarList", @$.first_line, 3, $1, $2, $3); }
+VarList 
+	: ParamDec COMMA VarList { $$ = new_symbol("VarList", @$.first_line, 3, $1, $2, $3); }
 	| ParamDec { $$ = new_symbol("VarList", @$.first_line, 1, $1); }
 	| error COMMA { yyerrok; }
 	;
-ParamDec : Specifier VarDec { $$ = new_symbol("ParamDec", @$.first_line, 2, $1, $2); }
+ParamDec 
+	: Specifier VarDec { $$ = new_symbol("ParamDec", @$.first_line, 2, $1, $2); }
 	;
 
 
 /*Statements*/
-CompSt : LC DefList StmtList RC { $$ = new_symbol("CompSt", @$.first_line, 4, $1, $2, $3, $4); }
+CompSt 
+	: LC DefList StmtList RC { $$ = new_symbol("CompSt", @$.first_line, 4, $1, $2, $3, $4); }
 	| error RC { yyerrok; }
 	;
-StmtList : Stmt StmtList  { $$ = new_symbol("StmtList", @$.first_line, 2, $1, $2); }
+StmtList 
+	: Stmt StmtList  { $$ = new_symbol("StmtList", @$.first_line, 2, $1, $2); }
 	| /*empty*/ { $$ = NULL; }
 	;
-Stmt : Exp SEMI  { $$ = new_symbol("Stmt", @$.first_line, 2, $1, $2); }
+Stmt 
+	: Exp SEMI  { $$ = new_symbol("Stmt", @$.first_line, 2, $1, $2); }
 	| CompSt  { $$ = new_symbol("Stmt", @$.first_line, 1, $1); }
 	| RETURN Exp SEMI  { $$ = new_symbol("Stmt", @$.first_line, 3, $1, $2, $3); }
 	| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_symbol("Stmt", @$.first_line, 5, $1, $2, $3, $4, $5); }
 	| IF LP Exp RP Stmt ELSE Stmt { $$ = new_symbol("Stmt", @$.first_line, 7, $1, $2, $3, $4, $5, $6, $7); }
 	| WHILE LP Exp RP Stmt  { $$ = new_symbol("Stmt", @$.first_line, 5, $1, $2, $3, $4, $5); }
 	| error SEMI { yyerrok; }
+	| IF error RP { yyerrok; }
+	| WHILE error RP { yyerrok; }
 	| Exp error SEMI { yyerrok; }
 	;
 
 
 /*Local Definitions*/
-DefList : Def DefList  { $$ = new_symbol("DefList", @$.first_line, 2, $1, $2); }
+DefList 
+	: Def DefList  { $$ = new_symbol("DefList", @$.first_line, 2, $1, $2); }
 	| /*empty*/{ $$ = NULL; }
 	;
-Def : Specifier DecList SEMI { $$ = new_symbol("Def", @$.first_line, 3, $1, $2, $3); }
+Def 
+	: Specifier DecList SEMI { $$ = new_symbol("Def", @$.first_line, 3, $1, $2, $3); }
 	| Specifier error SEMI { yyerrok; }
 	;
-DecList : Dec { $$ = new_symbol("DecList", @$.first_line, 1, $1); } 
+DecList 
+	: Dec { $$ = new_symbol("DecList", @$.first_line, 1, $1); } 
 	| Dec COMMA DecList { $$ = new_symbol("DecList", @$.first_line, 3, $1, $2, $3); } 
 	| error COMMA { yyerrok; }
 	;
-Dec : VarDec { $$ = new_symbol("Dec", @$.first_line, 1, $1); } 
+Dec 
+	: VarDec { $$ = new_symbol("Dec", @$.first_line, 1, $1); } 
 	| VarDec ASSIGNOP Exp { $$ = new_symbol("Dec", @$.first_line, 3, $1, $2, $3); }
 	| error RP { yyerrok; }
 	;
 
 
 /*Expressions*/
-Exp : Exp ASSIGNOP Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
+Exp 
+	: Exp ASSIGNOP Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
 	| Exp AND Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
 	| Exp OR Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
 	| Exp RELOP Exp { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); }
@@ -210,9 +231,12 @@ Exp : Exp ASSIGNOP Exp  { $$ = new_symbol("Exp", @$.first_line, 3, $1, $2, $3); 
 	| INT  { $$ = new_symbol("Exp", @$.first_line, 1, $1); }
 	| FLOAT  { $$ = new_symbol("Exp", @$.first_line, 1, $1); }
 	| Exp LB error RB { yyerrok; }
+	| ID LP error RP { yyerrok; }
+	| LP error RP { yyerrok; }
 	| error RP { yyerrok; }
 	;
-Args : Exp COMMA Args { $$ = new_symbol("Args", @$.first_line, 3, $1, $2, $3); }
+Args 
+	: Exp COMMA Args { $$ = new_symbol("Args", @$.first_line, 3, $1, $2, $3); }
 	| Exp { $$ = new_symbol("Args", @$.first_line, 1, $1); } 
 	;
 
