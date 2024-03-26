@@ -1628,7 +1628,7 @@ yyreduce:
 
   case 10:
 #line 119 "./syntax.y"
-                             {}
+                             { yyerrok; }
 #line 1633 "./syntax.tab.c"
     break;
 
@@ -1670,7 +1670,7 @@ yyreduce:
 
   case 17:
 #line 132 "./syntax.y"
-                          {}
+                          { yyerrok; }
 #line 1675 "./syntax.tab.c"
     break;
 
@@ -1706,7 +1706,7 @@ yyreduce:
 
   case 23:
 #line 144 "./syntax.y"
-                   {}
+                   { yyerrok; }
 #line 1711 "./syntax.tab.c"
     break;
 
@@ -1724,7 +1724,7 @@ yyreduce:
 
   case 26:
 #line 148 "./syntax.y"
-                   {}
+                   { yyerrok; }
 #line 1729 "./syntax.tab.c"
     break;
 
@@ -1742,7 +1742,7 @@ yyreduce:
 
   case 29:
 #line 152 "./syntax.y"
-                      {}
+                      { yyerrok; }
 #line 1747 "./syntax.tab.c"
     break;
 
@@ -1760,7 +1760,7 @@ yyreduce:
 
   case 32:
 #line 160 "./syntax.y"
-                   {}
+                   { yyerrok; }
 #line 1765 "./syntax.tab.c"
     break;
 
@@ -1814,13 +1814,13 @@ yyreduce:
 
   case 41:
 #line 171 "./syntax.y"
-                     {}
+                     { yyerrok; }
 #line 1819 "./syntax.tab.c"
     break;
 
   case 42:
 #line 172 "./syntax.y"
-                         {}
+                         { yyerrok; }
 #line 1825 "./syntax.tab.c"
     break;
 
@@ -1844,7 +1844,7 @@ yyreduce:
 
   case 46:
 #line 181 "./syntax.y"
-                               {}
+                               { yyerrok; }
 #line 1849 "./syntax.tab.c"
     break;
 
@@ -1862,7 +1862,7 @@ yyreduce:
 
   case 49:
 #line 185 "./syntax.y"
-                      {}
+                      { yyerrok; }
 #line 1867 "./syntax.tab.c"
     break;
 
@@ -1880,7 +1880,7 @@ yyreduce:
 
   case 52:
 #line 189 "./syntax.y"
-                   {}
+                   { yyerrok; }
 #line 1885 "./syntax.tab.c"
     break;
 
@@ -1994,13 +1994,13 @@ yyreduce:
 
   case 71:
 #line 212 "./syntax.y"
-                          {}
+                          { yyerrok; }
 #line 1999 "./syntax.tab.c"
     break;
 
   case 72:
 #line 213 "./syntax.y"
-                   {}
+                   { yyerrok; }
 #line 2005 "./syntax.tab.c"
     break;
 
