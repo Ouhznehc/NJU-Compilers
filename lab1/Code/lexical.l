@@ -61,6 +61,7 @@ FLOAT_SCI           ({DIGIT}*{DOT}{DIGIT}+|{DIGIT}+{DOT})[eE][+-]?{DIGIT}+
 FLOAT               {FLOAT_NRM}|{FLOAT_SCI}
 
 ID                  {LETTER_}{CHAR}*
+INVALID_TOKEN       {DIGIT}{CHAR}*
 
 COMMENT_LINE        \/\/
 COMMENT_BLOCK       \/\*
@@ -114,7 +115,7 @@ COMMENT_BLOCK       \/\*
                             }
                         } 
                     }
-
+{INVALID_TOKEN}     { report_error("Invalid token"); }
 .                   { report_error("Mysterious character"); }
 %%
 
