@@ -123,6 +123,7 @@ ExtDef : Specifier ExtDecList SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3,
 	;
 ExtDecList : VarDec { $$ = new_symbol("ExtDecList", @$.first_line, 1, $1); }
 	| VarDec COMMA ExtDecList { $$ = new_symbol("ExtDecList", @$.first_line, 3, $1, $2, $3); }
+	| error { yyerrok; }
 	;
 
 
@@ -130,6 +131,7 @@ ExtDecList : VarDec { $$ = new_symbol("ExtDecList", @$.first_line, 1, $1); }
 Specifier 
 	: TYPE { $$ = new_symbol("Specifier", @$.first_line, 1, $1); }
 	| StructSpecifier { $$ = new_symbol("Specifier", @$.first_line, 1, $1); }
+	| error { yyerrok; }
 	;
 StructSpecifier 
 	: STRUCT OptTag LC DefList RC { $$ = new_symbol("StructSpecifier", @$.first_line, 5, $1, $2, $3, $4, $5); }
@@ -139,9 +141,11 @@ StructSpecifier
 OptTag 
 	: ID { $$ = new_symbol("OptTag", @$.first_line, 1, $1); }
 	| /*empty*/ { $$ = NULL; }
+	| error { yyerrok; }
 	;
 Tag 
 	: ID { $$ = new_symbol("Tag", @$.first_line, 1, $1); }
+	| error { yyerrok; }
 	;
 
 
@@ -163,6 +167,7 @@ VarList
 	;
 ParamDec 
 	: Specifier VarDec { $$ = new_symbol("ParamDec", @$.first_line, 2, $1, $2); }
+	| error { yyerrok; }
 	;
 
 
@@ -174,6 +179,7 @@ CompSt
 StmtList 
 	: Stmt StmtList  { $$ = new_symbol("StmtList", @$.first_line, 2, $1, $2); }
 	| /*empty*/ { $$ = NULL; }
+	| error { yyerrok; }
 	;
 Stmt 
 	: Exp SEMI  { $$ = new_symbol("Stmt", @$.first_line, 2, $1, $2); }
@@ -193,6 +199,7 @@ Stmt
 DefList 
 	: Def DefList  { $$ = new_symbol("DefList", @$.first_line, 2, $1, $2); }
 	| /*empty*/{ $$ = NULL; }
+	| error { yyerrok; }
 	;
 Def 
 	: Specifier DecList SEMI { $$ = new_symbol("Def", @$.first_line, 3, $1, $2, $3); }
@@ -238,6 +245,7 @@ Exp
 Args 
 	: Exp COMMA Args { $$ = new_symbol("Args", @$.first_line, 3, $1, $2, $3); }
 	| Exp { $$ = new_symbol("Args", @$.first_line, 1, $1); } 
+	| error { yyerrok; }
 	;
 
 %%
