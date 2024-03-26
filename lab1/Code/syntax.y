@@ -190,6 +190,7 @@ Stmt
 	| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_symbol("Stmt", @$.first_line, 5, $1, $2, $3, $4, $5); }
 	| IF LP Exp RP Stmt ELSE Stmt { $$ = new_symbol("Stmt", @$.first_line, 7, $1, $2, $3, $4, $5, $6, $7); }
 	| WHILE LP Exp RP Stmt  { $$ = new_symbol("Stmt", @$.first_line, 5, $1, $2, $3, $4, $5); }
+	| error SEMI { $$ = NULL; }
 	| error { $$ = NULL; }
 	;
 
