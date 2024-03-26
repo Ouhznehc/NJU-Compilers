@@ -111,6 +111,7 @@ Program : ExtDefList {
 ExtDefList : ExtDef ExtDefList { $$ = new_symbol("ExtDefList", @$.first_line, 2, $1, $2); }
 	| /*empty*/ { $$ = NULL; }
 	| error RC { yyerrok; }
+	| error { $$ = NULL; }
 	;
 ExtDef : Specifier ExtDecList SEMI { $$ = new_symbol("ExtDef", @$.first_line, 3, $1, $2, $3); }
 	| Specifier SEMI { $$ = new_symbol("ExtDef", @$.first_line, 2, $1, $2); }
