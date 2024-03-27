@@ -12,10 +12,3 @@ This is NJU **Principles and Techniques of Compilers** Spring 2024 by Chang Xu.
 + [**SPIM 8.0**](http://spimsimulator.sourceforge.net/)
 + [**Python 2.7**](https://python.org)
 + [**Python 3.8**](https://python.org)
-
-## Stages
-
-1. **Lexical** Analysis.
-   + Using **GNU Flex**, code at `lexical.l`.
-2. **Syntax** Analysis.
-   + Using **GNU Bison**, code at `syntax.y`.
