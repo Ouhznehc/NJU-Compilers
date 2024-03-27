@@ -1,6 +1,6 @@
 # NJU-Compilers
 
-A Compiler of one kine of C-like language (**CMM**), we can see this language as **C--** with respect to **C++**.
+This is NJU **Principles and Techniques of Compilers** Spring 2024 by Chang Xu.
 
 ## Environment
 
