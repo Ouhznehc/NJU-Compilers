@@ -146,6 +146,7 @@ OptTag
 	;
 Tag 
 	: ID { $$ = new_symbol("Tag", @$.first_line, 1, $1); }
+	| error { $$ = NULL; }
 	;
 
 
