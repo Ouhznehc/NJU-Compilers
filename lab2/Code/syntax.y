@@ -14,7 +14,7 @@
 		if (yylineno == error_lineno) return;
 		error_lineno = yylineno;
         error_no = 1;
-        printf("Error type B at line %d: %s.\n", yylineno, msg);
+        printf("Error type B at Line %d: %s.\n", yylineno, msg);
     }
 	
 %}

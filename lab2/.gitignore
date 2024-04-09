@@ -1,0 +1,4 @@
+report.pdf
+Code/*.o
+Code/*.origin
+Code/*.output
