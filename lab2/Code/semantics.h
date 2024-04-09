@@ -2,7 +2,7 @@
 #define __SEMANTICS_H__
 
 #include "grammar.h"
-
+#include <stdbool.h>
 
 typedef enum {
     UNDEFINED_VAR,              // Undefined Variable
@@ -27,6 +27,11 @@ typedef enum {
     CONFLICT_FUNC,           // Conflict between Function declaration and definition
 } SemanticErrorType;
 
+struct type_t {
+    int kind;
+};
+typedef struct type_t type_t;
+
 void semantic_error(SemanticErrorType error, int lineno, char* msg);
 
 /* High-level Definitions */
@@ -36,7 +41,7 @@ void ExtDef(syntax_t* node);
 void ExtDecList(syntax_t* node); 
 
 /* Specifiers */
-void Specifier(syntax_t* node); 
+type_t* Specifier(syntax_t* node); 
 void StructSpecifier(syntax_t* node); 
 void OptTag(syntax_t* node); 
 void Tag(syntax_t* node); 

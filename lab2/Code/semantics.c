@@ -67,18 +67,36 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
     }
 }
 
+bool symcmp(syntax_t* node, char* name) {
+    return strcmp(node->symbol.name, name) == 0;
+}
+
+
 /* 
 Program:    
     | ExtDefList
 */
-void Program(syntax_t* node) { return; }
+void Program(syntax_t* node) { 
+    syntax_t** childs = node->symbol.child;
+
+    // Program -> ExtDefList
+    ExtDefList(childs[0]);
+ }
 
 /*
 ExtDefList:         
     | ExtDef ExtDefList                       
-    | epsilon
+    | empty
 */ 
-void ExtDefList(syntax_t* node) { return; }
+void ExtDefList(syntax_t* node) {
+    // empty
+    if (node == NULL) return;
+
+    // ExtDefList ->  ExtDef ExtDefList
+    syntax_t** childs = node->symbol.child;
+    ExtDef(node->symbol.child[0]);
+    ExtDefList(node->symbol.child[1]);
+}
 
 /*
 ExtDef:
@@ -86,21 +104,43 @@ ExtDef:
     | Specifier SEMI
     | Specifier FunDec CompSt
 */
-void ExtDef(syntax_t* node) { return; } 
+void ExtDef(syntax_t* node) { 
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+
+    type_t* specifier = Specifier(childs[0]);
+
+    // ExtDef -> Specifier ExtDecList SEMI
+    if (symcmp(childs[1], "ExtDecList")) {
+        ExtDecList(childs[1]);
+    }
+    // ExtDef -> Specifier FunDec CompSt
+    else if (symcmp(childs[1], "FunDec")) {
+        FunDec(childs[1]);
+        CompSt(childs[2]);
+    }
+    // ExtDef -> Specifier SEMI
+    else {
+        /* do nothing */
+    }
+} 
 
 /*
 ExtDecList:
     | VarDec
     | VarDec COMMA ExtDecList
 */
-void ExtDecList(syntax_t* node) { return; } 
+void ExtDecList(syntax_t* node) {
+    assert(node != NULL);
+
+} 
 
 /*
 Specifier:
     | TYPE
     | StructSpecifier
 */
-void Specifier(syntax_t* node) { return; } 
+type_t* Specifier(syntax_t* node) { return NULL; } 
 
 /*
 StructSpecifier:
@@ -112,7 +152,7 @@ void StructSpecifier(syntax_t* node) { return; }
 /*
 OptTag:
     | ID
-    | epsilon
+    | empty
 */
 void OptTag(syntax_t* node) { return; } 
 
@@ -158,7 +198,7 @@ void CompSt(syntax_t* node) { return; }
 /*
 StmtList:
     | Stmt StmtList
-    | epsilon
+    | empty
 */
 void StmtList(syntax_t* node) { return; } 
 
@@ -175,7 +215,7 @@ void Stmt(syntax_t* node) { return; }
 /*
 DefList:
     | Def DefList
-    | epsilon
+    | empty
 */
 void DefList(syntax_t* node) { return; } 
 
