@@ -1,6 +1,71 @@
 #include "semantics.h"
 
-
+void semantic_error(SemanticErrorType error, int lineno, char* msg) {
+    switch (error) {
+        case UNDEFINED_VAR:
+            printf("Error type 1 at Line %d: Undefined variable '%s'.\n", lineno, msg);
+            break;
+        case UNDEFINED_FUNC:
+            printf("Error type 2 at Line %d: Undefined function '%s'.\n", lineno, msg);
+            break;
+        case DUPLICATE_VAR:
+            printf("Error type 3 at Line %d: Duplicate variable '%s'.\n", lineno, msg);
+            break;
+        case DUPLICATE_FUNC:
+            printf("Error type 4 at Line %d: Duplicate function '%s'.\n", lineno, msg);
+            break;
+        case MISMATCHED_ASSIGN:
+            printf("Error type 5 at Line %d: Type mismatch in assignment of '%s'.\n", lineno, msg);
+            break;
+        case RVALUE_ASSIGN:
+            printf("Error type 6 at Line %d: Assignment to non-variable '%s'.\n", lineno, msg);
+            break;
+        case MISMATCHED_OP:
+            printf("Error type 7 at Line %d: Operator applied to incompatible types '%s'.\n", lineno, msg);
+            break;
+        case MISMATCHED_RETURN:
+            printf("Error type 8 at Line %d: Return type mismatch '%s'.\n", lineno, msg);
+            break;
+        case MISMATCHED_FUNC_ARG:
+            printf("Error type 8 at Line %d: Function '%s' called with incorrect arguments.\n", lineno, msg);
+            break;
+        case NOT_A_ARRAY:
+            printf("Error type 10 at Line %d: Variable '%s' is not an array.\n", lineno, msg);
+            break;
+        case NOT_A_FUNC:
+            printf("Error type 11 at Line %d: Variable '%s' is not a function.\n", lineno, msg);
+            break;
+        case NOT_A_INDEX:
+            printf("Error type 12 at Line %d: Array index in '%s' is not Int.\n", lineno, msg);
+            break;
+        case NOT_A_STRUCT:
+            printf("Error type 13 at Line %d: Variable '%s' is not a struct.\n", lineno, msg);
+            break;
+        case UNDEFINED_FIELD:
+            printf("Error type 14 at Line %d: Undefined field '%s' in Struct.\n", lineno, msg);
+            break;
+        case DUPLICATE_FIELD:
+            printf("Error type 15 at Line %d: Duplicate field '%s' in Struct.\n", lineno, msg);
+            break;
+        case INITIALIZE_FIELD:
+            printf("Error type 15 at Line %d: Field '%s' cannot be initialized directly.\n", lineno, msg);
+            break;
+        case DUPLICATED_STRUCT:
+            printf("Error type 16 at Line %d: Struct name '%s' is duplicated.\n", lineno, msg);
+            break;
+        case UNDEFINED_STRUCT:
+            printf("Error type 17 at Line %d: Undefined struct '%s'.\n", lineno, msg);
+            break;
+        case DECLARED_NOT_DEFINED_FUNC:
+            printf("Error type 18 at Line %d: Function '%s' declared but not defined.\n", lineno, msg);
+            break;
+        case CONFLICT_FUNC:
+            printf("Error type 19 at Line %d: Conflict between function declaration and definition '%s'.\n", lineno, msg);
+            break;
+        default:
+            printf("Error at Line %d: Unknown semantic error.\n", lineno);
+    }
+}
 
 /* 
 Program:    

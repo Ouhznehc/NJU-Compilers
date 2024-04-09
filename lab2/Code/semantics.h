@@ -5,29 +5,29 @@
 
 
 typedef enum {
-    UNDEFINED_VAR               = 1,    // Undefined Variable
-    UNDEFINED_FUNC              = 2,    // Undefined Function
-    DUPLICATE_VAR               = 3,    // Duplicate Variable
-    DUPLICATE_FUNC              = 4,    // Duplicate Function
-    MISMATCHED_ASSIGN           = 5,    // Type mismatched for assignment.
-    RVALUE_ASSIGN               = 6,    // The left-hand side of an assignment must be a variable.
-    MISMATCHED_OP               = 7,    // Type mismatched for operands.
-    MISMATCHED_RETURN           = 8,    // Type mismatched for return.
-    MISMATCHED_FUNC_ARG         = 9,    // Function is not applicable for arguments
-    NOT_A_ARRAY                 = 10,   // Variable is not a Array
-    NOT_A_FUNC                  = 11,   // Variable is not a Function
-    NOT_A_INDEX                 = 12,   // Array index is not a Integer
-    NOT_A_STRUCT                = 13,   // Illegal use of "."(Variable is not a Struct)
-    UNDEFINED_FIELD             = 14,   // Struct field undefined
-    DUPLICATE_FIELD             = 15,   // Duplicate field
-    INITIALIZE_FIELD            = 15,   // Initialize field
-    DUPLICATED_STRUCT           = 16,   // Duplicated Struct name
-    UNDEFINED_STRUCT            = 17,   // Undefined Struct
-    DECLARED_NOT_DEFINED_FUNC   = 18,   // Function declared but not defined
-    CONFLICTING_FUNC            = 19,   // Conflicting between Function declaration and definition
-    
+    UNDEFINED_VAR,              // Undefined Variable
+    UNDEFINED_FUNC,             // Undefined Function
+    DUPLICATE_VAR,              // Duplicate Variable
+    DUPLICATE_FUNC,             // Duplicate Function
+    MISMATCHED_ASSIGN,          // Type mismatched for assignment.
+    RVALUE_ASSIGN,              // The left-hand side of an assignment must be a variable.
+    MISMATCHED_OP,              // Type mismatched for operands.
+    MISMATCHED_RETURN,          // Type mismatched for return.
+    MISMATCHED_FUNC_ARG,        // Function is not applicable for arguments
+    NOT_A_ARRAY,                // Variable is not a Array
+    NOT_A_FUNC,                 // Variable is not a Function
+    NOT_A_INDEX,                // Array index is not Int
+    NOT_A_STRUCT,               // Illegal use of "."(Variable is not a Struct)
+    UNDEFINED_FIELD,            // Struct field undefined
+    DUPLICATE_FIELD,            // Struct field duplicate
+    INITIALIZE_FIELD,           // Initialize Struct field
+    DUPLICATED_STRUCT,          // Duplicated Struct name
+    UNDEFINED_STRUCT,           // Undefined Struct name
+    DECLARED_NOT_DEFINED_FUNC,  // Function declared but not defined
+    CONFLICT_FUNC,           // Conflict between Function declaration and definition
 } SemanticErrorType;
 
+void semantic_error(SemanticErrorType error, int lineno, char* msg);
 
 /* High-level Definitions */
 void Program(syntax_t* node); 
