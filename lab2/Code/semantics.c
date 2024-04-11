@@ -625,7 +625,7 @@ Exp:
     | INT
     | FLOAT
 */
-type_t* Exp(syntax_t* node) { return; } 
+type_t* Exp(syntax_t* node) { return NULL; } 
 
 /*
 Args:
