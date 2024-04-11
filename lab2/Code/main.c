@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     }
     yyrestart(f);
     yyparse();
-    if(!error_no) print_syntax_tree(root, 0);
+    // if(!error_no) print_syntax_tree(root, 0);
+    if(!error_no) Program(root);
     return 0;
 }

@@ -1,5 +1,12 @@
 #include "semantics.h"
 
+// VarScope is the scope of Var Name: such as 'instace' in ```struct example instance;```
+// StructScope is the scope of Struct definition name: such as 'example' in ```struct example {int a;};```
+item_t* VarScope[1024] = {NULL}, *StructScope[1024] = {NULL};
+int VarTop = 0, StructTop = 0;
+// the counter of anonymous struct
+int AnonymousStruct = 0;
+
 void semantic_error(SemanticErrorType error, int lineno, char* msg) {
     switch (error) {
         case UNDEFINED_VAR:
