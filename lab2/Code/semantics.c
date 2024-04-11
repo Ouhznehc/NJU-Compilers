@@ -24,7 +24,7 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
             printf("Error type 7 at Line %d: Operator applied to incompatible types '%s'.\n", lineno, msg);
             break;
         case MISMATCHED_RETURN:
-            printf("Error type 8 at Line %d: Return type mismatch '%s'.\n", lineno, msg);
+            printf("Error type 8 at Line %d: Return type mismatch.\n", lineno);
             break;
         case MISMATCHED_FUNC_ARG:
             printf("Error type 8 at Line %d: Function '%s' called with incorrect arguments.\n", lineno, msg);
@@ -281,12 +281,16 @@ void ExtDef(syntax_t* node) {
     else if (symcmp(childs[1], "FunDec")) {
         // ExtDef -> Specifier FunDec CompSt
         if (symcmp(childs[2], "CompSt")) {
+            StackPush(VarStack);
             FunDec(childs[1], specifier, FuncDef);
             CompSt(childs[2], specifier);
+            StackPop(VarStack);
         }
         // ExtDef -> Specifier FunDec SEMI
         else if (symcmp(childs[2], "SEMI")) {
+            StackPush(VarStack);
             FunDec(childs[1], specifier, FuncDec);
+            StackPop(VarStack);
         }
     }
     // ExtDef -> Specifier SEMI
@@ -445,8 +449,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     else {
         /*do nothing*/
     }
-    item_t* funcDec = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDec, CurScope);
-    item_t* funcDef = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDef, CurScope);
+    item_t* funcDec = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDec, AllScope);
+    item_t* funcDef = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDef, AllScope);
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
     type_t* funcDefType = funcDef == NULL ? NULL : funcDef->type;
     if (type == FuncDec) {
@@ -467,8 +471,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     }
     else assert(0);
 
-    if (type == FuncDec && funcDec == NULL) InsertScopeItem(VarScope, VarTop, func);
-    else if (type == FuncDef) InsertScopeItem(VarScope, VarTop, func);
+    if (type == FuncDec && funcDec == NULL) InsertScopeItem(VarScope, 0, func);
+    else if (type == FuncDef) InsertScopeItem(VarScope, 0, func);
     else return;
 } 
 
@@ -479,28 +483,57 @@ VarList:
 */
 void VarList(syntax_t* node, item_t* func) {
     assert(node != NULL);
-    StackPush(VarStack);
-
+    syntax_t** childs = node->symbol.child;
+    item_t* param = ParamDec(childs[0]);
+    if (func->type->function.argv == NULL) 
+        func->type->function.argv = param;
+    else {
+        field_t* cur = func->type->function.argv;
+        while (cur->next != NULL) cur = cur->next;
+        cur->next = param;
+    }
+    func->type->function.argc++;
+    //VarList -> ParamDec COMMA VarList
+    if(symcmp(childs[3], "VarList")) VarList(childs[3], func);
 } 
 
 /*
 ParamDec:
     | Specifier VarDec
 */
-item_t* ParamDec(syntax_t* node) { return NULL; } 
+item_t* ParamDec(syntax_t* node) {
+    syntax_t** childs = node->symbol.child;
+    type_t* specifier = Specifier(childs[0]);
+    item_t* var = VarDec(childs[1], specifier);
+    if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+        semantic_error(DUPLICATE_VAR, node->lineno, var->name);
+    else
+        InsertScopeItem(VarScope, VarTop, var);
+    return var;
+} 
 
 /* 
 CompSt:
     | LC DefList StmtList RC
 */
-void CompSt(syntax_t* node, type_t* specifier) { return; }
+void CompSt(syntax_t* node, type_t* specifier) { 
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    DefList(childs[1], NULL);
+    StmtList(childs[2], specifier);
+}
 
 /*
 StmtList:
     | Stmt StmtList
     | empty
 */
-void StmtList(syntax_t* node) { return; } 
+void StmtList(syntax_t* node, type_t* specifier) {
+    if (node == NULL) return;
+    syntax_t** childs = node->symbol.child;
+    Stmt(childs[0], specifier);
+    StmtList(childs[1], specifier);
+} 
 
 /*
 Stmt:
@@ -508,9 +541,41 @@ Stmt:
     | CompSt
     | RETURN Exp SEMI
     | IF LP Exp RP Stmt ELSE Stmt
+    | IF LP Exp RP Stmt
     | WHILE LP Exp RP Stmt
 */
-void Stmt(syntax_t* node) { return; }
+void Stmt(syntax_t* node, type_t* specifier) {
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+
+    // Stmt -> Exp SEMI
+    if (symcmp(childs[0], "Exp")) Exp(childs[0]);
+    // Stmt -> CompSt
+    else if (symcmp(childs[0], "CompSt")) {
+        StackPush(VarStack);
+        CompSt(childs[0], specifier);
+        StackPop(VarStack);
+    }
+    // Stmt -> RETURN Exp SEMI
+    else if (symcmp(childs[0], "RETURN")) {
+        type_t* exp = Exp(childs[1]);
+        if(!typecmp(exp, specifier))
+            semantic_error(MISMATCHED_RETURN, childs[0]->lineno, "");
+    }
+    // Stmt -> IF LP Exp RP Stmt
+    else if (symcmp(childs[0], "IF")) {
+        Exp(childs[2]);
+        Stmt(childs[4], specifier);
+        // Stmt -> IF LP Exp RP Stmt ELSE Stmt
+        if (symcmp(childs[5], "ELSE"))
+            Stmt(childs[6], specifier);
+    }
+    // Stmt -> WHILE LP Exp RP Stmt
+    else if (symcmp(childs[0], "WHILE")) {
+        Exp(childs[2]);
+        Stmt(childs[4], specifier);
+    }
+}
 
 /*
 DefList:
@@ -518,7 +583,7 @@ DefList:
     | empty
 */
 void DefList(syntax_t* node, type_t* record) { 
-
+    if (node == NULL) return;
 } 
 
 /*
@@ -560,7 +625,7 @@ Exp:
     | INT
     | FLOAT
 */
-void Exp(syntax_t* node) { return; } 
+type_t* Exp(syntax_t* node) { return; } 
 
 /*
 Args:

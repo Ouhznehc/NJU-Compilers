@@ -120,8 +120,8 @@ item_t* ParamDec(syntax_t* node);
 
 /* Statements */
 void CompSt(syntax_t* node, type_t* specifier); 
-void StmtList(syntax_t* node); 
-void Stmt(syntax_t* node);
+void StmtList(syntax_t* node, type_t* specifier); 
+void Stmt(syntax_t* node, type_t* specifier);
 
 /* Local Definitions */
 void DefList(syntax_t* node, type_t* record); 
@@ -130,7 +130,7 @@ void Dec(syntax_t* node);
 void DecList(syntax_t* node); 
 
 /* Expressions */
-void Exp(syntax_t* node); 
+type_t* Exp(syntax_t* node); 
 void Args(syntax_t* node); 
 
 #endif
