@@ -627,6 +627,7 @@ Dec:
 */
 void Dec(syntax_t* node, type_t* specifier, type_t* record) {
     assert(node != NULL);
+    printf("=============\n");
     syntax_t** childs = node->symbol.child;
     // Dec -> VarDec ASSIGNOP Exp
     if (symcmp(childs[1], "ASSIGNOP")){
