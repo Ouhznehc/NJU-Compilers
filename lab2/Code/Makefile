@@ -41,7 +41,7 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test parser auto-commit
 
-test:
+test: parser
 	@./parser ../Test/test.cmm
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output

@@ -632,6 +632,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
     printf("childs[1]: %s\n", childs[1]->name);
     // Dec -> VarDec ASSIGNOP Exp
     if (symcmp(childs[1], "ASSIGNOP")){
+        printf("====================================\n");
         if (record != NULL)
             semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
         item_t* var = VarDec(childs[0], specifier);
