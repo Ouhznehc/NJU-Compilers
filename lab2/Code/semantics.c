@@ -15,13 +15,13 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
             printf("Error type 4 at Line %d: Duplicate function '%s'.\n", lineno, msg);
             break;
         case MISMATCHED_ASSIGN:
-            printf("Error type 5 at Line %d: Type mismatch in assignment of '%s'.\n", lineno, msg);
+            printf("Error type 5 at Line %d: Type mismatch in assignment.\n", lineno);
             break;
         case RVALUE_ASSIGN:
-            printf("Error type 6 at Line %d: Assignment to non-variable '%s'.\n", lineno, msg);
+            printf("Error type 6 at Line %d: Rvalue Assignment.\n", lineno);
             break;
         case MISMATCHED_OP:
-            printf("Error type 7 at Line %d: Operator applied to incompatible types '%s'.\n", lineno, msg);
+            printf("Error type 7 at Line %d: Operator applied to incompatible types.\n", lineno);
             break;
         case MISMATCHED_RETURN:
             printf("Error type 8 at Line %d: Return type mismatch.\n", lineno);
@@ -30,16 +30,16 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
             printf("Error type 8 at Line %d: Function '%s' called with incorrect arguments.\n", lineno, msg);
             break;
         case NOT_A_ARRAY:
-            printf("Error type 10 at Line %d: Variable '%s' is not an array.\n", lineno, msg);
+            printf("Error type 10 at Line %d: Variable is not an array.\n", lineno);
             break;
         case NOT_A_FUNC:
             printf("Error type 11 at Line %d: Variable '%s' is not a function.\n", lineno, msg);
             break;
         case NOT_A_INDEX:
-            printf("Error type 12 at Line %d: Array index in '%s' is not Int.\n", lineno, msg);
+            printf("Error type 12 at Line %d: Array index is not Int.\n", lineno);
             break;
         case NOT_A_STRUCT:
-            printf("Error type 13 at Line %d: Variable '%s' is not a struct.\n", lineno, msg);
+            printf("Error type 13 at Line %d: Variable is not a struct.\n", lineno);
             break;
         case UNDEFINED_FIELD:
             printf("Error type 14 at Line %d: Undefined field '%s' in Struct.\n", lineno, msg);
@@ -48,7 +48,7 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
             printf("Error type 15 at Line %d: Duplicate field '%s' in Struct.\n", lineno, msg);
             break;
         case INITIALIZE_FIELD:
-            printf("Error type 15 at Line %d: Field '%s' cannot be initialized directly.\n", lineno, msg);
+            printf("Error type 15 at Line %d: Field cannot be initialized directly.\n", lineno);
             break;
         case DUPLICATED_STRUCT:
             printf("Error type 16 at Line %d: Struct name '%s' is duplicated.\n", lineno, msg);
@@ -584,26 +584,88 @@ DefList:
 */
 void DefList(syntax_t* node, type_t* record) { 
     if (node == NULL) return;
+    syntax_t** childs = node->symbol.child;
+    Def(childs[0], record);
+    DefList(childs[1], record);
 } 
 
 /*
 Def:
     | Specifier DecList SEMI
 */
-void Def(syntax_t* node) { return; } 
-/*
-Dec:
-    | VarDec
-    | VarDec ASSIGNOP Exp
-*/
-void Dec(syntax_t* node) { return; } 
+void Def(syntax_t* node, type_t* record) {
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    type_t* specifier = Specifier(childs[0]);
+    DecList(childs[1], specifier, record);
+} 
 
 /*
 DecList:
     | Dec
     | Dec COMMA DecList
 */
-void DecList(syntax_t* node) { return; } 
+void DecList(syntax_t* node, type_t* specifier, type_t* record) { 
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    Dec(childs[0], specifier, record);
+    if(symcmp(childs[2], "DecList"))
+        DecList(childs[2], specifier, record);
+} 
+
+/*
+Dec:
+    | VarDec
+    | VarDec ASSIGNOP Exp
+*/
+void Dec(syntax_t* node, type_t* specifier, type_t* record) {
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    // Dec -> VarDec ASSIGNOP Exp
+    if (symcmp(childs[1], "ASSIGNOP")){
+        if (record != NULL)
+            semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
+        item_t* var = VarDec(childs[0], specifier);
+        type_t* exp = Exp(childs[2]);
+        if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+            semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
+        else if (!typecmp(var->type, exp))
+            semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
+        else if (var->type && var->type->kind == Array)
+            semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
+        else InsertScopeItem(VarScope, VarTop, var);
+    }
+    // Dec -> VarDec
+    else {
+        // struct Dec
+        if (record != NULL) {
+            item_t* var = VarDec(childs[0], specifier);
+            if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+                semantic_error(DUPLICATE_FIELD, childs[0]->lineno, var->name);
+            else {
+                if(record->record.field == NULL)
+                    record->record.field = var;
+                else {
+                    field_t* cur = record->record.field;
+                    while (cur->next != NULL) cur = cur->next;
+                    cur->next = var;
+                }
+                InsertScopeItem(VarScope, VarTop, var);
+            }
+        }
+        // non-struct Dec
+        else {
+            item_t* var = VarDec(childs[0], specifier);
+            if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+                semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
+            else if (FindScopeItem(StructScope, StructTop, var->name, AllScope)) 
+                semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
+            else InsertScopeItem(VarScope, VarTop, var);
+        }   
+    }
+} 
+
+
 
 /*
 Exp:
@@ -625,11 +687,136 @@ Exp:
     | INT
     | FLOAT
 */
-type_t* Exp(syntax_t* node) { return NULL; } 
+type_t* Exp(syntax_t* node) { 
+    assert(node != NULL);
+
+    syntax_t** childs = node->symbol.child;
+    if (symcmp(childs[0], "Exp")) {
+        // Exp -> Exp DOT ID
+        if (symcmp(childs[1], "DOT")) {
+            type_t* record = Exp(childs[0]);
+            // not a struct
+            if (record == NULL || record->kind != Struct)
+                semantic_error(NOT_A_STRUCT, childs[1]->lineno, "");
+            // undefined struct field
+            else if (!contains_field(record, childs[2]->token.value.sval))
+                semantic_error(UNDEFINED_FIELD, childs[2]->lineno, childs[2]->token.value.sval);
+            // return the corresponding field type
+            else {
+                field_t* cur = record->record.field;
+                while (cur != NULL) {
+                    if (!strcmp(cur->name, childs[2]->token.value.sval)) return cur->type;
+                    cur = cur->next;
+                }
+                assert(0);
+            }
+            return NULL;
+        }
+        // Exp -> Exp LB Exp RB
+        else if (symcmp(childs[1], "LB")) {
+            type_t* exp1 = Exp(childs[0]);
+            type_t* exp2 = Exp(childs[2]);
+            // not an array
+            if (exp1 == NULL || exp1->kind != Array)
+                semantic_error(NOT_A_ARRAY, childs[0]->lineno, "");
+            // not a index
+            else if (exp2 == NULL || exp2->kind != Basic || exp2->basic.type != Int)
+                semantic_error(NOT_A_INDEX, childs[2]->lineno, "");
+            else return exp1->array.elem;
+            return NULL;
+        }
+        // Exp -> Exp ASSIGNOP Exp
+        else if (symcmp(childs[1], "ASSIGNOP")) {
+            type_t* exp1 = Exp(childs[0]);
+            type_t* exp2 = Exp(childs[2]);
+            syntax_t** sub_childs = childs[0]->symbol.child;
+            // only 'ID |  Exp LB Exp RB | Exp DOT ID' can be left value
+            if ((symcmp(sub_childs[0], "ID") && sub_childs[1] == NULL) 
+                || symcmp(sub_childs[1], "LB")
+                || symcmp(sub_childs[1], "DOT")) {
+                if (!typecmp(exp1, exp2))
+                    semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, "");
+                else return exp1;
+            }
+            else
+                semantic_error(RVALUE_ASSIGN, childs[1]->lineno, "");
+            return NULL;
+        }
+        // Exp -> Exp AND Exp
+        //      | Exp OR Exp
+        //      | Exp RELOP Exp
+        //      | Exp PLUS Exp
+        //      | Exp MINUS Exp
+        //      | Exp STAR Exp
+        //      | Exp DIV Exp
+        else {
+            type_t* exp1 = Exp(childs[0]);
+            type_t* exp2 = Exp(childs[2]);
+            if (exp1 == NULL || exp2 == NULL) return NULL;
+            else if (exp1->kind != Basic || exp2->kind != Basic)
+                semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            else if (!typecmp(exp1, exp2))
+                semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            else return exp1;
+            return NULL;
+        }
+    }
+    // Exp -> MINUS Exp
+    //      | NOT Exp  
+    else if (symcmp(childs[0], "MINUS") || symcmp(childs[0], "NOT")) {
+        type_t* exp = Exp(childs[1]);
+        if (exp == NULL || exp->kind != Basic)
+            semantic_error(MISMATCHED_OP, childs[0]->lineno, "");
+        else return exp;
+        return NULL;
+    }
+    // Exp -> LP Exp RP
+    else if (symcmp(childs[0], "LP")) {
+        return Exp(childs[1]);
+    }
+    // Exp -> ID LP Args RP
+    //		| ID LP RP
+    else if (symcmp(childs[0], "ID") && childs[1] != NULL) {
+        item_t* func = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
+        if (func == NULL) 
+            semantic_error(UNDEFINED_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
+        else if (func->type->kind != FuncDec || func->type->kind != FuncDef)
+            semantic_error(NOT_A_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
+        // Exp -> ID LP Args RP
+        else if (symcmp(childs[2], "Args")) {
+            Args(childs[2], func);
+            return func->type->function.ret;
+        }
+        // Exp -> ID LP RP
+        else {
+            if (func->type->function.argc != 0)
+                semantic_error(MISMATCHED_FUNC_ARG, childs[0]->lineno, childs[0]->token.value.sval);
+            else return func->type->function.ret;
+        }
+        return NULL;
+    }
+    // Exp -> ID
+    else if (symcmp(childs[0], "ID")) {
+        item_t* id = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
+        if (id == NULL)
+            semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
+        else return id->type;
+        return NULL;
+    }
+    // Exp -> INT
+    else if (symcmp(childs[0], "INT")) {
+        return new_type(Basic, Int);
+    }
+    // Exp -> FLOAT
+    else if (symcmp(childs[0], "FLOAT")) {
+        return new_type(Basic, Float);
+    }
+    else assert(0);
+} 
 
 /*
 Args:
     | Exp COMMA Args
     | Exp
 */
-void Args(syntax_t* node) { return; } 
+void Args(syntax_t* node, item_t* func) { return; } 

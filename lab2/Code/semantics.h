@@ -125,12 +125,12 @@ void Stmt(syntax_t* node, type_t* specifier);
 
 /* Local Definitions */
 void DefList(syntax_t* node, type_t* record); 
-void Def(syntax_t* node); 
-void Dec(syntax_t* node); 
-void DecList(syntax_t* node); 
+void Def(syntax_t* node, type_t* record); 
+void Dec(syntax_t* node, type_t* specifier, type_t* record); 
+void DecList(syntax_t* node, type_t* specifier, type_t* record); 
 
 /* Expressions */
 type_t* Exp(syntax_t* node); 
-void Args(syntax_t* node); 
+void Args(syntax_t* node, item_t* func); 
 
 #endif
