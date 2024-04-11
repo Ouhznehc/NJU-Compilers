@@ -286,7 +286,7 @@ void ExtDef(syntax_t* node) {
         }
         // ExtDef -> Specifier FunDec SEMI
         else if (symcmp(childs[2], "SEMI")) {
-            FunDec(childs[1], specifier, FunDec);
+            FunDec(childs[1], specifier, FuncDec);
         }
     }
     // ExtDef -> Specifier SEMI
