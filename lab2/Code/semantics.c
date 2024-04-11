@@ -640,7 +640,10 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         else if (var->type && var->type->kind == Array)
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
-        else InsertScopeItem(VarScope, VarTop, var);
+        else {
+            InsertScopeItem(VarScope, VarTop, var);
+            printf("Insert var: {name: %s, VarTop: %d}\n", var->name, VarTop);
+        }
     }
     // Dec -> VarDec
     else {
