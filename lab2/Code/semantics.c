@@ -627,16 +627,14 @@ Dec:
 */
 void Dec(syntax_t* node, type_t* specifier, type_t* record) {
     assert(node != NULL);
-    printf("=============\n");
     syntax_t** childs = node->symbol.child;
-    printf("childs[1]: %s\n", childs[1]->name);
     // Dec -> VarDec ASSIGNOP Exp
     if (symcmp(childs[1], "ASSIGNOP")){
-        printf("====================================\n");
         if (record != NULL)
             semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
         item_t* var = VarDec(childs[0], specifier);
         type_t* exp = Exp(childs[2]);
+        printf("===================\n");
         if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
         else if (!typecmp(var->type, exp))
