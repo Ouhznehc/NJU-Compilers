@@ -72,7 +72,7 @@ type_t* new_type(SemanticBasicType kind, ...) {
     memset(ret, 0, sizeof(type_t));
 
     ret->kind = kind;
-    assert(kind == Basic || kind == Array || kind == Struct || kind == Function);
+    assert(kind == Basic || kind == Array || kind == Struct || kind == FuncDec || kind == FuncDef);
 
     va_list args;
     va_start(args, kind);
@@ -88,7 +88,9 @@ type_t* new_type(SemanticBasicType kind, ...) {
             strcpy(ret->record.name, va_arg(args, char*));
             ret->record.field = va_arg(args, field_t*);  
             break;
-        case Function:
+        case FuncDef:
+        case FuncDec:
+            strcpy(ret->function.name, va_arg(args, char*));
             ret->function.lineno = va_arg(args, int);
             ret->function.argc = va_arg(args, int);
             ret->function.argv = va_arg(args, field_t*);
@@ -106,9 +108,61 @@ bool symcmp(syntax_t* node, char* name) {
     return strcmp(node->name, name) == 0;
 }
 
+bool typecmp(type_t* t1, type_t* t2) {
+    if (t1 == NULL || t2 == NULL) return true;
+    if (t1->kind != t2->kind) return false;
+    field_t* cur1, *cur2;
+    switch (t1->kind) {
+        case Basic:
+            return t1->basic.type == t2->basic.type;
+        case Array:
+            return typecmp(t1->array.elem, t2->array.elem);
+        case Struct:
+            cur1 = t1->record.field;
+            cur2 = t2->record.field;
+            while (cur1 != NULL && cur2 != NULL){
+                if(!typecmp(cur1->type, cur2->type)) return false;
+                cur1 = cur1->next;
+                cur2 = cur2->next;
+            }
+            if(cur1 == NULL && cur2 == NULL) return true;
+            return false;
+        case FuncDec:
+        case FuncDef:
+            if (!strcmp(t1->function.name, t2->function.name)) return false;
+            if (t1->function.argc != t2->function.argc) return false;
+            cur1 = t1->function.argv;
+            cur2 = t2->function.argv;
+            while (cur1 != NULL && cur2 != NULL){
+                if(!typecmp(cur1->type, cur2->type)) return false;
+                cur1 = cur1->next;
+                cur2 = cur2->next;
+            }
+            return true;
+
+    }
+}
+
+bool contains_field(type_t* type, char* name) {
+    assert(type->kind == Struct || type->kind == FuncDef);
+    field_t* cur = type->kind == Struct ? type->record.field : type->function.argv;
+    while (cur != NULL) {
+        if (!strcmp(cur->name, name)) return true;
+        cur = cur->next;
+    }
+    return false;
+}
+
 enum {CurScope, AllScope};
-list_t* FindScopeItem(list_t** stack, int layer, char* name, int mode) {
-    list_t* cur = stack[layer];
+item_t* NewScopeItem(char* name, type_t* type) {
+    item_t* item = malloc(sizeof(item_t));
+    strcpy(item->name, name);
+    item->type = type;
+    item->next = NULL;
+    return item;
+}
+item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) {
+    item_t* cur = stack[layer];
     switch (mode) {
         case CurScope:
             while (cur != NULL) {
@@ -118,13 +172,36 @@ list_t* FindScopeItem(list_t** stack, int layer, char* name, int mode) {
             return NULL;
         case AllScope:
             for (int i = layer; i >= 0; i--){
-                list_t* ret = FindScopeItem(stack, i, name, CurScope);
+                item_t* ret = FindScopeItem(stack, i, name, CurScope);
                 if(ret != NULL) return ret;
             }
             return NULL;
         default:
             assert(0);
     }
+}
+item_t* FindScopeItemWithType(item_t** stack, int layer, char* name, int kind, int mode) {
+    item_t* cur = stack[layer];
+    switch (mode) {
+        case CurScope:
+            while (cur != NULL) {
+                if (!strcmp(cur->name, name) && cur->type->kind == kind) return cur;
+                cur = cur->next;
+            }
+            return NULL;
+        case AllScope:
+            for (int i = layer; i >= 0; i--){
+                item_t* ret = FindScopeItemWithType(stack, i, name, kind, CurScope);
+                if(ret != NULL) return ret;
+            }
+            return NULL;
+        default:
+            assert(0);
+    }
+}
+void InsertScopeItem(item_t** stack, int layer, item_t* item) {
+    item->next = stack[layer];
+    stack[layer] = item;
 }
 
 enum {VarStack, StructStack};
@@ -189,6 +266,7 @@ ExtDef:
     | Specifier ExtDecList SEMI
     | Specifier SEMI
     | Specifier FunDec CompSt
+    | Specifier FunDec SEMI
 */
 void ExtDef(syntax_t* node) { 
     assert(node != NULL);
@@ -198,12 +276,18 @@ void ExtDef(syntax_t* node) {
 
     // ExtDef -> Specifier ExtDecList SEMI
     if (symcmp(childs[1], "ExtDecList")) {
-        ExtDecList(childs[1]);
+        ExtDecList(childs[1], specifier);
     }
-    // ExtDef -> Specifier FunDec CompSt
     else if (symcmp(childs[1], "FunDec")) {
-        FunDec(childs[1], specifier);
-        CompSt(childs[2], specifier);
+        // ExtDef -> Specifier FunDec CompSt
+        if (symcmp(childs[2], "CompSt")) {
+            FunDec(childs[1], specifier, FuncDef);
+            CompSt(childs[2], specifier);
+        }
+        // ExtDef -> Specifier FunDec SEMI
+        else if (symcmp(childs[2], "SEMI")) {
+            FunDec(childs[1], specifier, FunDec);
+        }
     }
     // ExtDef -> Specifier SEMI
     else {
@@ -216,14 +300,14 @@ ExtDecList:
     | VarDec
     | VarDec COMMA ExtDecList
 */
-void ExtDecList(syntax_t* node) {
+void ExtDecList(syntax_t* node, type_t* specifier) {
     assert(node != NULL);
 
     syntax_t** childs = node->symbol.child;
-    VarDec(childs[0]);
+    VarDec(childs[0], specifier);
     // ExtDecList -> VarDec COMMA ExtDecList
     if (symcmp(childs[2], "ExtDecList")) {
-        ExtDecList(childs[2]);
+        ExtDecList(childs[2], specifier);
     }
 } 
 
@@ -264,7 +348,7 @@ type_t* StructSpecifier(syntax_t* node) {
     // Note: OptTag may be NULL, we can't use symcmp(childs[1], "OptTag")
     else {
         type_t* record = OptTag(childs[1]);
-        list_t* item = FindScopeItem(StructScope, StructTop, record->record.name, CurScope);
+        item_t* item = FindScopeItem(StructScope, StructTop, record->record.name, CurScope);
         if (item != NULL) {
             // must not be anonymous struct
             assert(childs[1] != NULL);
@@ -276,7 +360,9 @@ type_t* StructSpecifier(syntax_t* node) {
             DefList(childs[3], record);
             StackPop(VarStack);
             StackPop(StructStack);
-            
+            item_t* item = NewScopeItem(record->record.name, record);
+            InsertScopeItem(StructScope, StructTop, item);
+            return record;
         }
     }
 }
@@ -308,12 +394,12 @@ type_t* Tag(syntax_t* node) {
     assert(node != NULL);
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
-    list_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, CurScope);
+    item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, CurScope);
     if(item == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     else {
-        assert(!strcmp(item->name,item->type.record.name));
-        ret = new_type(Struct, item->name, item->type.record.field);
+        assert(!strcmp(item->name,item->type->record.name));
+        ret = new_type(Struct, item->name, item->type->record.field);
     }
 } 
 
@@ -322,27 +408,86 @@ VarDec:
     | ID
     | VarDec LB INT RB
 */
-void VarDec(syntax_t* node) { return; } 
+item_t* VarDec(syntax_t* node, type_t* specifier) { 
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    // VarDec -> ID
+    if (symcmp(childs[0], "ID")) {
+        return NewScopeItem(childs[0]->token.value.sval, specifier);
+    }
+    // VarDec -> VarDec LB INT RB
+    else if (symcmp(childs[0], "VarDec")) {
+        type_t* array = new_type(Array, specifier, childs[2]->token.value.ival);
+        return VarDec(childs[0], array);
+    }
+    else assert(0);
+} 
 
 /*
 FunDec:
     | ID LP VarList RP
     | ID LP RP
 */
-void FunDec(syntax_t* node, type_t* specifier) { return; } 
+// NOTE: type -> {FuncDec, FuncDef}
+void FunDec(syntax_t* node, type_t* specifier, int type) { 
+    assert(node != NULL);
+
+    syntax_t** childs = node->symbol.child;
+    item_t* func = NewScopeItem(
+        childs[0]->token.value.sval,
+        new_type(type, childs[0]->token.value.sval, childs[0]->lineno, 0, NULL, specifier) 
+    );
+    // FuncDec -> ID LP VarList RP
+    if(symcmp(childs[2], "VarList")) {
+        VarList(childs[2], func);
+    }
+    // FuncDec -> ID LP RP
+    else {
+        /*do nothing*/
+    }
+    item_t* funcDec = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDec, CurScope);
+    item_t* funcDef = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDef, CurScope);
+    type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
+    type_t* funcDefType = funcDef == NULL ? NULL : funcDef->type;
+    if (type == FuncDec) {
+        if(!typecmp(funcDecType, func->type) || !typecmp(funcDefType, func->type)) {
+            semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
+            return;
+        }
+    }
+    else if (type == FuncDef){
+        if(funcDef != NULL) {
+            semantic_error(DUPLICATE_FUNC, func->type->function.lineno, func->name);
+            return;
+        }
+        if(!typecmp(funcDecType, func->type)) {
+            semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
+            return;
+        }
+    }
+    else assert(0);
+
+    if (type == FuncDec && funcDec == NULL) InsertScopeItem(VarScope, VarTop, func);
+    else if (type == FuncDef) InsertScopeItem(VarScope, VarTop, func);
+    else return;
+} 
 
 /*
 VarList:
     | ParamDec COMMA VarList
     | ParamDec
 */
-void VarList(syntax_t* node) { return; } 
+void VarList(syntax_t* node, item_t* func) {
+    assert(node != NULL);
+    StackPush(VarStack);
+
+} 
 
 /*
 ParamDec:
     | Specifier VarDec
 */
-void ParamDec(syntax_t* node) { return; } 
+item_t* ParamDec(syntax_t* node) { return; } 
 
 /* 
 CompSt:
@@ -372,7 +517,9 @@ DefList:
     | Def DefList
     | empty
 */
-void DefList(syntax_t* node, type_t* record) { return; } 
+void DefList(syntax_t* node, type_t* record) { 
+
+} 
 
 /*
 Def:

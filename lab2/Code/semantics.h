@@ -31,7 +31,8 @@ typedef enum _SemanticVarType {
     Basic,
     Array,
     Struct,
-    Function,
+    FuncDec,
+    FuncDef
 } SemanticVarType;
 
 typedef enum _SemanticBasicType {
@@ -57,6 +58,7 @@ struct record_t {
 typedef struct record_t record_t;
 
 struct func_t {
+    char name[64];
     int lineno;
     int argc;
     struct field_t* argv;
@@ -80,19 +82,19 @@ typedef struct type_t type_t;
 
 struct field_t {
     char name[64];
-    struct type_t type;
+    struct type_t* type;
     struct field_t* next; 
 };
 typedef struct field_t field_t;
-typedef field_t list_t;
+typedef field_t item_t;
 
 
 // VarScope is the scope of Var Name: such as 'instace' in ```struct example instance;```
 // StructScope is the scope of Struct definition name: such as 'example' in ```struct example {int a;};```
-list_t* VarScope[1024], *StructScope[1024];
-int VarTop, StructTop;
+item_t* VarScope[1024] = {NULL}, *StructScope[1024] = {NULL};
+int VarTop = 0, StructTop = 0;
 // the counter of anonymous struct
-int AnonymousStruct;
+int AnonymousStruct = 0;
 
 
 void semantic_error(SemanticErrorType error, int lineno, char* msg);
@@ -102,7 +104,7 @@ type_t* new_type(SemanticBasicType kind, ...);
 void Program(syntax_t* node); 
 void ExtDefList(syntax_t* node); 
 void ExtDef(syntax_t* node); 
-void ExtDecList(syntax_t* node); 
+void ExtDecList(syntax_t* node, type_t* specifier); 
 
 /* Specifiers */
 type_t* Specifier(syntax_t* node); 
@@ -111,10 +113,10 @@ type_t* OptTag(syntax_t* node);
 type_t* Tag(syntax_t* node); 
 
 /* Declarators */
-void VarDec(syntax_t* node); 
-void FunDec(syntax_t* node, type_t* specifier); 
-void VarList(syntax_t* node); 
-void ParamDec(syntax_t* node); 
+item_t* VarDec(syntax_t* node, type_t* specifier); 
+void FunDec(syntax_t* node, type_t* specifier, int type); 
+void VarList(syntax_t* node, item_t* func); 
+item_t* ParamDec(syntax_t* node); 
 
 /* Statements */
 void CompSt(syntax_t* node, type_t* specifier); 
