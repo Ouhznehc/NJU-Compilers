@@ -333,8 +333,8 @@ type_t* Specifier(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     // Specifier -> TYPE
     if (symcmp(childs[0], "TYPE")) {
-        if (!strcmp(childs[0]->token.value.sval, "INT")) return new_type(Basic, Float);
-        else if (!strcmp(childs[0]->token.value.sval, "FLOAT")) return new_type(Basic, Int);
+        if (!strcmp(childs[0]->token.value.sval, "int")) return new_type(Basic, Float);
+        else if (!strcmp(childs[0]->token.value.sval, "float")) return new_type(Basic, Int);
         else assert(0);
     }
     else if (symcmp(childs[0], "StructSpecifier")) {
