@@ -27,7 +27,7 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
             printf("Error type 8 at Line %d: Return type mismatch.\n", lineno);
             break;
         case MISMATCHED_FUNC_ARG:
-            printf("Error type 8 at Line %d: Function '%s' called with incorrect arguments.\n", lineno, msg);
+            printf("Error type 8 at Line %d: Function called with incorrect arguments.\n", lineno);
             break;
         case NOT_A_ARRAY:
             printf("Error type 10 at Line %d: Variable is not an array.\n", lineno);
@@ -819,4 +819,21 @@ Args:
     | Exp COMMA Args
     | Exp
 */
-void Args(syntax_t* node, item_t* func) { return; } 
+void Args(syntax_t* node, item_t* func) {
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    field_t* func_arg = func->type->function.argv;
+    syntax_t* cur_arg = childs[0];
+    while (cur_arg && func_arg) {
+        type_t* func_type = func_arg->type;
+        type_t* cur_type = Exp(cur_arg);
+        if (!typecmp(func_type, cur_type)) {
+                semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, "");
+                return;
+        }
+        func_arg = func_arg->next;
+        cur_arg = cur_arg->symbol.child[0];
+    }
+    if (func_arg == NULL && cur_arg == NULL) return;
+    semantic_error(MISMATCHED_FUNC_ARG, node->lineno, "");
+} 
