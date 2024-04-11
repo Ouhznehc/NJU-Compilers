@@ -30,19 +30,15 @@ union value_t {
 typedef union value_t value_t;
 
 struct token_t {
-    char name[64];
     int type;
-    int lineno;
     union value_t value;
 };
 typedef struct token_t token_t;
 
 
 struct symbol_t {
-    char name[64];
-    int lineno;
     int size;
-    struct syntax_t** child; 
+    struct syntax_t* child[8]; 
 };
 typedef struct symbol_t symbol_t;
 
@@ -52,6 +48,8 @@ struct syntax_t {
         struct symbol_t symbol;
         struct token_t token;
     };
+    char name[64];
+    int lineno;
     int type;
 };
 typedef struct syntax_t syntax_t;

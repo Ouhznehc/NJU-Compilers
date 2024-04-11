@@ -1589,7 +1589,7 @@ yyreduce:
                      { 
                         (yyval.syntax) = new_symbol("Program", (yyloc).first_line, 1, (yyvsp[0].syntax)); root = (yyval.syntax); 
 						/* empty file */
-						if ((yyvsp[0].syntax) == NULL) (yyval.syntax)->symbol.lineno = yylineno;
+						if ((yyvsp[0].syntax) == NULL) (yyval.syntax)->lineno = yylineno;
                      }
 #line 1595 "./syntax.tab.c"
     break;

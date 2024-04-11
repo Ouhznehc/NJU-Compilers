@@ -106,7 +106,7 @@ Program
 	: ExtDefList { 
                         $$ = new_symbol("Program", @$.first_line, 1, $1); root = $$; 
 						/* empty file */
-						if ($1 == NULL) $$->symbol.lineno = yylineno;
+						if ($1 == NULL) $$->lineno = yylineno;
                      }
 	| error { $$ = NULL; }
 	;

@@ -27,12 +27,76 @@ typedef enum {
     CONFLICT_FUNC,           // Conflict between Function declaration and definition
 } SemanticErrorType;
 
+typedef enum _SemanticVarType {
+    Basic,
+    Array,
+    Struct,
+    Function,
+} SemanticVarType;
+
+typedef enum _SemanticBasicType {
+    Int, 
+    Float,
+} SemanticBasicType;
+
+struct array_t {
+    struct type_t* elem;
+    int width;
+};
+typedef struct array_t array_t;
+
+struct basic_t {
+    SemanticBasicType type;
+};
+typedef struct basic_t basic_t;
+
+struct record_t {
+    char name[64];
+    struct field_t* field;
+};
+typedef struct record_t record_t;
+
+struct func_t {
+    int lineno;
+    int argc;
+    struct field_t* argv;
+    struct type_t* ret;
+};
+typedef struct func_t func_t; 
+
+
+//only record_t need a name such as: 'example' in ```struct example {int a;}```.
 struct type_t {
-    int kind;
+    SemanticVarType kind;
+    union {
+        struct basic_t basic;
+        struct array_t array;
+        struct record_t record;
+        struct func_t function;
+    };
 };
 typedef struct type_t type_t;
 
+
+struct field_t {
+    char name[64];
+    struct type_t type;
+    struct field_t* next; 
+};
+typedef struct field_t field_t;
+typedef field_t list_t;
+
+
+// VarScope is the scope of Var Name: such as 'instace' in ```struct example instance;```
+// StructScope is the scope of Struct definition name: such as 'example' in ```struct example {int a;};```
+list_t* VarScope[1024], *StructScope[1024];
+int VarTop, StructTop;
+// the counter of anonymous struct
+int AnonymousStruct;
+
+
 void semantic_error(SemanticErrorType error, int lineno, char* msg);
+type_t* new_type(SemanticBasicType kind, ...);
 
 /* High-level Definitions */
 void Program(syntax_t* node); 
@@ -42,23 +106,23 @@ void ExtDecList(syntax_t* node);
 
 /* Specifiers */
 type_t* Specifier(syntax_t* node); 
-void StructSpecifier(syntax_t* node); 
-void OptTag(syntax_t* node); 
-void Tag(syntax_t* node); 
+type_t* StructSpecifier(syntax_t* node); 
+type_t* OptTag(syntax_t* node); 
+type_t* Tag(syntax_t* node); 
 
 /* Declarators */
 void VarDec(syntax_t* node); 
-void FunDec(syntax_t* node); 
+void FunDec(syntax_t* node, type_t* specifier); 
 void VarList(syntax_t* node); 
 void ParamDec(syntax_t* node); 
 
 /* Statements */
-void CompSt(syntax_t* node); 
+void CompSt(syntax_t* node, type_t* specifier); 
 void StmtList(syntax_t* node); 
 void Stmt(syntax_t* node);
 
 /* Local Definitions */
-void DefList(syntax_t* node); 
+void DefList(syntax_t* node, type_t* record); 
 void Def(syntax_t* node); 
 void Dec(syntax_t* node); 
 void DecList(syntax_t* node); 
