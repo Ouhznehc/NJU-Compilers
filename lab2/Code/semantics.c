@@ -487,7 +487,7 @@ void VarList(syntax_t* node, item_t* func) {
 ParamDec:
     | Specifier VarDec
 */
-item_t* ParamDec(syntax_t* node) { return; } 
+item_t* ParamDec(syntax_t* node) { return NULL; } 
 
 /* 
 CompSt:
