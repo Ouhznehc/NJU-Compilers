@@ -75,25 +75,20 @@ type_t* new_type(SemanticBasicType kind, ...) {
     assert(kind == Basic || kind == Array || kind == Struct || kind == Function);
 
     va_list args;
+    va_start(args, kind);
     switch (kind) {
         case Basic:
-            va_start(args, 1);
             ret->basic.type = va_arg(args, SemanticBasicType);
             break;
         case Array:
-            va_start(args, 2);
             ret->array.elem = va_arg(args, type_t*);
             ret->array.width = va_arg(args, int);
             break;
         case Struct:
-            va_start(args, 2);
-            char* name = va_arg(args, char*);
-            field_t* field = va_arg(args, field_t*);
-            strcpy(ret->record.name, name);
-            ret->record.field = field;  
+            strcpy(ret->record.name, va_arg(args, char*));
+            ret->record.field = va_arg(args, field_t*);  
             break;
         case Function:
-            va_start(args, 4);
             ret->function.lineno = va_arg(args, int);
             ret->function.argc = va_arg(args, int);
             ret->function.argv = va_arg(args, field_t*);
