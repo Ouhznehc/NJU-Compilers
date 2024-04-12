@@ -486,6 +486,7 @@ item_t* VarDec(syntax_t* node, type_t* specifier) { printf("This is line number 
     // VarDec -> VarDec LB INT RB
     else if (symcmp(childs[0], "VarDec")) {
         type_t* array = new_type(Array, specifier, childs[2]->token.value.ival);
+        printf("===============\n");
         return VarDec(childs[0], array);
     }
     else assert(0);
