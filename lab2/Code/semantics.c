@@ -154,6 +154,7 @@ bool contains_field(type_t* type, char* name) {
     assert(type->kind == Struct || type->kind == FuncDef);
     field_t* cur = type->kind == Struct ? type->record.field : type->function.argv;
     while (cur != NULL) {
+        printf("============\n");
         if (!strcmp(cur->name, name)) return true;
         cur = cur->next;
     }
@@ -714,7 +715,6 @@ type_t* Exp(syntax_t* node) {
                 semantic_error(UNDEFINED_FIELD, childs[2]->lineno, childs[2]->token.value.sval);
             // return the corresponding field type
             else {
-                printf("==================\n");
                 field_t* cur = record->record.field;
                 while (cur != NULL) {
                     if (!strcmp(cur->name, childs[2]->token.value.sval)) return cur->type;
