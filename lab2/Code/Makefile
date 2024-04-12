@@ -24,11 +24,11 @@ auto-commit:
 	-@git commit -m "Auto commit message: { Compile code at $(COMPILE_TIME) }"
 
 parser: syntax $(filter-out $(LFO),$(OBJS))
-	$(CC) -o parser $(filter-out $(LFO),$(OBJS)) -lfl -ly
+	$(CC) -g -o parser $(filter-out $(LFO),$(OBJS)) -lfl -ly
 	@make auto-commit
 
 syntax: lexical syntax-c
-	$(CC) -c $(YFC) -o $(YFO)
+	$(CC) -g -c $(YFC) -o $(YFO)
 
 lexical: $(LFILE)
 	$(FLEX) -o $(LFC) $(LFILE)

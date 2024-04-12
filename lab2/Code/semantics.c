@@ -344,6 +344,7 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
 
     syntax_t** childs = node->symbol.child;
     item_t* var = VarDec(childs[0], specifier);
+    assert(var != NULL);
     if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, CurScope))
         semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
     else InsertScopeItem(VarScope, VarTop, var);
@@ -407,6 +408,7 @@ type_t* StructSpecifier(syntax_t* node) {
             StackPop(VarStack);
             StackPop(StructStack);
             item_t* item = NewScopeItem(record->record.name, record);
+            assert(item != NULL);
             InsertScopeItem(StructScope, StructTop, CopyItem(item));
             return record;
         }
