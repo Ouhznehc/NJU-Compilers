@@ -952,7 +952,7 @@ void Args(syntax_t* node, item_t* func) {
     while (cur_arg && func_arg) {
         type_t* func_type = func_arg->type;
         type_t* cur_type = Exp(cur_arg->symbol.child[0]);
-        if(!typecmp_name(func_type, cur_type)) {
+        if(!typecmp_structure(func_type, cur_type)) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
                 return;
         }
