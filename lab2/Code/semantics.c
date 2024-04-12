@@ -512,6 +512,7 @@ void FunDec(syntax_t* node, type_t* specifier, int type) { printf("This is line 
     else {
         /*do nothing*/
     }
+    printf("=============\n");
     item_t* funcDec = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDec, AllScope);
     item_t* funcDef = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDef, AllScope);
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
