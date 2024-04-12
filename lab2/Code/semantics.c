@@ -668,7 +668,8 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                 field_t* cur = record->record.field;
                 printf("cur = %p\n", cur);
                 while (cur != NULL){
-                    printf("%s", cur->name);
+                    printf("=======\n");
+                    printf("%s\n", cur->name);
                     cur = cur->next;
                 } 
                 InsertScopeItem(VarScope, VarTop, var);
