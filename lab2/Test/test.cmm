@@ -7,7 +7,6 @@ struct Temp1
 struct Temp2
 {
     int x;
-    float y;
 };
 
 int main()
