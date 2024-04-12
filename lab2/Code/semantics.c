@@ -429,8 +429,10 @@ type_t* StructSpecifier(syntax_t* node) {
         }
         else {
             StackPush(VarStack);
+            StackPush(StructStack);
             DefList(childs[3], record);
             StackPop(VarStack);
+            StackPop(StructStack);
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
             InsertScopeItem(StructScope, 0, CopyItem(item));
