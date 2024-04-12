@@ -880,6 +880,7 @@ type_t* Exp(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
             }
             else {
                 // Boolean Operation must return Int
+                printf("==========\n");
                 if (symcmp(childs[1], "AND") || symcmp(childs[1], "OR") || symcmp(childs[1], "RELOP")) return new_type(Basic, Int);
                 else return exp1;
             }
