@@ -543,6 +543,7 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
             return;
         }
         if(!typecmp_name(funcDecType, func->type)) {
+            printf("========\n");
             semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
             return;
         }
