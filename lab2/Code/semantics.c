@@ -221,6 +221,7 @@ item_t* FindScopeItemWithType(item_t** stack, int layer, char* name, int kind, i
     }
 }
 void InsertScopeItem(item_t** stack, int layer, item_t* item) {
+    assert(item != NULL);
     item->next = stack[layer];
     stack[layer] = item;
 }
@@ -392,6 +393,7 @@ type_t* StructSpecifier(syntax_t* node) {
     // Note: OptTag may be NULL, we can't use symcmp(childs[1], "OptTag")
     else {
         type_t* record = OptTag(childs[1]);
+        assert(record != NULL);
         item_t* item = FindScopeItem(StructScope, StructTop, record->record.name, CurScope);
         if (item != NULL) {
             // must not be anonymous struct
