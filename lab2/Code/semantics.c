@@ -117,6 +117,9 @@ bool symcmp(syntax_t* node, char* name) {
 
 bool typecmp(type_t* t1, type_t* t2) {
     if (t1 == NULL || t2 == NULL) return true;
+    if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
+        && (t2->kind == FuncDef || t2->kind == FuncDec))
+        goto function;
     if (t1->kind != t2->kind) return false;
     field_t* cur1, *cur2;
     switch (t1->kind) {
@@ -136,6 +139,7 @@ bool typecmp(type_t* t1, type_t* t2) {
             return false;
         case FuncDec:
         case FuncDef:
+            function:
             printf("=============\n");
             if (strcmp(t1->function.name, t2->function.name)) return false;
             if (t1->function.argc != t2->function.argc) return false;
