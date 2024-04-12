@@ -154,8 +154,7 @@ bool typecmp_name(type_t* t1, type_t* t2) {
 
 bool typecmp_structure(type_t* t1, type_t* t2) { 
     field_t* cur1, *cur2;
-    if (t1 == NULL && t2 == NULL) return true;
-    if (t1 == NULL || t2 == NULL) return false;
+    if (t1 == NULL || t2 == NULL) return true;
     if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
         && (t2->kind == FuncDef || t2->kind == FuncDec))
         goto function;
