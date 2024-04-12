@@ -1,24 +1,3 @@
-struct Vector {
-    int x;
-    int y;
-    int z;
-};
-
-int equal(struct Vector v1e, struct Vector v2e) {
-    if (v1e.x == v2e._x && v1e.y == v2e.y && v1e.z == v2e.z) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-struct Vector add(struct Vector v1a, struct Vector v2a) {
-    struct Vector va;
-    va.x = v1a + v2a.x;
-    va.y = v1a.y + v2a.y;
-    va.z = v1a.z + v2a.z;
-    return va;
-}
 
 
 int willCollide(struct Particle particles[10], int time) {
