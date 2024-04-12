@@ -838,7 +838,12 @@ type_t* Exp(syntax_t* node) {
     else if (symcmp(childs[0], "FLOAT")) {
         return new_type(Basic, Float);
     }
-    else assert(0);
+    else {
+        for (int i = 0; childs[i]; i++)
+            printf("%s ", childs[i]->name);
+        printf("\n");
+        assert(0);
+    }
 } 
 
 /*
