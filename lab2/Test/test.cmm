@@ -1,10 +1,7 @@
-
-
 int willCollide(struct Particle particles[10], int time) {
     return 0;
 }
 
 int main() {
     struct Particle ps[10];
-    willCollide(ps, 100);
 }
