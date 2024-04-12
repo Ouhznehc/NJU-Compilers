@@ -6,9 +6,6 @@ int willCollide(struct Particle particles[10], int time) {
         int j = 0;
         while (i < 10) {
             while (j < 10) {
-                if (equal(particles[i].position, particles[j].position)) {
-                    return 1;
-                }
                 j = j + 1;
             }
             i = i + 1;
