@@ -504,6 +504,7 @@ VarList:
 */
 void VarList(syntax_t* node, item_t* func) {
     assert(node != NULL);
+    printf("func: %s\n", func->name);
     syntax_t** childs = node->symbol.child;
     item_t* param = ParamDec(childs[0]);
     if (func->type->function.argv == NULL) 
@@ -526,7 +527,6 @@ item_t* ParamDec(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
-    printf("var = %s\n", var->name);
     if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     else
