@@ -905,8 +905,8 @@ void Args(syntax_t* node, item_t* func) {printf("This is line number %d.\n", __L
     syntax_t* cur_arg = node;
     while (cur_arg && func_arg) {
         type_t* func_type = func_arg->type;
-        type_t* cur_type = Exp(cur_arg->symbol.child[0]);
-        if (!typecmp(func_type, cur_type)) {printf("++================\n");
+        type_t* cur_type = Exp(cur_arg->symbol.child[0]);printf("++================\n");
+        if (!typecmp(func_type, cur_type)) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
                 return;
         }
