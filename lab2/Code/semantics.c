@@ -116,8 +116,8 @@ bool symcmp(syntax_t* node, char* name) {
 }
 
 bool typecmp(type_t* t1, type_t* t2) {printf("This is line number %d.\n", __LINE__); 
-    field_t* cur1, *cur2;
-    if (t1 == NULL || t2 == NULL) return true;printf("%d %d\n", t1->kind, t2->kind);
+    field_t* cur1, *cur2;printf("%p %p\n", t1, t2);
+    if (t1 == NULL || t2 == NULL) return true;
     if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
         && (t2->kind == FuncDef || t2->kind == FuncDec))
         goto function;
