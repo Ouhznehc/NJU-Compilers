@@ -839,7 +839,7 @@ type_t* Exp(syntax_t* node) {
         return new_type(Basic, Float);
     }
     else {
-        printf("%d %s\n", node->symbol.size, node->name);
+        printf("%d %s\n", node->type, node->name);
         for (int i = 0; childs[i]; i++)
             printf("%s ", childs[i]->name);
         printf("\n");
