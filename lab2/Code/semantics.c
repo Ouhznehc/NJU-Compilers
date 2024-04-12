@@ -121,7 +121,7 @@ bool symcmp(syntax_t* node, char* name) {
     return strcmp(node->name, name) == 0;
 }
 
-bool typecmp(type_t* t1, type_t* t2) { 
+bool typecmp_name(type_t* t1, type_t* t2) { 
     field_t* cur1, *cur2;
     if (t1 == NULL && t2 == NULL) return true;
     if (t1 == NULL || t2 == NULL) return false;
@@ -133,12 +133,43 @@ bool typecmp(type_t* t1, type_t* t2) {
         case Basic:
             return t1->basic.type == t2->basic.type;
         case Array:
-            return typecmp(t1->array.elem, t2->array.elem);
+            return typecmp_name(t1->array.elem, t2->array.elem);
+        case Struct:
+            return !strcmp(t1->record.name, t2->record.name);
+        case FuncDec:
+        case FuncDef:
+            function:
+                if (strcmp(t1->function.name, t2->function.name)) return false;
+                if (t1->function.argc != t2->function.argc) return false;
+                cur1 = t1->function.argv;
+                cur2 = t2->function.argv;
+                while (cur1 != NULL && cur2 != NULL){
+                    if(!typecmp_name(cur1->type, cur2->type)) return false;
+                    cur1 = cur1->next;
+                    cur2 = cur2->next;
+                }
+                return true;
+    }
+}
+
+bool typecmp_structure(type_t* t1, type_t* t2) { 
+    field_t* cur1, *cur2;
+    if (t1 == NULL && t2 == NULL) return true;
+    if (t1 == NULL || t2 == NULL) return false;
+    if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
+        && (t2->kind == FuncDef || t2->kind == FuncDec))
+        goto function;
+    if (t1->kind != t2->kind) return false;
+    switch (t1->kind) {
+        case Basic:
+            return t1->basic.type == t2->basic.type;
+        case Array:
+            return typecmp_structure(t1->array.elem, t2->array.elem);
         case Struct:
             cur1 = t1->record.field;
             cur2 = t2->record.field;
             while (cur1 != NULL && cur2 != NULL){
-                if(!typecmp(cur1->type, cur2->type)) return false;
+                if(!typecmp_structure(cur1->type, cur2->type)) return false;
                 cur1 = cur1->next;
                 cur2 = cur2->next;
             }
@@ -147,17 +178,16 @@ bool typecmp(type_t* t1, type_t* t2) {
         case FuncDec:
         case FuncDef:
             function:
-            if (strcmp(t1->function.name, t2->function.name)) return false;
-            if (t1->function.argc != t2->function.argc) return false;
-            cur1 = t1->function.argv;
-            cur2 = t2->function.argv;
-            while (cur1 != NULL && cur2 != NULL){
-                if(!typecmp(cur1->type, cur2->type)) return false;
-                cur1 = cur1->next;
-                cur2 = cur2->next;
-            }
-            return true;
-
+                if (strcmp(t1->function.name, t2->function.name)) return false;
+                if (t1->function.argc != t2->function.argc) return false;
+                cur1 = t1->function.argv;
+                cur2 = t2->function.argv;
+                while (cur1 != NULL && cur2 != NULL){
+                    if(!typecmp_structure(cur1->type, cur2->type)) return false;
+                    cur1 = cur1->next;
+                    cur2 = cur2->next;
+                }
+                return true;
     }
 }
 
@@ -501,7 +531,7 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
     type_t* funcDefType = funcDef == NULL ? NULL : funcDef->type;
     if (type == FuncDec) {
-        if(!typecmp(funcDecType, func->type) || !typecmp(funcDefType, func->type)) {
+        if(!typecmp_name(funcDecType, func->type) || !typecmp_name(funcDefType, func->type)) {
             semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
             return;
         }
@@ -511,7 +541,7 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
             semantic_error(DUPLICATE_FUNC, func->type->function.lineno, func->name);
             return;
         }
-        if(!typecmp(funcDecType, func->type)) {
+        if(!typecmp_name(funcDecType, func->type)) {
             semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
             return;
         }
@@ -615,7 +645,7 @@ void Stmt(syntax_t* node, type_t* specifier) {
     // Stmt -> RETURN Exp SEMI
     else if (symcmp(childs[0], "RETURN")) {
         type_t* exp = Exp(childs[1]);
-        if(!typecmp(exp, specifier))
+        if(!typecmp_structure(exp, specifier))
             semantic_error(MISMATCHED_RETURN, childs[0]->lineno, "");
     }
     // Stmt -> IF LP Exp RP Stmt
@@ -703,7 +733,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
         }
         if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-        else if (!typecmp(var->type, exp)) {
+        else if (!typecmp_structure(var->type, exp)) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         }
         else if (var->type && var->type->kind == Array)
@@ -820,7 +850,7 @@ type_t* Exp(syntax_t* node) {
             if ((symcmp(sub_childs[0], "ID") && sub_childs[1] == NULL) 
                 || symcmp(sub_childs[1], "LB")
                 || symcmp(sub_childs[1], "DOT")) {
-                if (!typecmp(exp1, exp2))
+                if (!typecmp_structure(exp1, exp2))
                     semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, "");
                 else return exp1;
             }
@@ -841,7 +871,7 @@ type_t* Exp(syntax_t* node) {
             if (exp1 == NULL || exp2 == NULL) return NULL;
             else if (exp1->kind != Basic || exp2->kind != Basic)
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
-            else if (!typecmp(exp1, exp2))
+            else if (!typecmp_structure(exp1, exp2))
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
             else return exp1;
             return NULL;
@@ -914,11 +944,7 @@ void Args(syntax_t* node, item_t* func) {
     while (cur_arg && func_arg) {
         type_t* func_type = func_arg->type;
         type_t* cur_type = Exp(cur_arg->symbol.child[0]);
-        bool check = false;
-        if (func_type->kind == Struct && cur_type->kind == Struct) check = !strcmp(func_type->record.name, cur_type->record.name);
-        else check = typecmp(func_type, cur_type);
-        if(!check) {
-                printf("=============\n");
+        if(!typecmp_name(func_type, cur_type)) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
                 return;
         }
