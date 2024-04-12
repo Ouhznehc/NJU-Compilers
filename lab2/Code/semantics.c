@@ -457,6 +457,7 @@ item_t* VarDec(syntax_t* node, type_t* specifier) {
     syntax_t** childs = node->symbol.child;
     // VarDec -> ID
     if (symcmp(childs[0], "ID")) {
+        printf("var = %s\n", childs[0]->token.value.sval);
         return NewScopeItem(childs[0]->token.value.sval, specifier);
     }
     // VarDec -> VarDec LB INT RB
@@ -718,7 +719,6 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
         // non-struct Dec
         else {
             item_t* var = VarDec(childs[0], specifier);
-            printf("var = %s\n", var->name);
             if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else if (FindScopeItem(StructScope, StructTop, var->name, AllScope)) 
