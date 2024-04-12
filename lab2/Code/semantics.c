@@ -813,6 +813,7 @@ type_t* Exp(syntax_t* node) {
     // Exp -> ID
     else if (symcmp(childs[0], "ID")) {
         item_t* id = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
+        printf("id: {name: %s}\n", id->name);
         if (id == NULL)
             semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
         else return id->type;
