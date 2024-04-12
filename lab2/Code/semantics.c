@@ -123,7 +123,8 @@ bool symcmp(syntax_t* node, char* name) {
 
 bool typecmp(type_t* t1, type_t* t2) { 
     field_t* cur1, *cur2;
-    if (t1 == NULL || t2 == NULL) return true;
+    if (t1 == NULL && t2 == NULL) return true;
+    if (t1 == NULL || t2 == NULL) return false;
     if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
         && (t2->kind == FuncDef || t2->kind == FuncDec))
         goto function;
@@ -558,6 +559,7 @@ item_t* ParamDec(syntax_t* node) {
     item_t* var = VarDec(childs[1], specifier);
     if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
+    // to avoid further errors, still add it to symbol table
     InsertScopeItem(VarScope, VarTop, CopyItem(var));
     return var;
 } 
@@ -912,7 +914,10 @@ void Args(syntax_t* node, item_t* func) {
     while (cur_arg && func_arg) {
         type_t* func_type = func_arg->type;
         type_t* cur_type = Exp(cur_arg->symbol.child[0]);
-        if (!typecmp(func_type, cur_type)) {
+        bool check = false;
+        if (func_type == Struct && cur_type == Struct) check = !strcmp(func_type->record.name, cur_type->record.name);
+        else check = typecmp(func_type, cur_type);
+        if(!check) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
                 return;
         }
