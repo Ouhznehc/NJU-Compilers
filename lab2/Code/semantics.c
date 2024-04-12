@@ -482,7 +482,11 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
             return;
         }
         if(!typecmp(funcDecType, func->type)) {
-            printf("==========\n");
+            field_t* cur = funcDecType->function.argv;
+            while(cur != NULL) {
+                printf("%s\n", cur->name);
+                cur = cur->next;
+            }
             semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
             return;
         }
