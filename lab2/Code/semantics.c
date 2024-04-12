@@ -75,8 +75,8 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {printf("Thi
 }
 
 type_t* copy_type(type_t* src) {
-    type_t* ret = malloc(sizeof(type_t));
-    memcpy(ret, src, sizeof(type_t));
+    // type_t* ret = malloc(sizeof(type_t));
+    // memcpy(ret, src, sizeof(type_t));
     return src;
 }
 
