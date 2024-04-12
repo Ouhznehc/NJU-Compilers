@@ -131,7 +131,7 @@ bool symcmp(syntax_t* node, char* name) {
 }
 
 bool typecmp(type_t* t1, type_t* t2) { 
-    field_t* cur1, *cur2;printf("%p %p\n", t1, t2);
+    field_t* cur1, *cur2;
     if (t1 == NULL || t2 == NULL) return true;
     if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
         && (t2->kind == FuncDef || t2->kind == FuncDec))
@@ -198,7 +198,7 @@ item_t* CopyItem(item_t* item) {
     return ret;
 }
 item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) {
-    item_t* cur = stack[layer];printf("layer: %d  name: %s  mode: %d\n", layer, name, mode);
+    item_t* cur = stack[layer];
     switch (mode) {
         case CurScope:
             while (cur != NULL) {
@@ -922,7 +922,7 @@ void Args(syntax_t* node, item_t* func) {
     syntax_t* cur_arg = node;
     while (cur_arg && func_arg) {
         type_t* func_type = func_arg->type;
-        type_t* cur_type = Exp(cur_arg->symbol.child[0]);printf("++================\n");
+        type_t* cur_type = Exp(cur_arg->symbol.child[0]);
         if (!typecmp(func_type, cur_type)) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
                 return;
