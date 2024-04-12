@@ -504,6 +504,7 @@ void FunDec(syntax_t* node, type_t* specifier, int type) { printf("This is line 
         childs[0]->token.value.sval,
         new_type(type, childs[0]->token.value.sval, childs[0]->lineno, 0, NULL, specifier) 
     );
+        printf("=============\n");
     // FuncDec -> ID LP VarList RP
     if(symcmp(childs[2], "VarList")) {
         VarList(childs[2], func);
@@ -512,7 +513,6 @@ void FunDec(syntax_t* node, type_t* specifier, int type) { printf("This is line 
     else {
         /*do nothing*/
     }
-    printf("=============\n");
     item_t* funcDec = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDec, AllScope);
     item_t* funcDef = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDef, AllScope);
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
