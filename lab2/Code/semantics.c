@@ -183,7 +183,7 @@ item_t* CopyItem(item_t* item) {printf("This is line number %d.\n", __LINE__);
     return ret;
 }
 item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) {printf("This is line number %d.\n", __LINE__);
-    item_t* cur = stack[layer];
+    item_t* cur = stack[layer];printf("layer: %d  name: %s  mode: %d\n", layer, name, mode);
     switch (mode) {
         case CurScope:
             while (cur != NULL) {
