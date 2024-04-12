@@ -665,6 +665,11 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                     cur->next = var;
                     assert(var->next == NULL);
                 }
+                field_t* cur = record->record.field;
+                while (cur!= NULL){
+                    printf("%s", cur->name);
+                    cur = cur->next;
+                } 
                 InsertScopeItem(VarScope, VarTop, var);
             }
         }
@@ -710,12 +715,6 @@ type_t* Exp(syntax_t* node) {
         // Exp -> Exp DOT ID
         if (symcmp(childs[1], "DOT")) {
             type_t* record = Exp(childs[0]);
-            printf("%s\n", record->record.name);
-            field_t* cur = record->record.field;
-            while(cur != NULL) {
-                printf("cur->name = %s\n", cur->name);
-                cur = cur->next;
-            }
             // not a struct
             if (record == NULL || record->kind != Struct)
                 semantic_error(NOT_A_STRUCT, childs[1]->lineno, "");
