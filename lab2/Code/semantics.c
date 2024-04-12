@@ -487,6 +487,11 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
                 printf("%s\n", cur->name);
                 cur = cur->next;
             }
+            cur = func->type->function.argv;
+            while(cur != NULL) {
+                printf("%s\n", cur->name);
+                cur = cur->next;
+            }
             semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
             return;
         }
