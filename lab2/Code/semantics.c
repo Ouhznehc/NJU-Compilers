@@ -880,20 +880,17 @@ void Args(syntax_t* node, item_t* func) {
     assert(node != NULL);
     assert(symcmp(node, "Args"));
 
-    syntax_t** childs = node->symbol.child;
     field_t* func_arg = func->type->function.argv;
-    syntax_t* cur_arg = childs[0];
+    syntax_t* cur_arg = node;
     while (cur_arg && func_arg) {
         type_t* func_type = func_arg->type;
-        type_t* cur_type = Exp(cur_arg);
+        type_t* cur_type = Exp(cur_arg->symbol.child[0]);
         if (!typecmp(func_type, cur_type)) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, "");
                 return;
         }
         func_arg = func_arg->next;
         cur_arg = cur_arg->symbol.child[2];
-        if(cur_arg == NULL) break;
-        cur_arg = cur_arg->symbol.child[0];
     }
     if (func_arg == NULL && cur_arg == NULL) return;
     semantic_error(MISMATCHED_FUNC_ARG, node->lineno, "");
