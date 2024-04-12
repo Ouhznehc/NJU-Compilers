@@ -665,8 +665,8 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                     cur->next = var;
                     assert(var->next == NULL);
                 }
-                printf("===============\n");
                 field_t* cur = record->record.field;
+                printf("cur = %p\n", cur);
                 while (cur != NULL){
                     printf("%s", cur->name);
                     cur = cur->next;
