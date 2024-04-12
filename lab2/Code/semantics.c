@@ -74,6 +74,12 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {printf("Thi
     }
 }
 
+type_t* copy_type(type_t* src) {
+    type_t* ret = malloc(sizeof(type_t));
+    memcpy(ret, src, sizeof(type_t));
+    return ret;
+}
+
 type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n", __LINE__);
     type_t* ret = malloc(sizeof(type_t));
     memset(ret, 0, sizeof(type_t));
@@ -88,7 +94,7 @@ type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n
             ret->basic.type = va_arg(args, SemanticBasicType);
             break;
         case Array:
-            ret->array.elem = va_arg(args, type_t*);
+            ret->array.elem = copy_type(va_arg(args, type_t*));
             ret->array.width = va_arg(args, int);
             break;
         case Struct:
@@ -101,7 +107,7 @@ type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n
             ret->function.lineno = va_arg(args, int);
             ret->function.argc = va_arg(args, int);
             ret->function.argv = va_arg(args, field_t*);
-            ret->function.ret = va_arg(args, type_t*);
+            ret->function.ret = copy_type(va_arg(args, type_t*));
             break;
         default:
             assert(0);
@@ -109,6 +115,8 @@ type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n
     va_end(args);
     return ret;
 }
+
+
 
 bool symcmp(syntax_t* node, char* name) {
     if (node == NULL) return false;
@@ -467,6 +475,7 @@ item_t* VarDec(syntax_t* node, type_t* specifier) { printf("This is line number 
     if (symcmp(childs[0], "ID")) {
         return NewScopeItem(childs[0]->token.value.sval, specifier);
     }
+
     // VarDec -> VarDec LB INT RB
     else if (symcmp(childs[0], "VarDec")) {
         type_t* array = new_type(Array, specifier, childs[2]->token.value.ival);
