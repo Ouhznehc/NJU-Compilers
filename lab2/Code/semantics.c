@@ -706,7 +706,6 @@ type_t* Exp(syntax_t* node) {
         // Exp -> Exp DOT ID
         if (symcmp(childs[1], "DOT")) {
             type_t* record = Exp(childs[0]);
-            printf("===============\n");
             // not a struct
             if (record == NULL || record->kind != Struct)
                 semantic_error(NOT_A_STRUCT, childs[1]->lineno, "");
@@ -715,6 +714,7 @@ type_t* Exp(syntax_t* node) {
                 semantic_error(UNDEFINED_FIELD, childs[2]->lineno, childs[2]->token.value.sval);
             // return the corresponding field type
             else {
+                printf("==================\n");
                 field_t* cur = record->record.field;
                 while (cur != NULL) {
                     if (!strcmp(cur->name, childs[2]->token.value.sval)) return cur->type;
