@@ -425,7 +425,7 @@ type_t* OptTag(syntax_t* node) {
     // so its name is impossible to conflict with another non-anonymous struct 
     if (node == NULL) {
         char name[64] = {0};
-        sprintf(name, "%d_anonymous_struct", AnonymousStruct);
+        sprintf(name, "%d_anonymous_struct", AnonymousStruct++);
         return new_type(Struct, name, NULL); 
     }
     else {
