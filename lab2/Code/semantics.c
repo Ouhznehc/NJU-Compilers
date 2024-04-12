@@ -680,10 +680,22 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
     syntax_t** childs = node->symbol.child;
     // Dec -> VarDec ASSIGNOP Exp
     if (symcmp(childs[1], "ASSIGNOP")){
-        if (record != NULL)
-            semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
         item_t* var = VarDec(childs[0], specifier);
         type_t* exp = Exp(childs[2]);
+        if (record != NULL) {
+            semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
+            // NOTE: to avoid further error, still add it to record field
+            if(record->record.field == NULL) {
+                record->record.field = var;
+                assert(record->record.field->next == NULL);
+            }
+            else {
+                field_t* cur = record->record.field;
+                while (cur->next != NULL) cur = cur->next;
+                cur->next = var;
+                assert(var->next == NULL);
+            }
+        }
         if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
         else if (!typecmp(var->type, exp)) {
