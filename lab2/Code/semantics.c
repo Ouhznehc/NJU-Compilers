@@ -791,8 +791,10 @@ type_t* Exp(syntax_t* node) {
         item_t* func = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
         if (func == NULL) 
             semantic_error(UNDEFINED_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
-        else if (func->type->kind != FuncDec || func->type->kind != FuncDef)
+        else if (func->type->kind != FuncDec || func->type->kind != FuncDef) {
+            printf("func type: %d\n", func->type->kind);
             semantic_error(NOT_A_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
+        }
         // Exp -> ID LP Args RP
         else if (symcmp(childs[2], "Args")) {
             Args(childs[2], func);
