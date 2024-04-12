@@ -504,7 +504,6 @@ VarList:
 */
 void VarList(syntax_t* node, item_t* func) {
     assert(node != NULL);
-    printf("func: %s\n", func->name);
     syntax_t** childs = node->symbol.child;
     item_t* param = ParamDec(childs[0]);
     if (func->type->function.argv == NULL) 
@@ -516,7 +515,7 @@ void VarList(syntax_t* node, item_t* func) {
     }
     func->type->function.argc++;
     //VarList -> ParamDec COMMA VarList
-    if(symcmp(childs[3], "VarList")) VarList(childs[3], func);
+    if(symcmp(childs[2], "VarList")) VarList(childs[3], func);
 } 
 
 /*
