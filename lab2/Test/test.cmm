@@ -1,19 +1,19 @@
-struct OneDimVector {
-  int id;
-  float x;
+struct Vector {
+  int x, y;
 };
 
-struct OneDimVector _, _1, _2;
+int vec_is_zero(struct Vector Vector) {
+  if (Vector.x == 0 && Vector.y == 0) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
-int foo() {
-  struct OneDimVector __;
-
-  _.id = 0;
-  _1.id = 1;
-  _2.id = 2;
-  __.id = -1;
-
-  _.x = _1.x = _2.x = __.x = 0.1;
-
-  return ___.id;
+int vec_is_equal(struct Vector v, struct Vector w) {
+  if (v.x == w.x && v.y == w.y) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
