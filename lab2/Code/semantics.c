@@ -515,7 +515,7 @@ void VarList(syntax_t* node, item_t* func) {
     }
     func->type->function.argc++;
     //VarList -> ParamDec COMMA VarList
-    if(symcmp(childs[2], "VarList")) VarList(childs[3], func);
+    if(symcmp(childs[2], "VarList")) VarList(childs[2], func);
 } 
 
 /*
