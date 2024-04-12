@@ -435,7 +435,6 @@ type_t* Tag(syntax_t* node) {
 
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
-    PrintScopeInfo(StructScope, StructTop);
     item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
     if(item == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
@@ -723,6 +722,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             else if (FindScopeItem(StructScope, StructTop, var->name, AllScope)) 
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else InsertScopeItem(VarScope, VarTop, CopyItem(var));
+            PrintScopeInfo(VarScope, VarTop);
         }   
     }
 } 
