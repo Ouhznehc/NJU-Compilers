@@ -231,6 +231,7 @@ void PrintScopeInfo(item_t** stack, int layer) {
             printf("%s ", cur->name);
             cur = cur->next;
         }
+        printf("\n");
     }
 }
 
