@@ -419,7 +419,6 @@ type_t* StructSpecifier(syntax_t* node) {printf("This is line number %d.\n", __L
         else {
             StackPush(VarStack);
             StackPush(StructStack);
-            printf("%p\n", record);
             DefList(childs[3], record);
             StackPop(VarStack);
             StackPop(StructStack);
