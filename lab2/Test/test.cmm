@@ -1,35 +1,50 @@
-struct PersonInfo {
-    int id;
-    int age;
-    int phoneNo;
+struct CheckData {
+    int _base;
+    int _data;
 };
 
-int BLEN;
-int CLEN;
-struct AddressBook {
-    int volNo;
-    struct PersonInfo contacts[100];
-} addrBooks[10];
+struct CheckData createCheckData(int base, int data) {
+    struct CheckData cd1;
+    cd1._base = base;
+    cd1._data = data;
+    return cd1;
+}
 
-int initAddrBooks() {
-    int bcnt = 0;
-    int ccnt = 0;
-    BLEN = 10;
-    CLEN = 100;
-    while (bcnt < BLEN) {
-        addrBooks[bcnt].volNo = bcnt;
-        ccnt = 0;
-        while (ccnt < CLEN) {
-            addrBooks[bcnt].contacts[ccnt].id = -1;
-            ccnt = ccnt + 1;
-        }
-        bcnt = bcnt + 1;
+int mod(int p, int q) {
+    return p - p / q;
+}
+
+int isGeneralPalindrome(struct CheckData cd) {
+    if (cd._data < 0 || cd._base < 2) {
+        return 0;
     }
-    return 0;
+    if (cd._data < cd._base) {
+        return 1;
+    }
+    {
+        int tail = mod(cd._data, cd._base);
+        int head = cd._data;
+        int len  = 0;
+        while (head >= cd._base) {
+            head = head / cd._base;
+            len = len + 1;
+        }
+        if (head == tail) {
+            while (len > 0) {
+                head = head * cd._base;
+                len = len - 1;
+            }
+            cd._data = cd._data - head - tail;
+            return isGeneralPalindrome(cd);
+        } else {
+            return 0;
+        }
+    }
 }
 
 int main() {
-    int h;
-    initAddrBooks();
-    h = addrBooks[0].contacts[0].hight;
+    int b = 10;
+    int d = 100;
+    isGeneralPalindrome(createCheckData(b, d));
+    isGeneralPalindrome(b, d);
 }
