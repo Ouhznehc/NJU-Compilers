@@ -655,8 +655,10 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
                 semantic_error(DUPLICATE_FIELD, childs[0]->lineno, var->name);
             else {
-                if(record->record.field == NULL)
+                if(record->record.field == NULL) {
                     record->record.field = var;
+                    assert(record->record.field->next == NULL);
+                }
                 else {
                     field_t* cur = record->record.field;
                     while (cur->next != NULL) cur = cur->next;
