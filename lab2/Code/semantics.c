@@ -425,7 +425,7 @@ type_t* Tag(syntax_t* node) {
 
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
-    item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, CurScope);
+    item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
     if(item == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     else {
