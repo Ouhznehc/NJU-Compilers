@@ -706,6 +706,7 @@ type_t* Exp(syntax_t* node) {
         // Exp -> Exp DOT ID
         if (symcmp(childs[1], "DOT")) {
             type_t* record = Exp(childs[0]);
+            printf("===============\n");
             // not a struct
             if (record == NULL || record->kind != Struct)
                 semantic_error(NOT_A_STRUCT, childs[1]->lineno, "");
