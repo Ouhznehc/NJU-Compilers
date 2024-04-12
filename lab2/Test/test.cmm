@@ -1,17 +1,12 @@
-struct Temp1
+struct Position
 {
-    int i;
-    float j;
+    float x, y;
 };
 
-struct Temp2
-{
-    int x;
-};
+int func(int a);
+
+int func(struct Position p);
 
 int main()
 {
-    struct Temp1 t1;
-    struct Temp2 t2;
-    t1 = t2;
 }
