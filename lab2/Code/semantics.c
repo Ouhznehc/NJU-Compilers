@@ -849,7 +849,7 @@ type_t* Exp(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
     }
     // Exp -> ID LP Args RP
     //		| ID LP RP
-    else if (symcmp(childs[0], "ID") && childs[1] != NULL) {
+    else if (symcmp(childs[0], "ID") && childs[1] != NULL) { printf("================\n");
         item_t* func = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
         if (func == NULL) 
             semantic_error(UNDEFINED_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
