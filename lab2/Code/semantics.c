@@ -332,7 +332,7 @@ type_t* Specifier(syntax_t* node) {
 
     syntax_t** childs = node->symbol.child;
     // Specifier -> TYPE
-    
+
     if (symcmp(childs[0], "TYPE")) {
         if (!strcmp(childs[0]->token.value.sval, "int")) return new_type(Basic, Int);
         else if (!strcmp(childs[0]->token.value.sval, "float")) return new_type(Basic, Float);
@@ -635,7 +635,6 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
         item_t* var = VarDec(childs[0], specifier);
         type_t* exp = Exp(childs[2]);
-        printf("exp = {%d %d} var = {%d %d}\n", exp->kind, exp->basic.type, var->type->kind, var->type->basic.type);
         if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
         else if (!typecmp(var->type, exp)) {
@@ -645,7 +644,6 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         else {
             InsertScopeItem(VarScope, VarTop, var);
-            printf("Insert var: {name: %s, VarTop: %d}\n", var->name, VarTop);
         }
     }
     // Dec -> VarDec
