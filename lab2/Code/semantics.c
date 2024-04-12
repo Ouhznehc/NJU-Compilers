@@ -691,9 +691,8 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
         }
         else if (var->type && var->type->kind == Array)
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
-        else {
-            InsertScopeItem(VarScope, VarTop, CopyItem(var));
-        }
+        
+        InsertScopeItem(VarScope, VarTop, CopyItem(var));
     }
     // Dec -> VarDec
     else {
