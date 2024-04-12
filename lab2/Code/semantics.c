@@ -526,6 +526,7 @@ item_t* ParamDec(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
+    printf("var = %s\n", var->name);
     if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     else
