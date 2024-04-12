@@ -110,7 +110,7 @@ type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n
     return ret;
 }
 
-bool symcmp(syntax_t* node, char* name) {printf("This is line number %d.\n", __LINE__);
+bool symcmp(syntax_t* node, char* name) {
     if (node == NULL) return false;
     return strcmp(node->name, name) == 0;
 }
