@@ -637,8 +637,10 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
         printf("exp = {%d %d} var = {%d}\n", exp->kind, exp->basic.type, var->type->kind);
         if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-        else if (!typecmp(var->type, exp))
+        else if (!typecmp(var->type, exp)) {
+            printf("funck\n");
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
+        }
         else if (var->type && var->type->kind == Array)
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         else {
