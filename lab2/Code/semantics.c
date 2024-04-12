@@ -558,8 +558,7 @@ item_t* ParamDec(syntax_t* node) {
     item_t* var = VarDec(childs[1], specifier);
     if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
-    else
-        InsertScopeItem(VarScope, VarTop, CopyItem(var));
+    InsertScopeItem(VarScope, VarTop, CopyItem(var));
     return var;
 } 
 
