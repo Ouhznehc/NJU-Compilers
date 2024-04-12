@@ -500,11 +500,11 @@ void FunDec(syntax_t* node, type_t* specifier, int type) { printf("This is line 
     assert(symcmp(node, "FunDec"));
 
     syntax_t** childs = node->symbol.child;
+    printf("%s\n", childs[0]->token.value.sval);
     item_t* func = NewScopeItem(
         childs[0]->token.value.sval,
         new_type(type, childs[0]->token.value.sval, childs[0]->lineno, 0, NULL, specifier) 
     );
-        printf("=============\n");
     // FuncDec -> ID LP VarList RP
     if(symcmp(childs[2], "VarList")) {
         VarList(childs[2], func);
