@@ -345,7 +345,7 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
     syntax_t** childs = node->symbol.child;
     item_t* var = VarDec(childs[0], specifier);
     assert(var != NULL);
-    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, CurScope))
+    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
         semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
     else InsertScopeItem(VarScope, VarTop, var);
     // ExtDecList -> VarDec COMMA ExtDecList
@@ -395,7 +395,7 @@ type_t* StructSpecifier(syntax_t* node) {
     else {
         type_t* record = OptTag(childs[1]);
         assert(record != NULL);
-        item_t* item = FindScopeItem(StructScope, StructTop, record->record.name, CurScope);
+        item_t* item = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
         if (item != NULL) {
             // must not be anonymous struct
             assert(childs[1] != NULL);
@@ -409,7 +409,7 @@ type_t* StructSpecifier(syntax_t* node) {
             StackPop(StructStack);
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
-            InsertScopeItem(StructScope, StructTop, CopyItem(item));
+            InsertScopeItem(StructScope, 0, CopyItem(item));
             return record;
         }
     }
@@ -559,7 +559,7 @@ item_t* ParamDec(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
-    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, CurScope))
+    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     else
         InsertScopeItem(VarScope, VarTop, CopyItem(var));
@@ -709,7 +709,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             item_t* var = VarDec(childs[0], specifier);
             if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
                 semantic_error(DUPLICATE_FIELD, childs[0]->lineno, var->name);
-            else if (FindScopeItem(StructScope, StructTop, var->name, CurScope))
+            else if (FindScopeItem(StructScope, StructTop, var->name, AllScope))
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else {
                 if(record->record.field == NULL) {
