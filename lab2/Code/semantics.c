@@ -140,7 +140,6 @@ bool typecmp(type_t* t1, type_t* t2) {
         case FuncDec:
         case FuncDef:
             function:
-            printf("=============\n");
             if (strcmp(t1->function.name, t2->function.name)) return false;
             if (t1->function.argc != t2->function.argc) return false;
             cur1 = t1->function.argv;
