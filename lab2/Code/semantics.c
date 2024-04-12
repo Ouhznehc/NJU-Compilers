@@ -74,19 +74,6 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
     }
 }
 
-type_t* copy_type(type_t* src) {
-    if (src == NULL) return NULL;
-    type_t* ret = malloc(sizeof(type_t));
-    memcpy(ret, src, sizeof(type_t));
-    return src;
-}
-field_t* copy_field(field_t* src) {
-    if (src == NULL) return NULL;
-    field_t* ret = malloc(sizeof(field_t));
-    memcpy(ret, src, sizeof(field_t));
-    return src;
-}
-
 type_t* new_type(SemanticBasicType kind, ...) {
     type_t* ret = malloc(sizeof(type_t));
     memset(ret, 0, sizeof(type_t));
@@ -101,20 +88,20 @@ type_t* new_type(SemanticBasicType kind, ...) {
             ret->basic.type = va_arg(args, SemanticBasicType);
             break;
         case Array:
-            ret->array.elem = copy_type(va_arg(args, type_t*));
+            ret->array.elem = va_arg(args, type_t*);
             ret->array.width = va_arg(args, int);
             break;
         case Struct:
             strcpy(ret->record.name, va_arg(args, char*));
-            ret->record.field = copy_field(va_arg(args, field_t*));  
+            ret->record.field = va_arg(args, field_t*);  
             break;
         case FuncDef:
         case FuncDec:
             strcpy(ret->function.name, va_arg(args, char*));
             ret->function.lineno = va_arg(args, int);
             ret->function.argc = va_arg(args, int);
-            ret->function.argv = copy_field(va_arg(args, field_t*));
-            ret->function.ret = copy_type(va_arg(args, type_t*));
+            ret->function.argv = va_arg(args, field_t*);
+            ret->function.ret = va_arg(args, type_t*);
             break;
         default:
             assert(0);
