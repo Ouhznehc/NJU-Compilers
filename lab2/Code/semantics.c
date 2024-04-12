@@ -915,7 +915,7 @@ void Args(syntax_t* node, item_t* func) {
         type_t* func_type = func_arg->type;
         type_t* cur_type = Exp(cur_arg->symbol.child[0]);
         bool check = false;
-        if (func_type == Struct && cur_type == Struct) check = !strcmp(func_type->record.name, cur_type->record.name);
+        if (func_type->kind == Struct && cur_type->kind == Struct) check = !strcmp(func_type->record.name, cur_type->record.name);
         else check = typecmp(func_type, cur_type);
         if(!check) {
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
