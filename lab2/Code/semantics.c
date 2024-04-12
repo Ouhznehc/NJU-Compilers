@@ -466,6 +466,7 @@ type_t* Tag(syntax_t* node) {printf("This is line number %d.\n", __LINE__);
         assert(!strcmp(item->name,item->type->record.name));
         ret = new_type(Struct, item->name, item->type->record.field);
     }
+    return ret;
 } 
 
 /*
