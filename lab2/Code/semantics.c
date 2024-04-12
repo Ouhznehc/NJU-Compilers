@@ -891,7 +891,7 @@ void Args(syntax_t* node, item_t* func) {
                 return;
         }
         func_arg = func_arg->next;
-        cur_arg = cur_arg->symbol.child[0];
+        cur_arg = cur_arg->symbol.child[2];
     }
     if (func_arg == NULL && cur_arg == NULL) return;
     semantic_error(MISMATCHED_FUNC_ARG, node->lineno, "");
