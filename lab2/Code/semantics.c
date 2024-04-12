@@ -918,6 +918,7 @@ void Args(syntax_t* node, item_t* func) {
         if (func_type->kind == Struct && cur_type->kind == Struct) check = !strcmp(func_type->record.name, cur_type->record.name);
         else check = typecmp(func_type, cur_type);
         if(!check) {
+            printf("=============\n");
                 semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); 
                 return;
         }
