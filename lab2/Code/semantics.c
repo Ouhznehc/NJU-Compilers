@@ -154,6 +154,7 @@ bool contains_field(type_t* type, char* name) {
     assert(type->kind == Struct || type->kind == FuncDef);
     field_t* cur = type->kind == Struct ? type->record.field : type->function.argv;
     while (cur != NULL) {
+        printf("cur = %p\n", cur);
         if (!strcmp(cur->name, name)) return true;
         cur = cur->next;
     }
