@@ -223,6 +223,16 @@ void InsertScopeItem(item_t** stack, int layer, item_t* item) {
     item->next = stack[layer];
     stack[layer] = item;
 }
+void PrintScopeInfo(item_t** stack, int layer) {
+    for (int i = layer; i >= 0; i--){
+        printf("layer %d\n", i);
+        item_t* cur = stack[i];
+        while (cur != NULL) {
+            printf("%s ", cur->name);
+            cur = cur->next;
+        }
+    }
+}
 
 enum {VarStack, StructStack};
 void StackPush(int type) {
@@ -425,6 +435,7 @@ type_t* Tag(syntax_t* node) {
 
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
+    PrintScopeInfo(StructScope, StructTop);
     item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
     if(item == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
