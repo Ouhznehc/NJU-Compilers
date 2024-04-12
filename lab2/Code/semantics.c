@@ -718,12 +718,12 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
         // non-struct Dec
         else {
             item_t* var = VarDec(childs[0], specifier);
+            printf("var = %s\n", var->name);
             if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else if (FindScopeItem(StructScope, StructTop, var->name, AllScope)) 
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else InsertScopeItem(VarScope, VarTop, CopyItem(var));
-            PrintScopeInfo(VarScope, VarTop);
         }   
     }
 } 
