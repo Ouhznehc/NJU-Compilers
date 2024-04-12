@@ -872,14 +872,16 @@ type_t* Exp(syntax_t* node) {
             type_t* exp2 = Exp(childs[2]);
             if (exp1 == NULL || exp2 == NULL) return NULL;
             else if (exp1->kind != Basic || exp2->kind != Basic) {
-                printf("1 exp1->kind = %d, exp2->kind = %d\n", exp1->kind, exp2->kind);
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
             }
             else if (!typecmp_structure(exp1, exp2)) {
-                printf("2 exp1->kind = %d, exp2->kind = %d\n", exp1->kind, exp2->kind);
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
             }
-            else return exp1;
+            else {
+                // Boolean Operation must return Int
+                if (symcmp(childs[1], "AND") || symcmp(childs[1], "OR") || symcmp(childs[1], "RELOP")) return new_type(Basic, Int);
+                else return exp1;
+            }
             return NULL;
         }
     }
