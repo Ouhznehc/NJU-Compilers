@@ -75,11 +75,13 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {printf("Thi
 }
 
 type_t* copy_type(type_t* src) {
+    if (src == NULL) return NULL;
     type_t* ret = malloc(sizeof(type_t));
     memcpy(ret, src, sizeof(type_t));
     return src;
 }
 field_t* copy_field(field_t* src) {
+    if (src == NULL) return NULL;
     field_t* ret = malloc(sizeof(field_t));
     memcpy(ret, src, sizeof(field_t));
     return src;
@@ -500,7 +502,6 @@ void FunDec(syntax_t* node, type_t* specifier, int type) { printf("This is line 
     assert(symcmp(node, "FunDec"));
 
     syntax_t** childs = node->symbol.child;
-    printf("%d %s\n", type, childs[0]->token.value.sval);
     item_t* func = NewScopeItem(
         childs[0]->token.value.sval,
         new_type(type, childs[0]->token.value.sval, childs[0]->lineno, 0, NULL, specifier) 
