@@ -651,7 +651,9 @@ void Stmt(syntax_t* node, type_t* specifier) {
     }
     // Stmt -> IF LP Exp RP Stmt
     else if (symcmp(childs[0], "IF")) {
-        Exp(childs[2]);
+        type_t* exp = Exp(childs[2]);
+        if (exp->kind != Basic || exp->basic.type != Int)
+            semantic_error(MISMATCHED_OP, childs[2]->lineno, "");
         Stmt(childs[4], specifier);
         // Stmt -> IF LP Exp RP Stmt ELSE Stmt
         if (symcmp(childs[5], "ELSE"))
