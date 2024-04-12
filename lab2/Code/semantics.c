@@ -154,7 +154,6 @@ bool contains_field(type_t* type, char* name) {
     assert(type->kind == Struct || type->kind == FuncDef);
     field_t* cur = type->kind == Struct ? type->record.field : type->function.argv;
     while (cur != NULL) {
-        printf("============\n");
         if (!strcmp(cur->name, name)) return true;
         cur = cur->next;
     }
@@ -164,6 +163,7 @@ bool contains_field(type_t* type, char* name) {
 enum {CurScope, AllScope};
 item_t* NewScopeItem(char* name, type_t* type) {
     item_t* item = malloc(sizeof(item_t));
+    memset(item, 0, sizeof(item_t));
     strcpy(item->name, name);
     item->type = type;
     item->next = NULL;
