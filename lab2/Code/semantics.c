@@ -104,14 +104,14 @@ type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n
             break;
         case Struct:
             strcpy(ret->record.name, va_arg(args, char*));
-            ret->record.field = va_arg(args, field_t*);  
+            ret->record.field = copy_field(va_arg(args, field_t*));  
             break;
         case FuncDef:
         case FuncDec:
             strcpy(ret->function.name, va_arg(args, char*));
             ret->function.lineno = va_arg(args, int);
             ret->function.argc = va_arg(args, int);
-            ret->function.argv = va_arg(args, field_t*);
+            ret->function.argv = copy_field(va_arg(args, field_t*));
             ret->function.ret = copy_type(va_arg(args, type_t*));
             break;
         default:
