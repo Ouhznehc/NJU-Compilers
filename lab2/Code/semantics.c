@@ -227,17 +227,6 @@ void InsertScopeItem(item_t** stack, int layer, item_t* item) {
     item->next = stack[layer];
     stack[layer] = item;
 }
-void PrintScopeInfo(item_t** stack, int layer) {
-    for (int i = layer; i >= 0; i--){
-        printf("layer %d\n", i);
-        item_t* cur = stack[i];
-        while (cur != NULL) {
-            printf("%s ", cur->name);
-            cur = cur->next;
-        }
-        printf("\n");
-    }
-}
 
 enum {VarStack, StructStack};
 void StackPush(int type) {
@@ -412,8 +401,8 @@ type_t* StructSpecifier(syntax_t* node) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
             InsertScopeItem(StructScope, 0, CopyItem(item));
-            return record;
         }
+        return record;
     }
 }
 
@@ -772,6 +761,7 @@ type_t* Exp(syntax_t* node) {
         // Exp -> Exp DOT ID
         if (symcmp(childs[1], "DOT")) {
             type_t* record = Exp(childs[0]);
+            type_t* ret = NULL;
             // not a struct
             if (record == NULL || record->kind != Struct)
                 semantic_error(NOT_A_STRUCT, childs[1]->lineno, "");
@@ -794,13 +784,16 @@ type_t* Exp(syntax_t* node) {
             type_t* exp1 = Exp(childs[0]);
             type_t* exp2 = Exp(childs[2]);
             // not an array
-            if (exp1 == NULL || exp1->kind != Array)
+            if (exp1 == NULL || exp1->kind != Array) {
                 semantic_error(NOT_A_ARRAY, childs[0]->lineno, "");
+                return NULL;
+            }
             // not a index
-            else if (exp2 == NULL || exp2->kind != Basic || exp2->basic.type != Int)
+            else if (exp2 == NULL || exp2->kind != Basic || exp2->basic.type != Int) {
                 semantic_error(NOT_A_INDEX, childs[2]->lineno, "");
+                return exp1->array.elem;
+            }
             else return exp1->array.elem;
-            return NULL;
         }
         // Exp -> Exp ASSIGNOP Exp
         else if (symcmp(childs[1], "ASSIGNOP")) {
@@ -888,12 +881,7 @@ type_t* Exp(syntax_t* node) {
     else if (symcmp(childs[0], "FLOAT")) {
         return new_type(Basic, Float);
     }
-    else {
-        for (int i = 0; childs[i]; i++)
-            printf("%s ", childs[i]->name);
-        printf("\n");
-        assert(0);
-    }
+    else assert(0);
 } 
 
 /*
