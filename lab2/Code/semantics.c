@@ -7,7 +7,7 @@ int VarTop = 0, StructTop = 0;
 // the counter of anonymous struct
 int AnonymousStruct = 0;
 
-void semantic_error(SemanticErrorType error, int lineno, char* msg) {
+void semantic_error(SemanticErrorType error, int lineno, char* msg) {printf("This is line number %d.\n", __LINE__);
     switch (error) {
         case UNDEFINED_VAR:
             printf("Error type 1 at Line %d: Undefined variable '%s'.\n", lineno, msg);
@@ -74,7 +74,7 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
     }
 }
 
-type_t* new_type(SemanticBasicType kind, ...) {
+type_t* new_type(SemanticBasicType kind, ...) {printf("This is line number %d.\n", __LINE__);
     type_t* ret = malloc(sizeof(type_t));
     memset(ret, 0, sizeof(type_t));
 
@@ -110,12 +110,12 @@ type_t* new_type(SemanticBasicType kind, ...) {
     return ret;
 }
 
-bool symcmp(syntax_t* node, char* name) {
+bool symcmp(syntax_t* node, char* name) {printf("This is line number %d.\n", __LINE__);
     if (node == NULL) return false;
     return strcmp(node->name, name) == 0;
 }
 
-bool typecmp(type_t* t1, type_t* t2) {
+bool typecmp(type_t* t1, type_t* t2) {printf("This is line number %d.\n", __LINE__);
     if (t1 == NULL || t2 == NULL) return true;
     if ( (t1->kind == FuncDef || t1->kind == FuncDec) 
         && (t2->kind == FuncDef || t2->kind == FuncDec))
@@ -154,7 +154,7 @@ bool typecmp(type_t* t1, type_t* t2) {
     }
 }
 
-bool contains_field(type_t* type, char* name) {
+bool contains_field(type_t* type, char* name) {printf("This is line number %d.\n", __LINE__);
     assert(type != NULL);
     assert(type->kind == Struct || type->kind == FuncDef);
     field_t* cur = type->kind == Struct ? type->record.field : type->function.argv;
@@ -166,7 +166,7 @@ bool contains_field(type_t* type, char* name) {
 }
 
 enum {CurScope, AllScope};
-item_t* NewScopeItem(char* name, type_t* type) {
+item_t* NewScopeItem(char* name, type_t* type) {printf("This is line number %d.\n", __LINE__);
     item_t* item = malloc(sizeof(item_t));
     memset(item, 0, sizeof(item_t));
     strcpy(item->name, name);
@@ -174,7 +174,7 @@ item_t* NewScopeItem(char* name, type_t* type) {
     item->next = NULL;
     return item;
 }
-item_t* CopyItem(item_t* item) {
+item_t* CopyItem(item_t* item) {printf("This is line number %d.\n", __LINE__);
     item_t* ret = malloc(sizeof(item_t));
     memset(ret, 0, sizeof(item_t));
     strcpy(ret->name, item->name);
@@ -182,7 +182,7 @@ item_t* CopyItem(item_t* item) {
     ret->next = NULL;
     return ret;
 }
-item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) {
+item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) {printf("This is line number %d.\n", __LINE__);
     item_t* cur = stack[layer];
     switch (mode) {
         case CurScope:
@@ -201,7 +201,7 @@ item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) {
             assert(0);
     }
 }
-item_t* FindScopeItemWithType(item_t** stack, int layer, char* name, int kind, int mode) {
+item_t* FindScopeItemWithType(item_t** stack, int layer, char* name, int kind, int mode) {printf("This is line number %d.\n", __LINE__);
     item_t* cur = stack[layer];
     switch (mode) {
         case CurScope:
@@ -220,12 +220,12 @@ item_t* FindScopeItemWithType(item_t** stack, int layer, char* name, int kind, i
             assert(0);
     }
 }
-void InsertScopeItem(item_t** stack, int layer, item_t* item) {
+void InsertScopeItem(item_t** stack, int layer, item_t* item) {printf("This is line number %d.\n", __LINE__);
     assert(item != NULL);
     item->next = stack[layer];
     stack[layer] = item;
 }
-void PrintScopeInfo(item_t** stack, int layer) {
+void PrintScopeInfo(item_t** stack, int layer) {printf("This is line number %d.\n", __LINE__);
     for (int i = layer; i >= 0; i--){
         printf("layer %d\n", i);
         item_t* cur = stack[i];
@@ -238,7 +238,7 @@ void PrintScopeInfo(item_t** stack, int layer) {
 }
 
 enum {VarStack, StructStack};
-void StackPush(int type) {
+void StackPush(int type) {printf("This is line number %d.\n", __LINE__);
     switch (type) {
         case VarStack:
             VarTop++;
@@ -252,7 +252,7 @@ void StackPush(int type) {
             assert(0);
     }
 }
-void StackPop(int type) {
+void StackPop(int type) {printf("This is line number %d.\n", __LINE__);
     switch (type) {
         case VarStack:
             VarScope[VarTop] = NULL;
@@ -272,7 +272,7 @@ void StackPop(int type) {
 Program:    
     | ExtDefList
 */
-void Program(syntax_t* node) { 
+void Program(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
     syntax_t** childs = node->symbol.child;
 
     // Program -> ExtDefList
@@ -284,7 +284,7 @@ ExtDefList:
     | ExtDef ExtDefList                       
     | empty
 */ 
-void ExtDefList(syntax_t* node) {
+void ExtDefList(syntax_t* node) {printf("This is line number %d.\n", __LINE__);
     // empty
     if (node == NULL) return;
 
@@ -301,7 +301,7 @@ ExtDef:
     | Specifier FunDec CompSt
     | Specifier FunDec SEMI
 */
-void ExtDef(syntax_t* node) { 
+void ExtDef(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "ExtDef"));
 
@@ -338,7 +338,7 @@ ExtDecList:
     | VarDec
     | VarDec COMMA ExtDecList
 */
-void ExtDecList(syntax_t* node, type_t* specifier) {
+void ExtDecList(syntax_t* node, type_t* specifier) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "ExtDecList"));
 
@@ -359,7 +359,7 @@ Specifier:
     | TYPE
     | StructSpecifier
 */
-type_t* Specifier(syntax_t* node) { 
+type_t* Specifier(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Specifier"));
 
@@ -381,7 +381,7 @@ StructSpecifier:
     | STRUCT OptTag LC DefList RC
     | STRUCT Tag
 */
-type_t* StructSpecifier(syntax_t* node) {
+type_t* StructSpecifier(syntax_t* node) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "StructSpecifier"));
 
@@ -420,7 +420,7 @@ OptTag:
     | ID
     | empty
 */
-type_t* OptTag(syntax_t* node) { 
+type_t* OptTag(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
     // anonymous struct: manually assign a name, which starts with a number, 
     // so its name is impossible to conflict with another non-anonymous struct 
     if (node == NULL) {
@@ -438,7 +438,7 @@ type_t* OptTag(syntax_t* node) {
 Tag:
     | ID
 */
-type_t* Tag(syntax_t* node) {
+type_t* Tag(syntax_t* node) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Tag"));
 
@@ -458,7 +458,7 @@ VarDec:
     | ID
     | VarDec LB INT RB
 */
-item_t* VarDec(syntax_t* node, type_t* specifier) { 
+item_t* VarDec(syntax_t* node, type_t* specifier) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "VarDec"));
 
@@ -481,7 +481,7 @@ FunDec:
     | ID LP RP
 */
 // NOTE: type -> {FuncDec, FuncDef}
-void FunDec(syntax_t* node, type_t* specifier, int type) { 
+void FunDec(syntax_t* node, type_t* specifier, int type) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "FunDec"));
 
@@ -530,7 +530,7 @@ VarList:
     | ParamDec COMMA VarList
     | ParamDec
 */
-void VarList(syntax_t* node, item_t* func) {
+void VarList(syntax_t* node, item_t* func) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "VarList"));
 
@@ -552,7 +552,7 @@ void VarList(syntax_t* node, item_t* func) {
 ParamDec:
     | Specifier VarDec
 */
-item_t* ParamDec(syntax_t* node) {
+item_t* ParamDec(syntax_t* node) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "ParamDec"));
 
@@ -570,7 +570,7 @@ item_t* ParamDec(syntax_t* node) {
 CompSt:
     | LC DefList StmtList RC
 */
-void CompSt(syntax_t* node, type_t* specifier) { 
+void CompSt(syntax_t* node, type_t* specifier) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "CompSt"));
 
@@ -584,7 +584,7 @@ StmtList:
     | Stmt StmtList
     | empty
 */
-void StmtList(syntax_t* node, type_t* specifier) {
+void StmtList(syntax_t* node, type_t* specifier) {printf("This is line number %d.\n", __LINE__);
     if (node == NULL) return;
     syntax_t** childs = node->symbol.child;
     Stmt(childs[0], specifier);
@@ -600,7 +600,7 @@ Stmt:
     | IF LP Exp RP Stmt
     | WHILE LP Exp RP Stmt
 */
-void Stmt(syntax_t* node, type_t* specifier) {
+void Stmt(syntax_t* node, type_t* specifier) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Stmt"));
 
@@ -640,7 +640,7 @@ DefList:
     | Def DefList
     | empty
 */
-void DefList(syntax_t* node, type_t* record) { 
+void DefList(syntax_t* node, type_t* record) { printf("This is line number %d.\n", __LINE__);
     if (node == NULL) return;
     syntax_t** childs = node->symbol.child;
     Def(childs[0], record);
@@ -651,7 +651,7 @@ void DefList(syntax_t* node, type_t* record) {
 Def:
     | Specifier DecList SEMI
 */
-void Def(syntax_t* node, type_t* record) {
+void Def(syntax_t* node, type_t* record) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Def"));
 
@@ -665,7 +665,7 @@ DecList:
     | Dec
     | Dec COMMA DecList
 */
-void DecList(syntax_t* node, type_t* specifier, type_t* record) { 
+void DecList(syntax_t* node, type_t* specifier, type_t* record) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "DecList"));
 
@@ -680,7 +680,7 @@ Dec:
     | VarDec
     | VarDec ASSIGNOP Exp
 */
-void Dec(syntax_t* node, type_t* specifier, type_t* record) {
+void Dec(syntax_t* node, type_t* specifier, type_t* record) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Dec"));
 
@@ -759,7 +759,7 @@ Exp:
     | INT
     | FLOAT
 */
-type_t* Exp(syntax_t* node) { 
+type_t* Exp(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Exp"));
 
@@ -897,7 +897,7 @@ Args:
     | Exp COMMA Args
     | Exp
 */
-void Args(syntax_t* node, item_t* func) {
+void Args(syntax_t* node, item_t* func) {printf("This is line number %d.\n", __LINE__);
     assert(node != NULL);
     assert(symcmp(node, "Args"));
 
@@ -917,7 +917,7 @@ void Args(syntax_t* node, item_t* func) {
     semantic_error(MISMATCHED_FUNC_ARG, node->lineno, "");
 } 
 
-void check_func_definition(){
+void check_func_definition(){printf("This is line number %d.\n", __LINE__);
     item_t* cur = VarScope[0];
     item_t* dec[1024] = {NULL};
     int cnt = 0;
