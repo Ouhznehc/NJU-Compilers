@@ -1,45 +1,55 @@
-struct {
-  float ff14;
-  int x[1][1][4][5][1][4][1][9][1][9][8][1][0][2][3][3][3][3][3][6][6][6][6][6][6];
-} a() {
-  struct {
-    float f14f = 99.9;
-    int x[1][1][4][5][1][4][1][9][1][9][8][1][0][2][3][3][3][3][3][6][6][6][6][6][6];
-  } s;
-  s = s + 1;
-  return s;
+struct FinalFantasyXIV {
+  int release_date;
+  int maximum_characters = 8;
+  int dlc_version;
+  int game_price;
+  float service_fee;
+} game;
+
+struct FFXIVPlayer {
+  int money;
+  int username;
+  int characters;
+  int maximum_level;
+  int bought_dlcs;
+  float maximum_level;
+} players[1145141919], RMBPlayer;
+
+int getDate();
+int buy_ff14(struct FFXIVPlayer player) {
+  if (getDate() > game.release_date) {
+    player.money = player.money - windows_pc_price;
+    player.money = player.money - game.game_price;
+    player.money = player.money - game.service_fee;
+    player.bought_dlcs = game.latest_dlc_version;
+    return 1;
+  }
+  return 0;
 }
 
-int s[0];
-int play_ff_14();
-int go_to_nijigen() {
-  {
-    int s;
+int play_ff14(struct FFXIVPlayer player) {
+  if (getDate() > game.release_date) {
+    play_compiler_labs(); // ???
+    return 0;
+  } else {
+    player.money = player.money + 1;
+    wait_for_ffxiv_release();
+    return 0;
   }
-  {
-    int s;
-  }
-  if (s) {
-    play_ff_14();
-  } else /* ??? */ {
-    play_os_labs();
-  }
-  {
-    int s;
-    return 114514;
-  }
-  return 1145141919;
-  {
-    return s;
-  }
-  return s;
 }
 
-int main(int argc) {
-  int ff14 = 1;
-  int BV = 233;
-  argc();
-  s[ff14][ff14];
-  {}{}{{}}{{}{}}
-  return -114514 * 1919 / BV;
+int main(int argc, float argv /* LOL */) {
+  struct FFXIVPlayer player = RMBPlayer;
+  game.release_date = 0X20140000;
+  game.game_price = 60;
+  game.service_fee = 20;
+  player.money = 0x3f3f3f3f;
+  while (!play_ff14) {
+    // player spins until he can play!
+  }
+  return -1;
+}
+
+float getDate() {
+  return 0;
 }
