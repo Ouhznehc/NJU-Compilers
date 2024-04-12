@@ -7,7 +7,11 @@ int VarTop = 0, StructTop = 0;
 // the counter of anonymous struct
 int AnonymousStruct = 0;
 
+int semantic_error_line = 0;
+
 void semantic_error(SemanticErrorType error, int lineno, char* msg) {
+    if (lineno == semantic_error_line) return;
+    semantic_error_line = lineno;
     switch (error) {
         case UNDEFINED_VAR:
             printf("Error type 1 at Line %d: Undefined variable '%s'.\n", lineno, msg);
