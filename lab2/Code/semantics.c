@@ -419,6 +419,7 @@ type_t* StructSpecifier(syntax_t* node) {printf("This is line number %d.\n", __L
         else {
             StackPush(VarStack);
             StackPush(StructStack);
+            printf("%p\n", record);
             DefList(childs[3], record);
             StackPop(VarStack);
             StackPop(StructStack);
@@ -485,7 +486,6 @@ item_t* VarDec(syntax_t* node, type_t* specifier) { printf("This is line number 
 
     // VarDec -> VarDec LB INT RB
     else if (symcmp(childs[0], "VarDec")) {
-        printf("%p %d\n", specifier, childs[2]->token.value.ival);
         type_t* array = new_type(Array, specifier, childs[2]->token.value.ival);
         return VarDec(childs[0], array);
     }
