@@ -34,7 +34,7 @@ void semantic_error(SemanticErrorType error, int lineno, char* msg) {
             printf("Error type 8 at Line %d: Return type mismatch.\n", lineno);
             break;
         case MISMATCHED_FUNC_ARG:
-            printf("Error type 8 at Line %d: Function called with incorrect arguments.\n", lineno);
+            printf("Error type 9 at Line %d: Function called with incorrect arguments.\n", lineno);
             break;
         case NOT_A_ARRAY:
             printf("Error type 10 at Line %d: Variable is not an array.\n", lineno);
