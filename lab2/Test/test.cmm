@@ -1,12 +1,11 @@
-struct Position 
+int func()
 {
-    float x, y;
-};
-
-int func(int a);
-
-int func(struct Position p);
+    int i = 10;
+    return i;
+}
 
 int main()
 {
+    int i;
+    i = func();
 }
