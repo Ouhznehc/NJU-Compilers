@@ -653,9 +653,8 @@ void Stmt(syntax_t* node, type_t* specifier) { printf("This is line number %d.\n
         printf("==1\n");
         type_t* exp = Exp(childs[2]);
         printf("===2\n");
-        if (exp->kind != Basic || exp->basic.type != Int)
+        if (exp != NULL && (exp->kind != Basic || exp->basic.type != Int))
             semantic_error(MISMATCHED_OP, childs[2]->lineno, "");
-        printf("=====3\n");
         Stmt(childs[4], specifier);
         // Stmt -> IF LP Exp RP Stmt ELSE Stmt
         if (symcmp(childs[5], "ELSE"))
