@@ -869,7 +869,7 @@ type_t* Exp(syntax_t* node) { printf("This is line number %d.\n", __LINE__);
         return NULL;
     }
     // Exp -> ID
-    else if (symcmp(childs[0], "ID")) { printf("================\n");
+    else if (symcmp(childs[0], "ID")) {
         item_t* id = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
         if (id == NULL)
             semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
@@ -907,7 +907,7 @@ void Args(syntax_t* node, item_t* func) {printf("This is line number %d.\n", __L
         type_t* func_type = func_arg->type;
         type_t* cur_type = Exp(cur_arg->symbol.child[0]);
         if (!typecmp(func_type, cur_type)) {
-                semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, "");
+                semantic_error(MISMATCHED_FUNC_ARG, cur_arg->lineno, ""); printf("++================\n");
                 return;
         }
         func_arg = func_arg->next;
