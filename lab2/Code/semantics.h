@@ -127,4 +127,6 @@ void DecList(syntax_t* node, type_t* specifier, type_t* record);
 type_t* Exp(syntax_t* node); 
 void Args(syntax_t* node, item_t* func); 
 
+void check_func_definition();
+
 #endif

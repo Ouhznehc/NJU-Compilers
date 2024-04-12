@@ -864,3 +864,17 @@ void Args(syntax_t* node, item_t* func) {
     if (func_arg == NULL && cur_arg == NULL) return;
     semantic_error(MISMATCHED_FUNC_ARG, node->lineno, "");
 } 
+
+void check_func_definition(){
+    item_t* cur = VarScope[0];
+    item_t* dec[1024] = {NULL};
+    int cnt = 0;
+    while (cur != NULL) {
+        if (cur->type->kind == FuncDec) dec[cnt++] = cur;
+        cur = cur->next;
+    }
+    for (int i = 0; i < cnt; i++) {
+        if (!FindScopeItemWithType(VarScope, 0, dec[i]->name, FuncDef, CurScope)) 
+            semantic_error(DECLARED_NOT_DEFINED_FUNC, dec[i]->type->function.lineno, dec[i]->name);
+    }
+}
