@@ -710,6 +710,7 @@ type_t* Exp(syntax_t* node) {
         // Exp -> Exp DOT ID
         if (symcmp(childs[1], "DOT")) {
             type_t* record = Exp(childs[0]);
+            printf("%s\n", record->record.name);
             // not a struct
             if (record == NULL || record->kind != Struct)
                 semantic_error(NOT_A_STRUCT, childs[1]->lineno, "");
@@ -813,7 +814,6 @@ type_t* Exp(syntax_t* node) {
     // Exp -> ID
     else if (symcmp(childs[0], "ID")) {
         item_t* id = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
-        printf("id: {name: %s, type:%s}\n", id->name, id->type->record.name);
         if (id == NULL)
             semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
         else return id->type;
