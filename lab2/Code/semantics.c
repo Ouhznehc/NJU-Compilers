@@ -290,8 +290,9 @@ ExtDef:
 */
 void ExtDef(syntax_t* node) { 
     assert(node != NULL);
-    syntax_t** childs = node->symbol.child;
+    assert(symcmp(node, "ExtDef"));
 
+    syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
 
     // ExtDef -> Specifier ExtDecList SEMI
@@ -326,6 +327,7 @@ ExtDecList:
 */
 void ExtDecList(syntax_t* node, type_t* specifier) {
     assert(node != NULL);
+    assert(symcmp(node, "ExtDecList"));
 
     syntax_t** childs = node->symbol.child;
     VarDec(childs[0], specifier);
@@ -342,6 +344,7 @@ Specifier:
 */
 type_t* Specifier(syntax_t* node) { 
     assert(node != NULL);
+    assert(symcmp(node, "Specifier"));
 
     syntax_t** childs = node->symbol.child;
     // Specifier -> TYPE
@@ -363,6 +366,7 @@ StructSpecifier:
 */
 type_t* StructSpecifier(syntax_t* node) {
     assert(node != NULL);
+    assert(symcmp(node, "StructSpecifier"));
 
     syntax_t** childs = node->symbol.child;
     // StructSpecifier -> STRUCT Tag
@@ -417,6 +421,8 @@ Tag:
 */
 type_t* Tag(syntax_t* node) {
     assert(node != NULL);
+    assert(symcmp(node, "Tag"));
+
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
     item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, CurScope);
@@ -435,6 +441,8 @@ VarDec:
 */
 item_t* VarDec(syntax_t* node, type_t* specifier) { 
     assert(node != NULL);
+    assert(symcmp(node, "VarDec"));
+
     syntax_t** childs = node->symbol.child;
     // VarDec -> ID
     if (symcmp(childs[0], "ID")) {
@@ -456,6 +464,7 @@ FunDec:
 // NOTE: type -> {FuncDec, FuncDef}
 void FunDec(syntax_t* node, type_t* specifier, int type) { 
     assert(node != NULL);
+    assert(symcmp(node, "FunDec"));
 
     syntax_t** childs = node->symbol.child;
     item_t* func = NewScopeItem(
@@ -504,6 +513,8 @@ VarList:
 */
 void VarList(syntax_t* node, item_t* func) {
     assert(node != NULL);
+    assert(symcmp(node, "VarList"));
+
     syntax_t** childs = node->symbol.child;
     item_t* param = ParamDec(childs[0]);
     if (func->type->function.argv == NULL) 
@@ -523,6 +534,9 @@ ParamDec:
     | Specifier VarDec
 */
 item_t* ParamDec(syntax_t* node) {
+    assert(node != NULL);
+    assert(symcmp(node, "ParamDec"));
+
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
@@ -539,6 +553,8 @@ CompSt:
 */
 void CompSt(syntax_t* node, type_t* specifier) { 
     assert(node != NULL);
+    assert(symcmp(node, "CompSt"));
+
     syntax_t** childs = node->symbol.child;
     DefList(childs[1], NULL);
     StmtList(childs[2], specifier);
@@ -567,6 +583,8 @@ Stmt:
 */
 void Stmt(syntax_t* node, type_t* specifier) {
     assert(node != NULL);
+    assert(symcmp(node, "Stmt"));
+
     syntax_t** childs = node->symbol.child;
 
     // Stmt -> Exp SEMI
@@ -616,6 +634,8 @@ Def:
 */
 void Def(syntax_t* node, type_t* record) {
     assert(node != NULL);
+    assert(symcmp(node, "Def"));
+
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     DecList(childs[1], specifier, record);
@@ -628,6 +648,8 @@ DecList:
 */
 void DecList(syntax_t* node, type_t* specifier, type_t* record) { 
     assert(node != NULL);
+    assert(symcmp(node, "DecList"));
+
     syntax_t** childs = node->symbol.child;
     Dec(childs[0], specifier, record);
     if(symcmp(childs[2], "DecList"))
@@ -641,6 +663,8 @@ Dec:
 */
 void Dec(syntax_t* node, type_t* specifier, type_t* record) {
     assert(node != NULL);
+    assert(symcmp(node, "Dec"));
+
     syntax_t** childs = node->symbol.child;
     // Dec -> VarDec ASSIGNOP Exp
     if (symcmp(childs[1], "ASSIGNOP")){
@@ -716,6 +740,7 @@ Exp:
 */
 type_t* Exp(syntax_t* node) { 
     assert(node != NULL);
+    assert(symcmp(node, "Exp"));
 
     syntax_t** childs = node->symbol.child;
     if (symcmp(childs[0], "Exp")) {
@@ -839,7 +864,6 @@ type_t* Exp(syntax_t* node) {
         return new_type(Basic, Float);
     }
     else {
-        printf("%d %s\n", node->type, node->name);
         for (int i = 0; childs[i]; i++)
             printf("%s ", childs[i]->name);
         printf("\n");
@@ -854,6 +878,8 @@ Args:
 */
 void Args(syntax_t* node, item_t* func) {
     assert(node != NULL);
+    assert(symcmp(node, "Args"));
+
     syntax_t** childs = node->symbol.child;
     field_t* func_arg = func->type->function.argv;
     syntax_t* cur_arg = childs[0];
