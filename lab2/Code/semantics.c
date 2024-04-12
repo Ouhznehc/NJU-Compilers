@@ -155,6 +155,7 @@ bool typecmp(type_t* t1, type_t* t2) {
 }
 
 bool contains_field(type_t* type, char* name) {
+    assert(type != NULL);
     assert(type->kind == Struct || type->kind == FuncDef);
     field_t* cur = type->kind == Struct ? type->record.field : type->function.argv;
     while (cur != NULL) {
