@@ -341,7 +341,10 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
     assert(symcmp(node, "ExtDecList"));
 
     syntax_t** childs = node->symbol.child;
-    VarDec(childs[0], specifier);
+    item_t* var = VarDec(childs[0], specifier);
+    if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+        semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
+    else InsertScopeItem(VarScope, VarTop, var);
     // ExtDecList -> VarDec COMMA ExtDecList
     if (symcmp(childs[2], "ExtDecList")) {
         ExtDecList(childs[2], specifier);
@@ -457,7 +460,6 @@ item_t* VarDec(syntax_t* node, type_t* specifier) {
     syntax_t** childs = node->symbol.child;
     // VarDec -> ID
     if (symcmp(childs[0], "ID")) {
-        printf("var = %s\n", childs[0]->token.value.sval);
         return NewScopeItem(childs[0]->token.value.sval, specifier);
     }
     // VarDec -> VarDec LB INT RB
