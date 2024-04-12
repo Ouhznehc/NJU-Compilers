@@ -342,7 +342,7 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
 
     syntax_t** childs = node->symbol.child;
     item_t* var = VarDec(childs[0], specifier);
-    if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, CurScope))
         semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
     else InsertScopeItem(VarScope, VarTop, var);
     // ExtDecList -> VarDec COMMA ExtDecList
@@ -554,7 +554,7 @@ item_t* ParamDec(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
-    if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, CurScope))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     else
         InsertScopeItem(VarScope, VarTop, CopyItem(var));
@@ -686,7 +686,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             semantic_error(INITIALIZE_FIELD, childs[0]->lineno, "");
         item_t* var = VarDec(childs[0], specifier);
         type_t* exp = Exp(childs[2]);
-        if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+        if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
         else if (!typecmp(var->type, exp)) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
@@ -704,6 +704,8 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             item_t* var = VarDec(childs[0], specifier);
             if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
                 semantic_error(DUPLICATE_FIELD, childs[0]->lineno, var->name);
+            else if (FindScopeItem(StructScope, StructTop, var->name, CurScope))
+                semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else {
                 if(record->record.field == NULL) {
                     record->record.field = var;
