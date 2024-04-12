@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 typedef enum {
-    UNDEFINED_VAR,              // Undefined Variable
+    UNDEFINED_VAR = 1,              // Undefined Variable
     UNDEFINED_FUNC,             // Undefined Function
     DUPLICATE_VAR,              // Duplicate Variable
     DUPLICATE_FUNC,             // Duplicate Function

@@ -783,6 +783,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
 Exp:
     | Exp ASSIGNOP Exp
     | Exp AND Exp
+    | Exp OR Exp
     | Exp RELOP Exp
     | Exp PLUS Exp 
     | Exp MINUS Exp
@@ -847,7 +848,7 @@ type_t* Exp(syntax_t* node) {
             type_t* exp1 = Exp(childs[0]);
             type_t* exp2 = Exp(childs[2]);
             syntax_t** sub_childs = childs[0]->symbol.child;
-            // only 'ID |  Exp LB Exp RB | Exp DOT ID' can be left value
+            // only ```ID |  Exp LB Exp RB | Exp DOT ID``` can be left value
             if ((symcmp(sub_childs[0], "ID") && sub_childs[1] == NULL) 
                 || symcmp(sub_childs[1], "LB")
                 || symcmp(sub_childs[1], "DOT")) {
@@ -870,10 +871,14 @@ type_t* Exp(syntax_t* node) {
             type_t* exp1 = Exp(childs[0]);
             type_t* exp2 = Exp(childs[2]);
             if (exp1 == NULL || exp2 == NULL) return NULL;
-            else if (exp1->kind != Basic || exp2->kind != Basic)
+            else if (exp1->kind != Basic || exp2->kind != Basic) {
+                printf("exp1->kind = %d, exp2->kind = %d\n", exp1->kind, exp2->kind);
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
-            else if (!typecmp_structure(exp1, exp2))
+            }
+            else if (!typecmp_structure(exp1, exp2)) {
+                printf("exp1->kind = %d, exp2->kind = %d\n", exp1->kind, exp2->kind);
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            }
             else return exp1;
             return NULL;
         }
