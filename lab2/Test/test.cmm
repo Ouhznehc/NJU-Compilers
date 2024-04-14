@@ -1,5 +1,5 @@
+int dup;
 struct dup {
     int a = 0;
     int b;
 };
-int dup;
