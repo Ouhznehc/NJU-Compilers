@@ -423,7 +423,7 @@ type_t* StructSpecifier(syntax_t* node) { // printf("This is line number %d.\n",
         type_t* record = OptTag(childs[1]);
         assert(record != NULL);
         item_t* struct_def = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
-        item_t* var_name = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, CurScope);
+        item_t* var_name = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
         if (struct_def != NULL || var_name != NULL) {
             // must not be anonymous struct
             assert(childs[1] != NULL);
@@ -473,9 +473,6 @@ type_t* Tag(syntax_t* node) { // printf("This is line number %d.\n", __LINE__);
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
     item_t* struct_def = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
-    item_t* var_name = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, CurScope);
-    if (var_name != NULL) 
-        semantic_error(DUPLICATED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     if (struct_def == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     else {
