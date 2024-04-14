@@ -42,7 +42,7 @@ syntax-c: $(YFILE)
 .PHONY: clean test parser auto-commit
 
 test: parser
-	@./parser ../Test/test.cmm
+	./parser ../Test/test.cmm
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	rm -f $(OBJS) $(OBJS:.o=.d)
