@@ -422,8 +422,9 @@ type_t* StructSpecifier(syntax_t* node) { // printf("This is line number %d.\n",
     else {
         type_t* record = OptTag(childs[1]);
         assert(record != NULL);
-        item_t* item = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
-        if (item != NULL) {
+        item_t* struct_def = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
+        item_t* var_name = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, CurScope);
+        if (struct_def != NULL || var_name != NULL) {
             // must not be anonymous struct
             assert(childs[1] != NULL);
             semantic_error(DUPLICATED_STRUCT, childs[1]->lineno, record->record.name);
