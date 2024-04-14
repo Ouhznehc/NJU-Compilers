@@ -421,21 +421,22 @@ type_t* StructSpecifier(syntax_t* node) { // printf("This is line number %d.\n",
     // Note: OptTag may be NULL, we can't use symcmp(childs[1], "OptTag")
     else {
         type_t* record = OptTag(childs[1]);
+        bool dup_struct = 0;
+        item_t* struct_def = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
+        item_t* var_name = FindScopeItem(VarScope, VarTop, record->record.name, AllScope);
+        if (struct_def != NULL || var_name != NULL) {
+            // must not be anonymous struct
+            assert(childs[1] != NULL);
+            dup_struct = 1;
+            semantic_error(DUPLICATED_STRUCT, childs[1]->lineno, record->record.name);
+        }
         assert(record != NULL);
         StackPush(VarStack);
         StackPush(StructStack);
         DefList(childs[3], record);
         StackPop(VarStack);
         StackPop(StructStack);
-
-        item_t* struct_def = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
-        item_t* var_name = FindScopeItem(VarScope, VarTop, record->record.name, AllScope);
-        if (struct_def != NULL || var_name != NULL) {
-            // must not be anonymous struct
-            assert(childs[1] != NULL);
-            semantic_error(DUPLICATED_STRUCT, childs[1]->lineno, record->record.name);
-        }
-        else {
+        if(!dup_struct) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
             InsertScopeItem(StructScope, 0, CopyItem(item));
