@@ -538,7 +538,7 @@ void FunDec(syntax_t* node, type_t* specifier, int type) { // printf("This is li
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
     type_t* funcDefType = funcDef == NULL ? NULL : funcDef->type;
     if (type == FuncDec) {
-        if(!typecmp_structure(funcDecType, func->type) || !typecmp_structure(funcDefType, func->type)) {
+        if(!typecmp_name(funcDecType, func->type) || !typecmp_name(funcDefType, func->type)) {
             semantic_error(CONFLICT_FUNC, func->type->function.lineno, func->name); 
             return;
         }
