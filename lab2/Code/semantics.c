@@ -471,12 +471,15 @@ type_t* Tag(syntax_t* node) { // printf("This is line number %d.\n", __LINE__);
 
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
-    item_t* item = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
-    if(item == NULL) 
+    item_t* struct_def = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
+    item_t* var_name = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, CurScope);
+    if (var_name != NULL) 
+        semantic_error(DUPLICATED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
+    if (struct_def == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     else {
-        assert(!strcmp(item->name,item->type->record.name));
-        ret = new_type(Struct, item->name, item->type->record.field);
+        assert(!strcmp(struct_def->name,struct_def->type->record.name));
+        ret = new_type(Struct, struct_def->name, struct_def->type->record.field);
     }
     return ret;
 } 
