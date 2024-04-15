@@ -11,7 +11,7 @@ int AnonymousStruct = 0;
 int semantic_error_line = 0;
 
 void semantic_error(SemanticErrorType error, int lineno, char* msg) { // printf("This is line number %d.\n", __LINE__);
-    if (lineno == semantic_error_line) return;
+    // if (lineno == semantic_error_line) return;
     semantic_error_line = lineno;
     switch (error) {
         case UNDEFINED_VAR:
