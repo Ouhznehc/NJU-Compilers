@@ -868,14 +868,12 @@ type_t* Exp(syntax_t* node) { // printf("This is line number %d.\n", __LINE__);
                 semantic_error(RVALUE_ASSIGN, childs[1]->lineno, "");
             return NULL;
         }
-        // Exp -> Exp AND Exp
-        //      | Exp OR Exp
-        //      | Exp RELOP Exp
+        // Exp ->
         //      | Exp PLUS Exp
         //      | Exp MINUS Exp
         //      | Exp STAR Exp
         //      | Exp DIV Exp
-        else {
+        else if (symcmp(childs[1], "PLUS") || symcmp(childs[1], "MINUS") || symcmp(childs[1], "STAR") || symcmp(childs[1], "DIV")){
             type_t* exp1 = Exp(childs[0]);
             type_t* exp2 = Exp(childs[2]);
             if (exp1 == NULL || exp2 == NULL) return NULL;
@@ -885,22 +883,55 @@ type_t* Exp(syntax_t* node) { // printf("This is line number %d.\n", __LINE__);
             else if (!typecmp_structure(exp1, exp2)) {
                 semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
             }
-            else {
-                // Boolean Operation must return Int
-                if (symcmp(childs[1], "AND") || symcmp(childs[1], "OR") || symcmp(childs[1], "RELOP")) return new_type(Basic, Int);
-                else return exp1;
-            }
+            else return exp1;
             return NULL;
         }
+        // Exp -> Exp RELOP Exp
+        else if (symcmp(childs[1], "RELOP")) {
+            type_t* exp1 = Exp(childs[0]);
+            type_t* exp2 = Exp(childs[2]);
+            if (exp1 == NULL || exp2 == NULL) return NULL;
+            else if (exp1->kind != Basic || exp2->kind != Basic) {
+                semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            }
+            else if (!typecmp_structure(exp1, exp2)) {
+                semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            }
+            return new_type(Basic, Int);
+        }
+        // Exp ->
+        //     | Exp AND Exp
+        //     | Exp OR Exp
+        else if (symcmp(childs[1], "AND") || symcmp(childs[1], "OR")) {
+            type_t* exp1 = Exp(childs[0]);
+            type_t* exp2 = Exp(childs[2]);
+            if (exp1 == NULL || exp2 == NULL) return NULL;
+            else if (exp1->kind != Basic || exp2->kind != Basic || exp1->basic.type != Int || exp2->basic.type != Int) {
+                semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            }
+            else if (!typecmp_structure(exp1, exp2)) {
+                semantic_error(MISMATCHED_OP, childs[1]->lineno, "");
+            }
+            return new_type(Basic, Int);
+        }
+        else assert(0);
     }
     // Exp -> MINUS Exp
-    //      | NOT Exp  
-    else if (symcmp(childs[0], "MINUS") || symcmp(childs[0], "NOT")) {
+    else if (symcmp(childs[0], "MINUS")) {
         type_t* exp = Exp(childs[1]);
         if (exp == NULL || exp->kind != Basic)
             semantic_error(MISMATCHED_OP, childs[0]->lineno, "");
         else return exp;
         return NULL;
+    }
+    // Exp -> NOT Exp
+    else if (symcmp(childs[0], "NOT")) {
+        type_t* exp = Exp(childs[1]);
+        if (exp == NULL || exp->kind != Basic || exp->basic.type != Int)
+            semantic_error(MISMATCHED_OP, childs[0]->lineno, "");
+        else return exp;
+        // NOTE: to avoid further error, still return INT
+        return new_type(Basic, Int);
     }
     // Exp -> LP Exp RP
     else if (symcmp(childs[0], "LP")) {
