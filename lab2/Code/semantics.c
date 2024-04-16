@@ -745,8 +745,6 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
         else if (!typecmp_structure(var->type, exp)) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         }
-        // else if (var->type && var->type->kind == Array)
-        //     semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         
         InsertScopeItem(VarScope, VarTop, CopyItem(var));
     }
@@ -862,7 +860,7 @@ type_t* Exp(syntax_t* node) {
                 || symcmp(sub_childs[1], "DOT")) {
                 if (!typecmp_structure(exp1, exp2))
                     semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, "");
-                else return exp1;
+                return exp1;
             }
             else
                 semantic_error(RVALUE_ASSIGN, childs[1]->lineno, "");
