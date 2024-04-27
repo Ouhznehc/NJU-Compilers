@@ -276,9 +276,18 @@ item_t* FindScopeItemWithType(item_t* scope, char* name, int kind) {
 enum {var_scope, struct_scope};
 void InsertScopeItem(int kind, item_t* item) { 
     assert(item != NULL);
-    item_t* scope = VarScope ? kind == var_scope : StructScope;
-    item->next = scope;
-    scope = item;
+    switch (kind) {
+        case var_scope:
+            item->next = VarScope;
+            VarScope = item;
+            break;
+        case struct_scope:
+            item->next = StructScope;
+            StructScope = item; 
+        default:
+            assert(0);
+    }
+
 }
 
 
