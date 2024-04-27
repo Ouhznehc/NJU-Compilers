@@ -38,8 +38,8 @@ void Args(syntax_t* node, item_t* func);
 void check_func_definition();
 
 // In lab3 all the name scope is global, so we do not need stack
-item_t* VarScope =  NULL;
-item_t* StructScope = NULL;
+item_t* VarScope;
+item_t* StructScope;
 
 // the counter of anonymous struct
 int AnonymousStruct = 0;
@@ -419,6 +419,7 @@ type_t* StructSpecifier(syntax_t* node) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
             InsertScopeItem(StructScope, CopyItem(item));
+            item_t* cur = StructScope;
         }
         return record;
     }
@@ -988,7 +989,15 @@ void check_func_definition(){
     }
 }
 
+void init() {
+    VarScope = malloc(sizeof(item_t));
+    StructScope = malloc(sizeof(item_t));
+    memset(VarScope, 0, sizeof(item_t));
+    memset(StructScope, 0, sizeof(item_t));
+}
+
 void semantic_check(syntax_t* root){
+    init();
     Program(root);
     // no need for lab3
     // check_func_definition();
