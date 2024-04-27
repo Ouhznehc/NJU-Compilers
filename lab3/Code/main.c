@@ -13,14 +13,14 @@ int main(int argc, char **argv) {
         perror(argv[1]);
         return 1;
     }
-    yyrestart(f);
-    yyparse();
 
     // lab1
+    yyrestart(f);
+    yyparse();
     // if(!error_no) print_syntax_tree(root, 0);
 
     // lab2
     if(!error_no) semantic_check(root);
-    
+
     return 0;
 }

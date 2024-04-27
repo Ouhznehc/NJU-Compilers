@@ -37,11 +37,10 @@ void Args(syntax_t* node, item_t* func);
 
 void check_func_definition();
 
-// VarScope is the scope of Var Name: such as 'instace' in ```struct example instance;```
-// StructScope is the scope of Struct definition name: such as 'example' in ```struct example {int a;};```
-// In fact, only StructScope[0] is used
-item_t* VarScope[1024] = {NULL}, *StructScope[1024] = {NULL};
-int VarTop = 0, StructTop = 0;
+// In lab3 all the name scope is global, so we do not need stack
+item_t* VarScope =  NULL;
+item_t* StructScope = NULL;
+
 // the counter of anonymous struct
 int AnonymousStruct = 0;
 
@@ -258,78 +257,26 @@ item_t* CopyItem(item_t* item) {
     ret->next = NULL;
     return ret;
 }
-item_t* FindScopeItem(item_t** stack, int layer, char* name, int mode) { 
-    item_t* cur = stack[layer];
-    switch (mode) {
-        case CurScope:
-            while (cur != NULL) {
-                if (!strcmp(cur->name, name)) return cur;
-                cur = cur->next;
-            }
-            return NULL;
-        case AllScope:
-            for (int i = layer; i >= 0; i--){
-                item_t* ret = FindScopeItem(stack, i, name, CurScope);
-                if(ret != NULL) return ret;
-            }
-            return NULL;
-        default:
-            assert(0);
+item_t* FindScopeItem(item_t* scope, char* name) { 
+    item_t* cur = scope;
+    while (cur != NULL) {
+        if (!strcmp(cur->name, name)) return cur;
+        cur = cur->next;
     }
+    return NULL;
 }
-item_t* FindScopeItemWithType(item_t** stack, int layer, char* name, int kind, int mode) { 
-    item_t* cur = stack[layer];
-    switch (mode) {
-        case CurScope:
-            while (cur != NULL) {
-                if (!strcmp(cur->name, name) && cur->type->kind == kind) return cur;
-                cur = cur->next;
-            }
-            return NULL;
-        case AllScope:
-            for (int i = layer; i >= 0; i--){
-                item_t* ret = FindScopeItemWithType(stack, i, name, kind, CurScope);
-                if(ret != NULL) return ret;
-            }
-            return NULL;
-        default:
-            assert(0);
+item_t* FindScopeItemWithType(item_t* scope, char* name, int kind) { 
+    item_t* cur = scope;
+    while (cur != NULL) {
+        if (!strcmp(cur->name, name) && cur->type->kind == kind) return cur;
+        cur = cur->next;
     }
+    return NULL;
 }
-void InsertScopeItem(item_t** stack, int layer, item_t* item) { 
+void InsertScopeItem(item_t* scope, item_t* item) { 
     assert(item != NULL);
-    item->next = stack[layer];
-    stack[layer] = item;
-}
-
-enum {VarStack, StructStack};
-void StackPush(int type) {
-    switch (type) {
-        case VarStack:
-            VarTop++;
-            VarScope[VarTop] = NULL;
-            break;
-        case StructStack:
-            StructTop++;
-            StructScope[StructTop] = NULL;
-            break;
-        default:
-            assert(0);
-    }
-}
-void StackPop(int type) {
-    switch (type) {
-        case VarStack:
-            VarScope[VarTop] = NULL;
-            VarTop--;
-            break;
-        case StructStack:
-            StructScope[StructTop] = NULL;
-            StructTop--;
-            break;
-        default:
-            assert(0);
-    }
+    item->next = scope;
+    scope = item;
 }
 
 
@@ -380,16 +327,12 @@ void ExtDef(syntax_t* node) {
     else if (symcmp(childs[1], "FunDec")) {
         // ExtDef -> Specifier FunDec CompSt
         if (symcmp(childs[2], "CompSt")) {
-            StackPush(VarStack);
             FunDec(childs[1], specifier, FuncDef);
             CompSt(childs[2], specifier);
-            StackPop(VarStack);
         }
         // ExtDef -> Specifier FunDec SEMI
         else if (symcmp(childs[2], "SEMI")) {
-            StackPush(VarStack);
             FunDec(childs[1], specifier, FuncDec);
-            StackPop(VarStack);
         }
     }
     // ExtDef -> Specifier SEMI
@@ -410,9 +353,9 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
     syntax_t** childs = node->symbol.child;
     item_t* var = VarDec(childs[0], specifier);
     assert(var != NULL);
-    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
+    if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
         semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-    else InsertScopeItem(VarScope, VarTop, var);
+    else InsertScopeItem(VarScope, var);
     // ExtDecList -> VarDec COMMA ExtDecList
     if (symcmp(childs[2], "ExtDecList")) {
         ExtDecList(childs[2], specifier);
@@ -462,25 +405,20 @@ type_t* StructSpecifier(syntax_t* node) {
         assert(record != NULL);
 
         bool dup_struct = 0;
-        item_t* struct_def = FindScopeItem(StructScope, StructTop, record->record.name, AllScope);
-        item_t* var_name = FindScopeItem(VarScope, VarTop, record->record.name, AllScope);
+        item_t* struct_def = FindScopeItem(StructScope, record->record.name);
+        item_t* var_name = FindScopeItem(VarScope, record->record.name);
         if (struct_def != NULL || var_name != NULL) {
             // must not be anonymous struct
             assert(childs[1] != NULL);
             dup_struct = 1;
             semantic_error(DUPLICATED_STRUCT, childs[1]->lineno, record->record.name);
         }
-
-        StackPush(VarStack);
-        StackPush(StructStack);
         DefList(childs[3], record);
-        StackPop(VarStack);
-        StackPop(StructStack);
 
         if(!dup_struct) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
-            InsertScopeItem(StructScope, 0, CopyItem(item));
+            InsertScopeItem(StructScope, CopyItem(item));
         }
         return record;
     }
@@ -515,7 +453,7 @@ type_t* Tag(syntax_t* node) {
 
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
-    item_t* struct_def = FindScopeItem(StructScope, StructTop, childs[0]->token.value.sval, AllScope);
+    item_t* struct_def = FindScopeItem(StructScope, childs[0]->token.value.sval);
     if (struct_def == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     else {
@@ -571,8 +509,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     else {
         /*do nothing*/
     }
-    item_t* funcDec = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDec, AllScope);
-    item_t* funcDef = FindScopeItemWithType(VarScope, VarTop, func->name, FuncDef, AllScope);
+    item_t* funcDec = FindScopeItemWithType(VarScope, func->name, FuncDec);
+    item_t* funcDef = FindScopeItemWithType(VarScope, func->name, FuncDef);
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
     type_t* funcDefType = funcDef == NULL ? NULL : funcDef->type;
     if (type == FuncDec) {
@@ -593,8 +531,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     }
     else assert(0);
 
-    if (type == FuncDec && funcDec == NULL) InsertScopeItem(VarScope, 0, CopyItem(func));
-    else if (type == FuncDef) InsertScopeItem(VarScope, 0, CopyItem(func));
+    if (type == FuncDec && funcDec == NULL) InsertScopeItem(VarScope, CopyItem(func));
+    else if (type == FuncDef) InsertScopeItem(VarScope, CopyItem(func));
     else return;
 } 
 
@@ -632,10 +570,10 @@ item_t* ParamDec(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
-    if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
+    if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     // to avoid further errors, still add it to symbol table
-    InsertScopeItem(VarScope, VarTop, CopyItem(var));
+    InsertScopeItem(VarScope, CopyItem(var));
     return var;
 } 
 
@@ -683,9 +621,7 @@ void Stmt(syntax_t* node, type_t* specifier) {
     if (symcmp(childs[0], "Exp")) Exp(childs[0]);
     // Stmt -> CompSt
     else if (symcmp(childs[0], "CompSt")) {
-        StackPush(VarStack);
         CompSt(childs[0], specifier);
-        StackPop(VarStack);
     }
     // Stmt -> RETURN Exp SEMI
     else if (symcmp(childs[0], "RETURN")) {
@@ -778,22 +714,22 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                 assert(var->next == NULL);
             }
         }
-        if (FindScopeItem(VarScope, VarTop, var->name, CurScope) || FindScopeItem(StructScope, StructTop, var->name, AllScope))
+        if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
         else if (!typecmp_structure(var->type, exp)) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         }
         
-        InsertScopeItem(VarScope, VarTop, CopyItem(var));
+        InsertScopeItem(VarScope, CopyItem(var));
     }
     // Dec -> VarDec
     else {
         // struct Dec
         if (record != NULL) {
             item_t* var = VarDec(childs[0], specifier);
-            if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+            if (FindScopeItem(VarScope, var->name))
                 semantic_error(DUPLICATE_FIELD, childs[0]->lineno, var->name);
-            else if (FindScopeItem(StructScope, StructTop, var->name, AllScope))
+            else if (FindScopeItem(StructScope, var->name))
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else {
                 if(record->record.field == NULL) {
@@ -806,17 +742,17 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                     cur->next = var;
                     assert(var->next == NULL);
                 }
-                InsertScopeItem(VarScope, VarTop, CopyItem(var));
+                InsertScopeItem(VarScope, CopyItem(var));
             }
         }
         // non-struct Dec
         else {
             item_t* var = VarDec(childs[0], specifier);
-            if (FindScopeItem(VarScope, VarTop, var->name, CurScope))
+            if (FindScopeItem(VarScope, var->name))
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-            else if (FindScopeItem(StructScope, StructTop, var->name, AllScope)) 
+            else if (FindScopeItem(StructScope, var->name)) 
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-            else InsertScopeItem(VarScope, VarTop, CopyItem(var));
+            else InsertScopeItem(VarScope, CopyItem(var));
         }   
     }
 } 
@@ -976,7 +912,7 @@ type_t* Exp(syntax_t* node) {
     // Exp -> ID LP Args RP
     //		| ID LP RP
     else if (symcmp(childs[0], "ID") && childs[1] != NULL) {
-        item_t* func = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
+        item_t* func = FindScopeItem(VarScope, childs[0]->token.value.sval);
         if (func == NULL) 
             semantic_error(UNDEFINED_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
         else if (func->type->kind != FuncDec && func->type->kind != FuncDef)
@@ -996,7 +932,7 @@ type_t* Exp(syntax_t* node) {
     }
     // Exp -> ID
     else if (symcmp(childs[0], "ID")) {
-        item_t* id = FindScopeItem(VarScope, VarTop, childs[0]->token.value.sval, AllScope);
+        item_t* id = FindScopeItem(VarScope, childs[0]->token.value.sval);
         if (id == NULL)
             semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
         else return id->type;
@@ -1039,7 +975,7 @@ void Args(syntax_t* node, item_t* func) {
 } 
 
 void check_func_definition(){
-    item_t* cur = VarScope[0];
+    item_t* cur = VarScope;
     item_t* dec[1024] = {NULL};
     int cnt = 0;
     while (cur != NULL) {
@@ -1047,7 +983,7 @@ void check_func_definition(){
         cur = cur->next;
     }
     for (int i = 0; i < cnt; i++) {
-        if (!FindScopeItemWithType(VarScope, 0, dec[i]->name, FuncDef, CurScope)) 
+        if (!FindScopeItemWithType(VarScope, dec[i]->name, FuncDef)) 
             semantic_error(DECLARED_NOT_DEFINED_FUNC, dec[i]->type->function.lineno, dec[i]->name);
     }
 }
