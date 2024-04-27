@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
+extern int error_no;
 
 
 enum {

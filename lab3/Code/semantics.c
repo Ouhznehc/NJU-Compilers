@@ -1,5 +1,42 @@
 #include "semantics.h"
 
+void semantic_error(SemanticErrorType error, int lineno, char* msg);
+
+/* High-level Definitions */
+void Program(syntax_t* node); 
+void ExtDefList(syntax_t* node); 
+void ExtDef(syntax_t* node); 
+void ExtDecList(syntax_t* node, type_t* specifier); 
+
+/* Specifiers */
+type_t* Specifier(syntax_t* node); 
+type_t* StructSpecifier(syntax_t* node); 
+type_t* OptTag(syntax_t* node); 
+type_t* Tag(syntax_t* node); 
+
+/* Declarators */
+item_t* VarDec(syntax_t* node, type_t* specifier); 
+void FunDec(syntax_t* node, type_t* specifier, int type); 
+void VarList(syntax_t* node, item_t* func); 
+item_t* ParamDec(syntax_t* node); 
+
+/* Statements */
+void CompSt(syntax_t* node, type_t* specifier); 
+void StmtList(syntax_t* node, type_t* specifier); 
+void Stmt(syntax_t* node, type_t* specifier);
+
+/* Local Definitions */
+void DefList(syntax_t* node, type_t* record); 
+void Def(syntax_t* node, type_t* record); 
+void Dec(syntax_t* node, type_t* specifier, type_t* record); 
+void DecList(syntax_t* node, type_t* specifier, type_t* record); 
+
+/* Expressions */
+type_t* Exp(syntax_t* node); 
+void Args(syntax_t* node, item_t* func); 
+
+void check_func_definition();
+
 // VarScope is the scope of Var Name: such as 'instace' in ```struct example instance;```
 // StructScope is the scope of Struct definition name: such as 'example' in ```struct example {int a;};```
 // In fact, only StructScope[0] is used
@@ -11,6 +48,7 @@ int AnonymousStruct = 0;
 int semantic_error_line = 0;
 
 void semantic_error(SemanticErrorType error, int lineno, char* msg) { 
+    error_no = 1;
     if (lineno == semantic_error_line) return;
     semantic_error_line = lineno;
     switch (error) {
@@ -1012,4 +1050,10 @@ void check_func_definition(){
         if (!FindScopeItemWithType(VarScope, 0, dec[i]->name, FuncDef, CurScope)) 
             semantic_error(DECLARED_NOT_DEFINED_FUNC, dec[i]->type->function.lineno, dec[i]->name);
     }
+}
+
+void semantic_check(syntax_t* root){
+    Program(root);
+    // no need for lab3
+    // check_func_definition();
 }

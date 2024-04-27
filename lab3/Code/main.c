@@ -15,10 +15,12 @@ int main(int argc, char **argv) {
     }
     yyrestart(f);
     yyparse();
+
+    // lab1
     // if(!error_no) print_syntax_tree(root, 0);
-    if(!error_no) { 
-        Program(root);
-        check_func_definition();
-    }
+
+    // lab2
+    if(!error_no) semantic_check(root);
+    
     return 0;
 }

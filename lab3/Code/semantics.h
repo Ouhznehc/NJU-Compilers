@@ -88,45 +88,8 @@ struct field_t {
 typedef struct field_t field_t;
 typedef field_t item_t;
 
-
-
-
-void semantic_error(SemanticErrorType error, int lineno, char* msg);
 type_t* new_type(SemanticBasicType kind, ...);
+void semantic_check(syntax_t* root);
 
-/* High-level Definitions */
-void Program(syntax_t* node); 
-void ExtDefList(syntax_t* node); 
-void ExtDef(syntax_t* node); 
-void ExtDecList(syntax_t* node, type_t* specifier); 
-
-/* Specifiers */
-type_t* Specifier(syntax_t* node); 
-type_t* StructSpecifier(syntax_t* node); 
-type_t* OptTag(syntax_t* node); 
-type_t* Tag(syntax_t* node); 
-
-/* Declarators */
-item_t* VarDec(syntax_t* node, type_t* specifier); 
-void FunDec(syntax_t* node, type_t* specifier, int type); 
-void VarList(syntax_t* node, item_t* func); 
-item_t* ParamDec(syntax_t* node); 
-
-/* Statements */
-void CompSt(syntax_t* node, type_t* specifier); 
-void StmtList(syntax_t* node, type_t* specifier); 
-void Stmt(syntax_t* node, type_t* specifier);
-
-/* Local Definitions */
-void DefList(syntax_t* node, type_t* record); 
-void Def(syntax_t* node, type_t* record); 
-void Dec(syntax_t* node, type_t* specifier, type_t* record); 
-void DecList(syntax_t* node, type_t* specifier, type_t* record); 
-
-/* Expressions */
-type_t* Exp(syntax_t* node); 
-void Args(syntax_t* node, item_t* func); 
-
-void check_func_definition();
 
 #endif
