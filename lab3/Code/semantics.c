@@ -431,12 +431,6 @@ type_t* StructSpecifier(syntax_t* node) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
             InsertScopeItem(struct_scope, CopyItem(item));
-            item_t* cur = StructScope;
-            while (cur != NULL) {
-                printf("%s \n", cur->name);
-                cur = cur->next;
-            }
-            printf("\n");
         }
         return record;
     }
