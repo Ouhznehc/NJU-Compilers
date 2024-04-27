@@ -420,6 +420,11 @@ type_t* StructSpecifier(syntax_t* node) {
             assert(item != NULL);
             InsertScopeItem(StructScope, CopyItem(item));
             item_t* cur = StructScope;
+            while (cur != NULL) {
+                printf("%s \n", cur->name);
+                cur = cur->next;
+            }
+            printf("\n");
         }
         return record;
     }
