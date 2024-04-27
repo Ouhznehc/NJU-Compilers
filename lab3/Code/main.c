@@ -9,7 +9,7 @@ int error_no = 0;
 int main(int argc, char **argv) {   
     if (argc <= 1) return 1;
     if (argc != 3) {
-        printf("Usage: ./parser <source.cmm> <output.ir>");
+        printf("Usage: ./parser <source.cmm> <output.ir>\n");
         return 1;
     }
     FILE* f = fopen(argv[1], "r");
