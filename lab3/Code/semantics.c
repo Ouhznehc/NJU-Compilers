@@ -997,15 +997,8 @@ void check_func_definition(){
     }
 }
 
-void init() {
-    VarScope = malloc(sizeof(item_t));
-    StructScope = malloc(sizeof(item_t));
-    memset(VarScope, 0, sizeof(item_t));
-    memset(StructScope, 0, sizeof(item_t));
-}
 
 void semantic_check(syntax_t* root){
-    init();
     Program(root);
     // no need for lab3
     // check_func_definition();
