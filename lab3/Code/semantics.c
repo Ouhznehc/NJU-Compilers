@@ -284,6 +284,7 @@ void InsertScopeItem(int kind, item_t* item) {
         case struct_scope:
             item->next = StructScope;
             StructScope = item; 
+            break;
         default:
             assert(0);
     }
