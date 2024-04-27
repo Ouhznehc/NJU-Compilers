@@ -273,8 +273,10 @@ item_t* FindScopeItemWithType(item_t* scope, char* name, int kind) {
     }
     return NULL;
 }
-void InsertScopeItem(item_t* scope, item_t* item) { 
+enum {var_scope, struct_scope};
+void InsertScopeItem(int kind, item_t* item) { 
     assert(item != NULL);
+    item_t* scope = VarScope ? kind == var_scope : StructScope;
     item->next = scope;
     scope = item;
 }
@@ -355,7 +357,7 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
     assert(var != NULL);
     if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
         semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-    else InsertScopeItem(VarScope, var);
+    else InsertScopeItem(var_scope, var);
     // ExtDecList -> VarDec COMMA ExtDecList
     if (symcmp(childs[2], "ExtDecList")) {
         ExtDecList(childs[2], specifier);
@@ -418,7 +420,7 @@ type_t* StructSpecifier(syntax_t* node) {
         if(!dup_struct) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
-            InsertScopeItem(StructScope, CopyItem(item));
+            InsertScopeItem(struct_scope, CopyItem(item));
             item_t* cur = StructScope;
             while (cur != NULL) {
                 printf("%s \n", cur->name);
@@ -537,8 +539,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     }
     else assert(0);
 
-    if (type == FuncDec && funcDec == NULL) InsertScopeItem(VarScope, CopyItem(func));
-    else if (type == FuncDef) InsertScopeItem(VarScope, CopyItem(func));
+    if (type == FuncDec && funcDec == NULL) InsertScopeItem(var_scope, CopyItem(func));
+    else if (type == FuncDef) InsertScopeItem(var_scope, CopyItem(func));
     else return;
 } 
 
@@ -579,7 +581,7 @@ item_t* ParamDec(syntax_t* node) {
     if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     // to avoid further errors, still add it to symbol table
-    InsertScopeItem(VarScope, CopyItem(var));
+    InsertScopeItem(var_scope, CopyItem(var));
     return var;
 } 
 
@@ -726,7 +728,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         }
         
-        InsertScopeItem(VarScope, CopyItem(var));
+        InsertScopeItem(var_scope, CopyItem(var));
     }
     // Dec -> VarDec
     else {
@@ -748,7 +750,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                     cur->next = var;
                     assert(var->next == NULL);
                 }
-                InsertScopeItem(VarScope, CopyItem(var));
+                InsertScopeItem(var_scope, CopyItem(var));
             }
         }
         // non-struct Dec
@@ -758,7 +760,7 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else if (FindScopeItem(StructScope, var->name)) 
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-            else InsertScopeItem(VarScope, CopyItem(var));
+            else InsertScopeItem(var_scope, CopyItem(var));
         }   
     }
 } 
