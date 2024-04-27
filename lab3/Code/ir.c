@@ -43,23 +43,18 @@ arg_t* new_arg(int kind, char* name, int cons) {
     arg_t* ret = malloc_safe(sizeof(arg_t));
     ret->kind = kind;
     switch (kind) {
-        case ArgVar:
-        case ArgTmp:
-        case ArgImm:
-        case ArgLabel:
-        case ArgSize:
+        case ArgVar: case ArgTmp: case ArgImm: case ArgLabel: case ArgSize:
             ret->cons = cons;
-        case ArgFunc:
-        case ArgRelop:
-        case ArgRef:
-        case ArgDeref:
+        case ArgFunc: case ArgRelop: case ArgRef: case ArgDeref:
             strcpy(ret->name, name);
         default: assert(0);
     }
     return ret;
 }
 
+ic_t* new_intercode(int kind, ...) {
 
+}
 
 /* 
 Program:    
@@ -268,7 +263,7 @@ void translate_Args(syntax_t* node) {
     return;
 }
 
-char* display_arg(arg_t* arg) {
+char* arg_to_string(arg_t* arg) {
     if (arg == NULL) return NULL;
     char* ret = malloc_safe(sizeof(char) * 64);
     switch (arg->kind) {
@@ -284,12 +279,12 @@ char* display_arg(arg_t* arg) {
     }
     return ret;
 }
-char* display_ic(ic_t* ic) {
+char* ic_to_string(ic_t* ic) {
     char* ret = malloc_safe(sizeof(char) * 64);
-    char* result = display_arg(ic->result);
-    char* arg1 = display_arg(ic->arg1);
-    char* arg2 = display_arg(ic->arg2);
-    char* relop = display_arg(ic->relop);
+    char* result = arg_to_string(ic->result);
+    char* arg1 = arg_to_string(ic->arg1);
+    char* arg2 = arg_to_string(ic->arg2);
+    char* relop = arg_to_string(ic->relop);
     switch (ic->op) {
         case IcLabel:       sprintf(ret, "LABEL %s :\n", result);
         case IcFunc:        sprintf(ret, "FUNCTION %s :\n", result);
@@ -314,7 +309,7 @@ char* display_ic(ic_t* ic) {
 void display_ir(FILE* ir) {
     ir_t* cur = ir_head;
     while (cur != NULL) {
-        fprintf(ir, "%s", display_ic(cur->code));
+        fprintf(ir, "%s", ic_to_string(cur->code));
         cur = cur->next;
     }
 }
