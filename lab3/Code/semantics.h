@@ -90,6 +90,11 @@ typedef field_t item_t;
 
 type_t* new_type(SemanticBasicType kind, ...);
 void semantic_check(syntax_t* root);
+item_t* FindScopeItem(item_t* scope, char* name);
+item_t* FindScopeItemWithType(item_t* scope, char* name, int kind);
 
+// In lab3 all the name scope is global, so we do not need stack
+item_t* VarScope;
+item_t* StructScope;
 
 #endif

@@ -37,9 +37,6 @@ void Args(syntax_t* node, item_t* func);
 
 void check_func_definition();
 
-// In lab3 all the name scope is global, so we do not need stack
-item_t* VarScope;
-item_t* StructScope;
 
 // the counter of anonymous struct
 int AnonymousStruct = 0;
