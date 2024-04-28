@@ -7,6 +7,9 @@ typedef struct arg_t arg_t;
 typedef struct ic_t ic_t;
 typedef struct ir_t ir_t;
 
+
+/// `ArgAddr` stands for variable which do not implement Copy trait, like Struct and Array.
+/// So when operate on it, we need to dereference it first to get value. 
 typedef enum {
     ArgVar, ArgTmp, ArgImm,
     ArgLabel, ArgFunc, ArgRelop, ArgSize,
@@ -14,7 +17,7 @@ typedef enum {
 } ArgKind;
 typedef enum {
     IcLabel, IcFunc, IcReturn, IcGoto, IcArg, IcParam, IcRead, IcWrite,
-    IcAssign, IcCall, IcMinus, IcRef, IcDeref,
+    IcAssign, IcCall, IcMinus, IcLeftStar, IcRightStar, IcRef,
     IcAdd, IcSub, IcMul, IcDiv, IcDec,
     IcBranch
 } InterCodeKind;
@@ -23,7 +26,7 @@ struct arg_t {
     ArgKind kind;
     union {
         int cons; // for const value like: label1, #5, DEC a 100, etc.
-        char name[64]; // for variable name like: t1, v10, etc.
+        char name[64]; // for variable name like: a, instance, etc.
     };
 };
 

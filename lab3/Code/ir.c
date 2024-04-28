@@ -52,7 +52,8 @@ ic_t* new_ic(int kind, ...) {
     va_list args;
     va_start(args, kind);
     switch (kind) {
-        case IcAssign: case IcCall: case IcMinus:
+        case IcAssign: case IcCall: case IcMinus: 
+        case IcLeftStar: case IcRightStar: case IcRef:
             ret->result = va_arg(args, arg_t*);
             ret->arg1 = va_arg(args, arg_t*);
             break;
@@ -75,6 +76,7 @@ ic_t* new_ic(int kind, ...) {
     return ret;
 }
 
+
 ir_t* new_ir(ic_t* ic) {
     ir_t* ret = malloc_safe(sizeof(ir_t));
     ret->code = ic;
@@ -82,7 +84,9 @@ ir_t* new_ir(ic_t* ic) {
     return ret;
 }
 
-void insert_ir(ir_t* ir) {
+
+void insert_ir(ic_t* ic) {
+    ir_t* ir = new_ir(ic);
     if (ir_head == NULL) {
         ir_head = ir_tail = ir;
         ir->next = NULL;
@@ -92,6 +96,19 @@ void insert_ir(ir_t* ir) {
     ir_tail = ir;
     ir->next = NULL;
     return;
+}
+
+void insert_assign_ir(arg_t* left, arg_t* right) {
+    if (left->kind == ArgAddr && right->kind == ArgAddr) {
+        arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no);
+        insert_ir(new_ic(IcRightStar, tmp, right));
+        insert_ir(new_ic(IcLeftStar, left, tmp));
+    }
+    else if (left->kind == ArgAddr) 
+        insert_ir(new_ic(IcLeftStar, left, right));
+    else if (right->kind == ArgAddr)
+        insert_ir(new_ic(IcRightStar, left, right));
+    else insert_ir(new_ic(IcAssign, left, right));
 }
 
 int calculate_size(type_t* type) {
@@ -314,7 +331,9 @@ Def:
     | Specifier DecList SEMI
 */
 void translate_Def(syntax_t* node) { 
-    return;
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    translate_DecList(childs[1]);
 } 
 
 /*
@@ -323,6 +342,17 @@ DecList:
     | Dec COMMA DecList
 */
 void translate_DecList(syntax_t* node) {  
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    switch (node->symbol.rule) {
+        case 1:
+            translate_Dec(childs[0]); return;
+        case 2:
+            translate_Dec(childs[0]);
+            translate_DecList(childs[2]); 
+            return;
+        default: assert(0);
+    }
     return;
 } 
 
@@ -332,7 +362,21 @@ Dec:
     | VarDec ASSIGNOP Exp
 */
 void translate_Dec(syntax_t* node) { 
- return;
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    int rule = node->symbol.rule;
+    // Dec -> VarDec
+    if (rule == 1) {
+        translate_VarDec(childs[0]);
+    }
+    // Dec -> VarDec ASSIGNOP Exp
+    else if (rule == 2) {
+        arg_t* left = translate_VarDec(childs[0]);
+        arg_t* right = translate_Exp(childs[2]);
+        insert_assign_ir(left, right);
+    }
+    else assert(0);
+    return;
 } 
 
 
@@ -359,6 +403,72 @@ Exp:
     | FLOAT
 */
 arg_t* translate_Exp(syntax_t* node) { 
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+
+    int rule = node->symbol.rule;
+    // Exp --> Exp ASSIGNOP Exp
+    if (rule == 1) {
+        type_t* exp1 = Exp(childs[0]);
+        type_t* exp2 = Exp(childs[2]);
+        arg_t* arg1 = translate_Exp(childs[0]);
+        arg_t* arg2 = translate_Exp(childs[2]);
+        if(exp1->kind == Basic && exp2->kind == Basic) {
+
+        }
+    }
+    // 
+    else if (rule == 2) {
+
+    }
+    else if (rule == 3) {
+
+    }
+    else if (rule == 4) {
+
+    }
+    else if (rule == 5) {
+
+    }
+    else if (rule == 6) {
+
+    }
+    else if (rule == 7) {
+
+    }
+    else if (rule == 8) {
+
+    }
+    else if (rule == 9) {
+
+    }
+    else if (rule == 10) {
+
+    }
+    else if (rule == 11) {
+        
+    }
+    else if (rule == 12) {
+
+    }
+    else if (rule == 13) {
+
+    }
+    else if (rule == 14) {
+
+    }
+    else if (rule == 15) {
+
+    }
+    else if (rule == 16) {
+        
+    }
+    else if (rule == 17) {
+
+    }
+    else if (rule == 18) {
+        
+    }
     return;
 } 
 
@@ -381,6 +491,7 @@ char* arg_to_string(arg_t* arg) {
     switch (arg->kind) {
         case ArgVar:        sprintf(ret, "%s", arg->name); break;
         case ArgTmp:        sprintf(ret, "t%d", arg->cons); break;
+        case ArgImm:        sprintf(ret, "#%d", arg->cons); break;
         case ArgLabel:      sprintf(ret, "label%d", arg->cons); break;
         case ArgFunc:       sprintf(ret, "%s", arg->name); break;
         case ArgRelop:      sprintf(ret, "%s", arg->name); break;
@@ -405,7 +516,8 @@ char* ic_to_string(ic_t* ic) {
         case IcMul:         sprintf(ret, "%s := %s * %s\n", result, arg1, arg2); break;
         case IcDiv:         sprintf(ret, "%s := %s / %s\n", result, arg1, arg2); break;
         case IcRef:         sprintf(ret, "%s := &%s \n", result, arg1); break;
-        case IcDeref:       sprintf(ret, "*%s := %s\n", result, arg1); break;
+        case IcLeftStar:    sprintf(ret, "*%s := %s\n", result, arg1); break;
+        case IcRightStar:   sprintf(ret, "%s := *%s\n", result, arg1); break;
         case IcGoto:        sprintf(ret, "GOTO %s\n", result); break;
         case IcBranch:      sprintf(ret, "IF %s %s %s GOTO %s\n", arg1, relop, arg2, result); break;
         case IcReturn:      sprintf(ret, "RETURN %s\n", result); break;
