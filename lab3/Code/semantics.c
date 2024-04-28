@@ -237,7 +237,6 @@ bool contains_field(type_t* type, char* name) {
     return false;
 }
 
-enum {CurScope, AllScope};
 item_t* NewScopeItem(char* name, type_t* type) { 
     item_t* item = malloc(sizeof(item_t));
     memset(item, 0, sizeof(item_t));
@@ -254,38 +253,27 @@ item_t* CopyItem(item_t* item) {
     ret->next = NULL;
     return ret;
 }
-item_t* FindScopeItem(item_t* scope, char* name) { 
-    item_t* cur = scope;
+item_t* FindScopeItem(char* name) { 
+    item_t* cur = SymbolTable;
     while (cur != NULL) {
         if (!strcmp(cur->name, name)) return cur;
         cur = cur->next;
     }
     return NULL;
 }
-item_t* FindScopeItemWithType(item_t* scope, char* name, int kind) { 
-    item_t* cur = scope;
+item_t* FindScopeItemWithType(char* name, int kind) { 
+    item_t* cur = SymbolTable;
     while (cur != NULL) {
         if (!strcmp(cur->name, name) && cur->type->kind == kind) return cur;
         cur = cur->next;
     }
     return NULL;
 }
-enum {var_scope, struct_scope};
-void InsertScopeItem(int kind, item_t* item) { 
-    assert(item != NULL);
-    switch (kind) {
-        case var_scope:
-            item->next = VarScope;
-            VarScope = item;
-            break;
-        case struct_scope:
-            item->next = StructScope;
-            StructScope = item; 
-            break;
-        default:
-            assert(0);
-    }
 
+void InsertScopeItem(item_t* item) { 
+    assert(item != NULL);
+    item->next = SymbolTable;
+    SymbolTable = item;
 }
 
 
@@ -362,9 +350,9 @@ void ExtDecList(syntax_t* node, type_t* specifier) {
     syntax_t** childs = node->symbol.child;
     item_t* var = VarDec(childs[0], specifier);
     assert(var != NULL);
-    if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
+    if (FindScopeItem(var->name))
         semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-    else InsertScopeItem(var_scope, var);
+    else InsertScopeItem(CopyItem(var));
     // ExtDecList -> VarDec COMMA ExtDecList
     if (symcmp(childs[2], "ExtDecList")) {
         ExtDecList(childs[2], specifier);
@@ -414,9 +402,8 @@ type_t* StructSpecifier(syntax_t* node) {
         assert(record != NULL);
 
         bool dup_struct = 0;
-        item_t* struct_def = FindScopeItem(StructScope, record->record.name);
-        item_t* var_name = FindScopeItem(VarScope, record->record.name);
-        if (struct_def != NULL || var_name != NULL) {
+        item_t* struct_def = FindScopeItem(record->record.name);
+        if (struct_def != NULL) {
             // must not be anonymous struct
             assert(childs[1] != NULL);
             dup_struct = 1;
@@ -427,7 +414,7 @@ type_t* StructSpecifier(syntax_t* node) {
         if(!dup_struct) {
             item_t* item = NewScopeItem(record->record.name, record);
             assert(item != NULL);
-            InsertScopeItem(struct_scope, CopyItem(item));
+            InsertScopeItem(CopyItem(item));
         }
         return record;
     }
@@ -462,7 +449,7 @@ type_t* Tag(syntax_t* node) {
 
     type_t* ret = NULL;
     syntax_t** childs = node->symbol.child;
-    item_t* struct_def = FindScopeItem(StructScope, childs[0]->token.value.sval);
+    item_t* struct_def = FindScopeItem(childs[0]->token.value.sval);
     if (struct_def == NULL) 
         semantic_error(UNDEFINED_STRUCT, childs[0]->lineno, childs[0]->token.value.sval);
     else {
@@ -518,8 +505,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     else {
         /*do nothing*/
     }
-    item_t* funcDec = FindScopeItemWithType(VarScope, func->name, FuncDec);
-    item_t* funcDef = FindScopeItemWithType(VarScope, func->name, FuncDef);
+    item_t* funcDec = FindScopeItemWithType(func->name, FuncDec);
+    item_t* funcDef = FindScopeItemWithType(func->name, FuncDef);
     type_t* funcDecType = funcDec == NULL ? NULL : funcDec->type;
     type_t* funcDefType = funcDef == NULL ? NULL : funcDef->type;
     if (type == FuncDec) {
@@ -540,8 +527,8 @@ void FunDec(syntax_t* node, type_t* specifier, int type) {
     }
     else assert(0);
 
-    if (type == FuncDec && funcDec == NULL) InsertScopeItem(var_scope, CopyItem(func));
-    else if (type == FuncDef) InsertScopeItem(var_scope, CopyItem(func));
+    if (type == FuncDec && funcDec == NULL) InsertScopeItem(CopyItem(func));
+    else if (type == FuncDef) InsertScopeItem(CopyItem(func));
     else return;
 } 
 
@@ -579,10 +566,10 @@ item_t* ParamDec(syntax_t* node) {
     syntax_t** childs = node->symbol.child;
     type_t* specifier = Specifier(childs[0]);
     item_t* var = VarDec(childs[1], specifier);
-    if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
+    if (FindScopeItem(var->name))
         semantic_error(DUPLICATE_VAR, node->lineno, var->name);
     // to avoid further errors, still add it to symbol table
-    InsertScopeItem(var_scope, CopyItem(var));
+    InsertScopeItem(CopyItem(var));
     return var;
 } 
 
@@ -723,23 +710,21 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                 assert(var->next == NULL);
             }
         }
-        if (FindScopeItem(VarScope, var->name) || FindScopeItem(StructScope, var->name))
+        if (FindScopeItem(var->name))
             semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
         else if (!typecmp_structure(var->type, exp)) {
             semantic_error(MISMATCHED_ASSIGN, childs[1]->lineno, var->name);
         }
         
-        InsertScopeItem(var_scope, CopyItem(var));
+        InsertScopeItem(CopyItem(var));
     }
     // Dec -> VarDec
     else {
         // struct Dec
         if (record != NULL) {
             item_t* var = VarDec(childs[0], specifier);
-            if (FindScopeItem(VarScope, var->name))
+            if (FindScopeItem(var->name))
                 semantic_error(DUPLICATE_FIELD, childs[0]->lineno, var->name);
-            else if (FindScopeItem(StructScope, var->name))
-                semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
             else {
                 if(record->record.field == NULL) {
                     record->record.field = var;
@@ -751,17 +736,17 @@ void Dec(syntax_t* node, type_t* specifier, type_t* record) {
                     cur->next = var;
                     assert(var->next == NULL);
                 }
-                InsertScopeItem(var_scope, CopyItem(var));
+                InsertScopeItem(CopyItem(var));
             }
         }
         // non-struct Dec
         else {
             item_t* var = VarDec(childs[0], specifier);
-            if (FindScopeItem(VarScope, var->name))
+            if (FindScopeItem(var->name))
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-            else if (FindScopeItem(StructScope, var->name)) 
+            else if (FindScopeItem(var->name)) 
                 semantic_error(DUPLICATE_VAR, childs[0]->lineno, var->name);
-            else InsertScopeItem(var_scope, CopyItem(var));
+            else InsertScopeItem(CopyItem(var));
         }   
     }
 } 
@@ -921,7 +906,7 @@ type_t* Exp(syntax_t* node) {
     // Exp -> ID LP Args RP
     //		| ID LP RP
     else if (symcmp(childs[0], "ID") && childs[1] != NULL) {
-        item_t* func = FindScopeItem(VarScope, childs[0]->token.value.sval);
+        item_t* func = FindScopeItem(childs[0]->token.value.sval);
         if (func == NULL) 
             semantic_error(UNDEFINED_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
         else if (func->type->kind != FuncDec && func->type->kind != FuncDef)
@@ -941,7 +926,7 @@ type_t* Exp(syntax_t* node) {
     }
     // Exp -> ID
     else if (symcmp(childs[0], "ID")) {
-        item_t* id = FindScopeItem(VarScope, childs[0]->token.value.sval);
+        item_t* id = FindScopeItem(childs[0]->token.value.sval);
         if (id == NULL)
             semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
         else return id->type;
@@ -984,7 +969,7 @@ void Args(syntax_t* node, item_t* func) {
 } 
 
 void check_func_definition(){
-    item_t* cur = VarScope;
+    item_t* cur = SymbolTable;
     item_t* dec[1024] = {NULL};
     int cnt = 0;
     while (cur != NULL) {
@@ -992,7 +977,7 @@ void check_func_definition(){
         cur = cur->next;
     }
     for (int i = 0; i < cnt; i++) {
-        if (!FindScopeItemWithType(VarScope, dec[i]->name, FuncDef)) 
+        if (!FindScopeItemWithType(dec[i]->name, FuncDef)) 
             semantic_error(DECLARED_NOT_DEFINED_FUNC, dec[i]->type->function.lineno, dec[i]->name);
     }
 }

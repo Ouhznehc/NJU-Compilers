@@ -10,14 +10,13 @@ typedef struct ir_t ir_t;
 typedef enum {
     ArgVar, ArgTmp, ArgImm,
     ArgLabel, ArgFunc, ArgRelop, ArgSize,
-    ArgRef, ArgDeref
+    ArgAddr
 } ArgKind;
 typedef enum {
-    IcLabel, IcFunc, IcAssign, 
-    IcAdd, IcSub, IcMul, IcDiv, 
-    IcGoto, IcBranch, IcReturn,
-    IcArg, IcCall, IcParam, 
-    IcRead, IcWrite
+    IcLabel, IcFunc, IcReturn, IcGoto, IcArg, IcParam, IcRead, IcWrite,
+    IcAssign, IcCall, IcMinus, IcRef, IcDeref,
+    IcAdd, IcSub, IcMul, IcDiv, IcDec,
+    IcBranch
 } InterCodeKind;
 
 struct arg_t {
@@ -44,7 +43,7 @@ struct ic_t {
 // List of intercodes
 struct ir_t {
     ic_t* code;
-    ir_t* prev, *next;
+    ir_t* next;
 };
 
 ir_t *ir_head, *ir_tail;
