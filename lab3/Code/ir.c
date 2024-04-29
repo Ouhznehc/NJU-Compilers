@@ -47,7 +47,7 @@ void insert_var(arg_t* var) {
 
 arg_t* find_var(char* name) {
     var_t* cur = VarList;
-    printf("%p\n", cur->var);
+    
     while (cur != NULL) {
         if(!strcmp(cur->var->name, name)) return cur->var;
         cur = cur->next;
@@ -240,6 +240,7 @@ arg_t* translate_VarDec(syntax_t* node) {
             if(var->type->kind == Basic) return ret;
             else insert_ir(new_ic(IcDec, ret, size));
             insert_var(ret);
+            printf("%s\n", VarList->var->name);
             return ret;
         // VarDec LB INT RB
         case 2:
