@@ -521,7 +521,6 @@ arg_t* translate_Exp(syntax_t* node) {
             arg_t* arg = translate_Exp(child);
             arg = deref(arg);
             insert_ir(new_ic(IcWrite, arg));
-
             return NULL;
         }
         arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
