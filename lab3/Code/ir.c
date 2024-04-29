@@ -514,12 +514,13 @@ arg_t* translate_Exp(syntax_t* node) {
     // Exp -> ID LP Args RP
     else if (rule == 12) {
         if(!strcmp(childs[0]->token.value.sval, "write")) {
-            assert(0);
+
             assert(childs[2]->symbol.rule = 2);
             syntax_t* child = childs[2]->symbol.child[0];
             arg_t* arg = translate_Exp(child);
             arg = deref(arg);
             insert_ir(new_ic(IcWrite, arg));
+            assert(0);
             return NULL;
         }
         arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
