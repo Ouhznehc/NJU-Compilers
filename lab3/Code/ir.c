@@ -423,6 +423,7 @@ void translate_Dec(syntax_t* node) {
         arg_t* left = translate_VarDec(childs[0]);
         arg_t* right = translate_Exp(childs[2]);
         insert_assign_ir(left, right);
+        assert(0);
     }
     else assert(0);
     return;
