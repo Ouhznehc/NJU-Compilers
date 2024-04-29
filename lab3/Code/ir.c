@@ -255,11 +255,9 @@ void translate_FunDec(syntax_t* node) {
     assert(node != NULL);
     syntax_t** childs = node->symbol.child;
     
-    arg_t* func = new_arg(ArgFunc, childs[0]->name, 0, false);
+    arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
     insert_ir(new_ic(IcFunc, func));
-    printf("%s\n", childs[0]->name);
-    assert(FindScopeItem(childs[0]->name) != NULL);
-    type_t* type = FindScopeItem(childs[0]->name)->type;
+    type_t* type = FindScopeItem(childs[0]->token.value.sval)->type;
 
     assert(type->kind == FuncDef);
 
