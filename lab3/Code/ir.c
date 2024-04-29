@@ -39,6 +39,7 @@ void* malloc_safe(int size) {
 }
 
 void insert_var(arg_t* var) {
+        assert(0);
     var_t* item = malloc_safe(sizeof(var_t));
     item->var = var;
     item->next = VarList;
@@ -46,7 +47,6 @@ void insert_var(arg_t* var) {
 }
 
 arg_t* find_var(char* name) {
-    assert(0);
     var_t* cur = VarList;
     while (cur != NULL) {
         if(!strcmp(cur->var->name, name)) return cur->var;
