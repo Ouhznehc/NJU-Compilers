@@ -49,8 +49,8 @@ arg_t* find_var(char* name) {
     var_t* cur = VarList;
     while (cur != NULL) {
         assert(cur->var != NULL);
+        assert(cur->var->name != NULL);
         if(!strcmp(cur->var->name, name)) return cur->var;
-        assert(0);
         cur = cur->next;
     }
     assert(0);
