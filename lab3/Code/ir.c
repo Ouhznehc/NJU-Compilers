@@ -39,6 +39,8 @@ void* malloc_safe(int size) {
 }
 
 void insert_var(arg_t* var) {
+
+            printf("\033[33m%d %p\033[0m\n", __LINE__, var);
     var_t* item = malloc_safe(sizeof(var_t));
     item->var = var;
     item->next = VarList;
