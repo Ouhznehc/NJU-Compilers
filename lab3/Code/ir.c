@@ -252,7 +252,6 @@ FunDec:
     | ID LP RP
 */
 void translate_FunDec(syntax_t* node) {
-    assert(0);
     assert(node != NULL);
     syntax_t** childs = node->symbol.child;
     
@@ -268,6 +267,7 @@ void translate_FunDec(syntax_t* node) {
         insert_ir(new_ic(IcParam, param));
         insert_var(param);
     }
+    assert(0);
     return;
 } 
 
