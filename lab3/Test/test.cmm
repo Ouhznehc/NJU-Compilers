@@ -17,3 +17,4 @@ float getX(struct Point p1) {
 float getY(struct Point p2) {
     return p2_y;
 }
+
