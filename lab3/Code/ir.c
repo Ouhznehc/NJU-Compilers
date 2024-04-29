@@ -48,9 +48,7 @@ void insert_var(arg_t* var) {
 arg_t* find_var(char* name) {
     var_t* cur = VarList;
     while (cur != NULL) {
-        assert(cur->var != NULL);
-        assert(cur->var->name != NULL);
-        assert(name != NULL);
+        printf("%s %s\n", cur->var->name, name);
         if(!strcmp(cur->var->name, name)) return cur->var;
         cur = cur->next;
     }
