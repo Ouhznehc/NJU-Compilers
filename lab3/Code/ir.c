@@ -237,10 +237,8 @@ arg_t* translate_VarDec(syntax_t* node) {
         // VarDec -> ID
         case 1:
             assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
-            if(var->type->kind == Basic) return ret;
-            else insert_ir(new_ic(IcDec, ret, size));
+            if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
             insert_var(ret);
-            printf("%s\n", ret->name);
             return ret;
         // VarDec LB INT RB
         case 2:
