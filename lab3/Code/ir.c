@@ -240,6 +240,7 @@ arg_t* translate_VarDec(syntax_t* node) {
             if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
             printf("%s\n", ret->name);
             insert_var(ret);
+            printf("%s\n", VarList->var->name);
             return ret;
         // VarDec LB INT RB
         case 2:
