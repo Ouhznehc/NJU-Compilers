@@ -518,7 +518,6 @@ arg_t* translate_Exp(syntax_t* node) {
             assert(childs[2]->symbol.rule = 2);
             syntax_t* child = childs[2]->symbol.child[0];
             arg_t* arg = translate_Exp(child);
-            assert(0);
             arg = deref(arg);
             insert_ir(new_ic(IcWrite, arg));
             return NULL;
@@ -571,6 +570,7 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> ID
     else if (rule == 16) {
+        assert(0);
         return find_var(childs[0]->token.value.sval);
     }
     // Exp -> INT
