@@ -33,6 +33,13 @@ void* malloc_safe(int size) {
     return ret;
 }
 
+void insert_var(arg_t* var) {
+    var_t* item = malloc_safe(sizeof(var_t));
+    item->var = var;
+    item->next = VarList;
+    VarList = item;
+}
+
 arg_t* new_arg(int kind, char* name, int cons, bool is_addr) {
     arg_t* ret = malloc_safe(sizeof(arg_t));
     ret->kind = kind;
@@ -520,7 +527,10 @@ arg_t* translate_Exp(syntax_t* node) {
     else if (rule == 14) {
         arg_t* exp1 = translate_Exp(childs[0]);
         arg_t* exp2 = translate_Exp(childs[2]);
+        exp1 = ref(exp1);
+        exp2 = deref(exp2);
         arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true);
+        type_t* array = Exp(childs[0]);
 
 
     }
