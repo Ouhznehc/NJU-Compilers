@@ -257,6 +257,7 @@ void translate_FunDec(syntax_t* node) {
     
     arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
     insert_ir(new_ic(IcFunc, func));
+    assert(0);
     type_t* type = FindScopeItem(childs[0]->token.value.sval)->type;
 
     assert(type->kind == FuncDef);
