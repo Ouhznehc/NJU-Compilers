@@ -44,8 +44,9 @@ void insert_var(arg_t* var) {
     item->var = var;
 
     item->next = VarList;
-         assert(0);
+
     VarList = item;
+             assert(0);
 }
 
 arg_t* find_var(char* name) {
