@@ -570,7 +570,7 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> ID
     else if (rule == 16) {
-        assert(0);
+        assert(find_var(childs[0]->token.value.sval) != NULL);
         return find_var(childs[0]->token.value.sval);
     }
     // Exp -> INT
