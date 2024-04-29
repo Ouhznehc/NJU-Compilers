@@ -45,6 +45,7 @@ void insert_var(arg_t* var) {
 
             printf("\033[33m%d %p\033[0m\n", __LINE__, item);
     item->var = var;
+            printf("\033[33m%d %p\033[0m\n", __LINE__, VarList);
     item->next = VarList;
     VarList = item;
 }
