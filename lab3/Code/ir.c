@@ -267,6 +267,7 @@ void translate_FunDec(syntax_t* node) {
         insert_ir(new_ic(IcParam, param));
         insert_var(param);
     }
+    assert(0);
     return;
 } 
 
