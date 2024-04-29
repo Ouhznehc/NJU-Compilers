@@ -906,6 +906,8 @@ type_t* Exp(syntax_t* node) {
     // Exp -> ID LP Args RP
     //		| ID LP RP
     else if (symcmp(childs[0], "ID") && childs[1] != NULL) {
+        // add for lab3
+        if(!strcmp(childs[0]->token.value.sval, "read") || !strcmp(childs[0]->token.value.sval, "write")) return NULL;
         item_t* func = FindScopeItem(childs[0]->token.value.sval);
         if (func == NULL) 
             semantic_error(UNDEFINED_FUNC, childs[0]->lineno, childs[0]->token.value.sval);
@@ -984,10 +986,6 @@ void check_func_definition(){
 
 
 void semantic_check(syntax_t* root){
-    // read write for lab3
-    type_t* read_func = new_type(FuncDef, "read", 0, 0, NULL, NULL);
-    type_t* write_func = new_type(FuncDef, "write", 0, 1, NULL, NULL);
-    InsertScopeItem(read_func); InsertScopeItem(write_func);
     Program(root);
     // no need for lab3
     // check_func_definition();
