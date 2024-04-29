@@ -40,8 +40,9 @@ void* malloc_safe(int size) {
 
 void insert_var(arg_t* var) {
     var_t* item = malloc_safe(sizeof(var_t));
-            assert(0);
+           
     item->var = var;
+     assert(0);
     item->next = VarList;
     VarList = item;
 }
