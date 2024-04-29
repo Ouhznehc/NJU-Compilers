@@ -39,13 +39,8 @@ void* malloc_safe(int size) {
 }
 
 void insert_var(arg_t* var) {
-
-            printf("\033[33m%d %p\033[0m\n", __LINE__, var);
     var_t* item = malloc_safe(sizeof(var_t));
-
-            printf("\033[33m%d %p\033[0m\n", __LINE__, item);
     item->var = var;
-            printf("\033[33m%d %p\033[0m\n", __LINE__, varlist);
     item->next = varlist;
     varlist = item;
 }
@@ -242,9 +237,7 @@ arg_t* translate_VarDec(syntax_t* node) {
         case 1:
             assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
             if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
-            printf("\033[33m%d %p\033[0m\n", __LINE__, varlist);
             insert_var(ret);
-            printf("\033[33m%d %p\033[0m\n", __LINE__, ret);
             return ret;
         // VarDec LB INT RB
         case 2:
