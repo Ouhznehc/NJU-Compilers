@@ -583,7 +583,7 @@ Args:
     | Exp COMMA Args
     | Exp
 */
-void translate_Args(syntax_t* node) { 
+void translate_Args(syntax_t* node) {
     return;
 }
 
