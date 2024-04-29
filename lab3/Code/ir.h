@@ -32,16 +32,11 @@ struct arg_t {
     };
 };
 
-
 // store var(not tmp), for reuse declared variable
 struct var_t {
     arg_t* var;
     var_t* next;
 };
-
-var_t* VarList;
-
-
 
 /// struct of intercode, in detail:
 // Assignment: result := arg1
@@ -62,8 +57,6 @@ struct ir_t {
     ir_t* next;
 };
 
-ir_t *ir_head, *ir_tail;
-int var_no = 0, tmp_no = 0, label_no = 0;
 
 void generate_ir(syntax_t* root, FILE* ir);
 

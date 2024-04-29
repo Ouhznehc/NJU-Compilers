@@ -2,6 +2,7 @@
 #include "syntax.tab.h"
 #include "grammar.h"
 #include "semantics.h"
+#include "ir.h"
 extern FILE* yyin;
 extern syntax_t* root;
 int error_no = 0;

@@ -1,5 +1,10 @@
 #include "ir.h"
 
+
+ir_t *ir_head, *ir_tail;
+int var_no = 0, tmp_no = 0, label_no = 0;
+var_t* VarList;
+
 /* High-level Definitions */
 void translate_Program(syntax_t* node); 
 void translate_ExtDefList(syntax_t* node); 
