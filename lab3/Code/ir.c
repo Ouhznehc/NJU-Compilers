@@ -40,13 +40,10 @@ void* malloc_safe(int size) {
 
 void insert_var(arg_t* var) {
     var_t* item = malloc_safe(sizeof(var_t));
-           
     item->var = var;
-
     item->next = VarList;
-
+    printf("%p\n", VarList);
     VarList = item;
-             assert(0);
 }
 
 arg_t* find_var(char* name) {
