@@ -239,6 +239,7 @@ arg_t* translate_VarDec(syntax_t* node) {
             if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
             printf("\033[33m%d %p\033[0m\n", __LINE__, ret);
             insert_var(ret);
+            printf("\033[33m%d %p\033[0m\n", __LINE__, ret);
             return ret;
         // VarDec LB INT RB
         case 2:
