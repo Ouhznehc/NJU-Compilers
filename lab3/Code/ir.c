@@ -242,7 +242,7 @@ arg_t* translate_VarDec(syntax_t* node) {
         case 1:
             assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
             if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
-            printf("\033[33m%d %p\033[0m\n", __LINE__, ret);
+            printf("\033[33m%d %p\033[0m\n", __LINE__, VarList);
             insert_var(ret);
             printf("\033[33m%d %p\033[0m\n", __LINE__, ret);
             return ret;
