@@ -47,7 +47,6 @@ void insert_var(arg_t* var) {
     item->var = var;
             printf("\033[33m%d %p\033[0m\n", __LINE__, varlist);
     item->next = varlist;
-    assert(item->next != NULL);
     varlist = item;
 }
 
