@@ -50,6 +50,7 @@ arg_t* find_var(char* name) {
     while (cur != NULL) {
         assert(cur->var != NULL);
         assert(cur->var->name != NULL);
+        assert(name != NULL);
         if(!strcmp(cur->var->name, name)) return cur->var;
         cur = cur->next;
     }
