@@ -262,9 +262,9 @@ void translate_FunDec(syntax_t* node) {
 
     assert(type->kind == FuncDef);
     for (field_t* cur = type->function.argv; cur; cur = cur->next) {
+        assert(0);
         int is_addr = cur->type->kind != Basic ? true : false;
         arg_t* param = new_arg(ArgVar, cur->name, 0, is_addr);
-        assert(0);
         insert_ir(new_ic(IcParam, param));
         insert_var(param);
     }
