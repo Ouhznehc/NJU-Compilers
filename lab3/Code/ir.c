@@ -261,8 +261,8 @@ void translate_FunDec(syntax_t* node) {
     type_t* type = FindScopeItem(childs[0]->name)->type;
 
     assert(type->kind == FuncDef);
+            assert(0);
     for (field_t* cur = type->function.argv; cur; cur = cur->next) {
-        assert(0);
         int is_addr = cur->type->kind != Basic ? true : false;
         arg_t* param = new_arg(ArgVar, cur->name, 0, is_addr);
         insert_ir(new_ic(IcParam, param));
