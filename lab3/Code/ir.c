@@ -517,10 +517,11 @@ arg_t* translate_Exp(syntax_t* node) {
 
             assert(childs[2]->symbol.rule = 2);
             syntax_t* child = childs[2]->symbol.child[0];
+            assert(0);
             arg_t* arg = translate_Exp(child);
             arg = deref(arg);
             insert_ir(new_ic(IcWrite, arg));
-            assert(0);
+
             return NULL;
         }
         arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
