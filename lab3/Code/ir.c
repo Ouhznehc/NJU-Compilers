@@ -257,6 +257,7 @@ void translate_FunDec(syntax_t* node) {
     
     arg_t* func = new_arg(ArgFunc, childs[0]->name, 0, false);
     insert_ir(new_ic(IcFunc, func));
+    printf("%s\n", childs[0]->name);
     assert(FindScopeItem(childs[0]->name) != NULL);
     type_t* type = FindScopeItem(childs[0]->name)->type;
 
