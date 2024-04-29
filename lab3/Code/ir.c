@@ -228,8 +228,8 @@ VarDec:
 arg_t* translate_VarDec(syntax_t* node) {
     assert(node != NULL);
     syntax_t** childs = node->symbol.child;
-    arg_t* ret = new_arg(ArgVar, childs[0]->name, 0, false);
-    item_t* var = FindScopeItem(childs[0]->name);
+    arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false);
+    item_t* var = FindScopeItem(childs[0]->token.value.sval);
     arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false);
     switch (node->symbol.rule) {
         // VarDec -> ID
@@ -267,7 +267,6 @@ void translate_FunDec(syntax_t* node) {
         insert_ir(new_ic(IcParam, param));
         insert_var(param);
     }
-    assert(0);
     return;
 } 
 
@@ -514,7 +513,7 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> ID LP Args RP
     else if (rule == 12) {
-        if(!strcmp(childs[0]->name, "write")) {
+        if(!strcmp(childs[0]->token.value.sval, "write")) {
             assert(childs[2]->symbol.rule = 2);
             syntax_t* child = childs[2]->symbol.child[0];
             arg_t* arg = translate_Exp(child);
@@ -522,7 +521,7 @@ arg_t* translate_Exp(syntax_t* node) {
             insert_ir(new_ic(IcWrite, arg));
             return NULL;
         }
-        arg_t* func = new_arg(ArgFunc, childs[0]->name, 0, false);
+        arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
         arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false);
         translate_Args(childs[2]);
         insert_ir(new_ic(IcCall, ret, func));
@@ -530,9 +529,9 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> ID LP RP
     else if (rule == 13) {
-        arg_t* func = new_arg(ArgFunc, childs[0]->name, 0, false);
+        arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false);
         arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false);
-        if(!strcmp(childs[0]->name, "read")) {
+        if(!strcmp(childs[0]->token.value.sval, "read")) {
             insert_ir(new_ic(IcRead, ret));
             return ret;
         }
@@ -561,7 +560,7 @@ arg_t* translate_Exp(syntax_t* node) {
         exp = ref(exp);
         int size = 0;
         for (field_t* cur = record->record.field; cur; cur = cur->next) {
-            if (!strcmp(cur->name, childs[2])) break;
+            if (!strcmp(cur->name, childs[2]->token.value.sval)) break;
             size += calculate_size(cur->type);
         }
         arg_t* offset = new_arg(ArgImm, NULL, size, false);
@@ -570,7 +569,7 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> ID
     else if (rule == 16) {
-        return find_var(childs[0]->name);
+        return find_var(childs[0]->token.value.sval);
     }
     // Exp -> INT
     else if (rule == 17) {
