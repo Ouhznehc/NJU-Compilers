@@ -3,7 +3,7 @@
 
 ir_t *ir_head, *ir_tail;
 int var_no = 0, tmp_no = 0, label_no = 0;
-var_t* VarList;
+var_t* varlist;
 
 /* High-level Definitions */
 void translate_Program(syntax_t* node); 
@@ -45,14 +45,14 @@ void insert_var(arg_t* var) {
 
             printf("\033[33m%d %p\033[0m\n", __LINE__, item);
     item->var = var;
-            printf("\033[33m%d %p\033[0m\n", __LINE__, VarList);
-    item->next = VarList;
+            printf("\033[33m%d %p\033[0m\n", __LINE__, varlist);
+    item->next = varlist;
     assert(item->next != NULL);
-    VarList = item;
+    varlist = item;
 }
 
 arg_t* find_var(char* name) {
-    var_t* cur = VarList;
+    var_t* cur = varlist;
     while (cur != NULL) {
         if(!strcmp(cur->var->name, name)) return cur->var;
         cur = cur->next;
@@ -243,7 +243,7 @@ arg_t* translate_VarDec(syntax_t* node) {
         case 1:
             assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
             if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
-            printf("\033[33m%d %p\033[0m\n", __LINE__, VarList);
+            printf("\033[33m%d %p\033[0m\n", __LINE__, varlist);
             insert_var(ret);
             printf("\033[33m%d %p\033[0m\n", __LINE__, ret);
             return ret;
@@ -256,7 +256,7 @@ arg_t* translate_VarDec(syntax_t* node) {
 
 /*
 FunDec:
-    | ID LP VarList RP
+    | ID LP varlist RP
     | ID LP RP
 */
 void translate_FunDec(syntax_t* node) {
