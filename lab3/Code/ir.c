@@ -49,6 +49,7 @@ arg_t* find_var(char* name) {
     var_t* cur = VarList;
     while (cur != NULL) {
         if(!strcmp(cur->var->name, name)) return cur->var;
+        cur = cur->next;
     }
     assert(0);
 }
@@ -570,7 +571,6 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> ID
     else if (rule == 16) {
-        assert(find_var(childs[0]->token.value.sval) != NULL);
         return find_var(childs[0]->token.value.sval);
     }
     // Exp -> INT
