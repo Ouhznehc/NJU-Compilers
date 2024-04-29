@@ -984,6 +984,10 @@ void check_func_definition(){
 
 
 void semantic_check(syntax_t* root){
+    // read write for lab3
+    type_t* read = new_type(FuncDef, "read", 0, 0, NULL, NULL);
+    type_t* write = new_type(FuncDef, "write", 0, 1, NULL, NULL);
+    InsertScopeItem(read); InsertScopeItem(write);
     Program(root);
     // no need for lab3
     // check_func_definition();
