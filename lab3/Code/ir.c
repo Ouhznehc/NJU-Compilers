@@ -259,7 +259,6 @@ void translate_FunDec(syntax_t* node) {
     insert_ir(new_ic(IcFunc, func));
 
     type_t* type = FindScopeItem(childs[0]->token.value.sval)->type;
-    assert(0);
     assert(type->kind == FuncDef);
 
     for (field_t* cur = type->function.argv; cur; cur = cur->next) {
@@ -268,6 +267,7 @@ void translate_FunDec(syntax_t* node) {
         insert_ir(new_ic(IcParam, param));
         insert_var(param);
     }
+    assert(0);
     return;
 } 
 
