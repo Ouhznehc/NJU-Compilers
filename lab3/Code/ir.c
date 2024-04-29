@@ -40,6 +40,14 @@ void insert_var(arg_t* var) {
     VarList = item;
 }
 
+arg_t* find_var(char* name) {
+    var_t* cur = VarList;
+    while (cur != NULL) {
+        if(!strcmp(cur->var->name, name)) return cur->var;
+    }
+    assert(0);
+}
+
 arg_t* new_arg(int kind, char* name, int cons, bool is_addr) {
     arg_t* ret = malloc_safe(sizeof(arg_t));
     ret->kind = kind;
@@ -224,6 +232,7 @@ arg_t* translate_VarDec(syntax_t* node) {
             assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
             if(var->type->kind == Basic) return ret;
             else insert_ir(new_ic(IcDec, ret, size));
+            insert_var(ret);
             return ret;
         // VarDec LB INT RB
         case 2:
@@ -251,6 +260,7 @@ void translate_FunDec(syntax_t* node) {
         int is_addr = cur->type->kind != Basic ? true : false;
         arg_t* param = new_arg(ArgVar, cur->name, 0, is_addr);
         insert_ir(new_ic(IcParam, param));
+        insert_var(param);
     }
     return;
 } 
@@ -527,26 +537,45 @@ arg_t* translate_Exp(syntax_t* node) {
     else if (rule == 14) {
         arg_t* exp1 = translate_Exp(childs[0]);
         arg_t* exp2 = translate_Exp(childs[2]);
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true);
         exp1 = ref(exp1);
         exp2 = deref(exp2);
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true);
         type_t* array = Exp(childs[0]);
-
-
+        arg_t* size = new_arg(ArgImm, NULL, calculate_size(array), false);
+        arg_t* offset = new_arg(ArgTmp, NULL, ++tmp_no, false);
+        insert_ir(new_ic(IcMul, offset, size, exp2));
+        insert_ir(new_ic(IcAdd, ret, exp1, offset));
+        return ret;
     }
+    // Exp -> Exp DOT ID
     else if (rule == 15) {
-
+        arg_t* exp = translate_Exp(childs[0]);
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true);
+        type_t* record = Exp(childs[0]);
+        exp = ref(exp);
+        int size = 0;
+        for (field_t* cur = record->record.field; cur; cur = cur->next) {
+            if (!strcmp(cur->name, childs[2])) break;
+            size += calculate_size(cur->type);
+        }
+        arg_t* offset = new_arg(ArgImm, NULL, size, false);
+        insert_ir(new_ic(IcAdd, ret, exp, offset));
+        return ret;
     }
+    // Exp -> ID
     else if (rule == 16) {
-        
+        return find_var(childs[0]->name);
     }
+    // Exp -> INT
     else if (rule == 17) {
-
+        arg_t* ret = new_arg(ArgImm, NULL, childs[0]->token.value.ival, false);
+        return ret;
     }
+    // Exp -> FLOAT
     else if (rule == 18) {
-        
+        assert(0);
     }
-    return;
+    else assert(0);
 } 
 
 /*
