@@ -858,7 +858,7 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 74 "./lexical.l"
-{ value_t value = new_value(yytext, TOKEN_CONST); yylval.syntax = new_token("RELOP", TOKEN_CONST, yylineno, value); return RELOP; }
+{ value_t value = new_value(yytext, TOKEN_RELOP); yylval.syntax = new_token("RELOP", TOKEN_RELOP, yylineno, value); return RELOP; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -2070,6 +2070,7 @@ value_t new_value(char* name, int type) {
             break;
         case TOKEN_TYPE:
         case TOKEN_ID:
+        case TOKEN_RELOP:
             strcpy(ret.sval, name);
             break;
         default:

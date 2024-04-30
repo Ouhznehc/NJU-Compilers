@@ -16,6 +16,7 @@ enum {
     TOKEN_INT_DEC,
     TOKEN_INT_HEX,
     TOKEN_INT_OCT,
+    TOKEN_RELOP,
     TOKEN_CONST,
     TOKEN_INT,
     TOKEN_FLOAT,
