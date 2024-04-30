@@ -590,11 +590,74 @@ Args:
     | Exp
 */
 void translate_Args(syntax_t* node) {
+    arg_t* args[64];
+    int cnt = 0;
+    // Args -> Exp COMMA Args
+    while (node && !strcmp(node->name, "Args")) {
+        syntax_t** childs = node->symbol.child;
+        type_t* type = Exp(childs[0]);
+        arg_t* exp = translate_Exp(childs[0]);
+        if (type->kind == Basic) exp = deref(exp);
+        else exp = ref(exp);
+        args[cnt++] = exp;
+        node = childs[2];
+    }
+
+    for (int i = cnt; i >= cnt; i--) {
+        insert_ir(new_ic(IcParam, args[cnt]));
+    }
+
     return;
 }
 
+// Exp -> Exp AND Exp 2
+// Exp -> Exp OR Exp 3
+// Exp -> Exp RELOP Exp 4
+// Exp -> NOT Exp 5
 void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) {
-    return;
+    assert(node != NULL);
+    syntax_t** childs = node->symbol.child;
+    int rule = node->symbol.rule;
+
+    // Exp -> Exp AND Exp
+    if (rule == 2) {
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
+        translate_Cond(childs[0], label1, false_l);
+        insert_ir(new_ic(IcLabel, label1));
+        translate_Cond(childs[2], true_l, false_l);
+    }
+
+    // Exp -> Exp OR Exp
+    else if (rule == 3) {
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
+        translate_Cond(childs[0], true_l, label1);
+        insert_ir(new_ic(IcLabel, label1));
+        translate_Cond(childs[2], true_l, false_l);
+    }
+
+    // Exp -> Exp RELOP Exp
+    else if (rule == 4) {
+        arg_t* relop = new_arg(ArgRelop, childs[1]->token.value.sval, 0, false);
+        arg_t* exp1 = translate_Exp(childs[0]);
+        arg_t* exp2 = translate_Exp(childs[2]);
+        exp1 = deref(exp1); exp2 = deref(exp2);
+        insert_ir(new_ic(IcBranch, exp1, relop, exp2, true_l));
+        insert_ir(new_ic(IcGoto, false_l));
+    }
+    // Exp -> NOT Exp
+    else if (rule == 5) {
+        translate_Cond(childs[1], false_l, true_l);
+    }
+    else {
+        arg_t* neq = new_arg(ArgRelop, "!=", 0, false);
+        arg_t* cons = new_arg(ArgImm, NULL, 0, false);
+        arg_t* exp = translate_Exp(node);
+        insert_ir(new_ic(IcBranch, exp, neq, cons, true_l));
+        insert_ir(new_ic(IcGoto, false_l));
+    }
+
+
+
 }
 
 char* arg_to_string(arg_t* arg) {
