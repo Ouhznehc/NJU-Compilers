@@ -60,4 +60,12 @@ struct ir_t {
 
 void generate_ir(syntax_t* root, FILE* ir);
 
+#define __DEBUG__
+
+#ifdef __DEBUG__
+    #define debug printf("%s:%d: %s\n", __FILE__, __LINE__, __FUNCTION__);
+#else
+    #define debug 
+#endif
+
 #endif
