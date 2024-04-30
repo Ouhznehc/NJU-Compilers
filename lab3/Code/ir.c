@@ -97,6 +97,7 @@ ic_t* new_ic(int kind, ...) { debug
             ret->result = va_arg(args, arg_t*);
             break;
     }
+    debug
     return ret;
 }
 
