@@ -324,8 +324,18 @@ void translate_Stmt(syntax_t* node) {
         arg_t* exp = translate_Exp(childs[1]);
         insert_ir(new_ic(IcReturn, exp));
     }
-    // Stmt -> IF LP Exp RP Stmt ELSE Stmt
+    // Stmt -> IF LP Exp RP Stmt
     else if (rule == 4) {
+        printf("=-----------\n");
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
+        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
+        translate_Cond(childs[2], label1, label2);
+        insert_ir(new_ic(IcLabel, label1));
+        translate_Stmt(childs[4]);
+        insert_ir(new_ic(IcLabel, label2));
+    }
+    // Stmt -> IF LP Exp RP Stmt ELSE Stmt
+    else if (rule == 5) {
         printf("==============\n");
         arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
         arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
@@ -337,16 +347,6 @@ void translate_Stmt(syntax_t* node) {
         insert_ir(new_ic(IcLabel, label2)); 
         translate_Stmt(childs[6]);
         insert_ir(new_ic(IcLabel, label3));       
-    }
-    // Stmt -> IF LP Exp RP Stmt
-    else if (rule == 5) {
-        printf("=-----------\n");
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
-        translate_Cond(childs[2], label1, label2);
-        insert_ir(new_ic(IcLabel, label1));
-        translate_Stmt(childs[4]);
-        insert_ir(new_ic(IcLabel, label2));
     }
     // Stmt -> WHILE LP Exp RP Stmt
     else if (rule == 6) {
