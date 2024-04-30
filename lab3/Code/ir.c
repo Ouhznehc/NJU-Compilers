@@ -112,6 +112,7 @@ ir_t* new_ir(ic_t* ic) { debug
 
 
 void insert_ir(ic_t* ic) { debug
+    printf("ic->result = %s\n", ic->result->name);
     printf("\033[35m%s\033[0m", ic_to_string(ic));
     ir_t* ir = new_ir(ic); debug
     if (ir_head == NULL) {
@@ -259,7 +260,6 @@ void translate_FunDec(syntax_t* node) { debug
     syntax_t** childs = node->symbol.child;
     debug
     arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false); debug
-    printf("func = %s\n", func->name);
     insert_ir(new_ic(IcFunc, func));
     debug
     type_t* type = FindScopeItem(childs[0]->token.value.sval)->type;
