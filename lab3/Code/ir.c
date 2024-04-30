@@ -234,7 +234,7 @@ arg_t* translate_VarDec(syntax_t* node) { debug
     syntax_t** childs = node->symbol.child;
     arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false); debug
     item_t* var = FindScopeItem(childs[0]->token.value.sval); debug
-    printf("var = %s\n", var->name);
+    printf("ID = %s, var = %s\n", childs[0]->token.value.sval, var->name);
     arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false); debug
     switch (node->symbol.rule) {
         // VarDec -> ID
