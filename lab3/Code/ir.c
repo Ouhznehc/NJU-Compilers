@@ -326,6 +326,7 @@ void translate_Stmt(syntax_t* node) {
     }
     // Stmt -> IF LP Exp RP Stmt ELSE Stmt
     else if (rule == 4) {
+        printf("==============\n");
         arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
         arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
         arg_t* label3 = new_arg(ArgLabel, NULL, ++label_no, false);
