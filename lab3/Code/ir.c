@@ -4,7 +4,7 @@
 ir_t *ir_head, *ir_tail;
 int var_no = 0, tmp_no = 0, label_no = 0;
 var_t* varlist;
-
+char* ic_to_string(ic_t* ic);
 /* High-level Definitions */
 void translate_Program(syntax_t* node); 
 void translate_ExtDefList(syntax_t* node); 
@@ -110,6 +110,7 @@ ir_t* new_ir(ic_t* ic) {
 
 
 void insert_ir(ic_t* ic) {
+    printf("%s\n", ic_to_string(ic));
     ir_t* ir = new_ir(ic);
     if (ir_head == NULL) {
         ir_head = ir_tail = ir;
