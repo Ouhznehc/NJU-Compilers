@@ -608,7 +608,7 @@ void translate_Args(syntax_t* node) { debug
     }
 
     for (int i = cnt - 1; i >= 0; i--) {
-        insert_ir(new_ic(IcParam, args[i]));
+        insert_ir(new_ic(IcArg, args[i]));
     }
 
     return;
