@@ -326,6 +326,7 @@ void translate_Stmt(syntax_t* node) { debug
     // Stmt -> RETURN Exp SEMI
     else if (rule == 3) { debug
         arg_t* exp = translate_Exp(childs[1]); debug
+        exp = deref(exp);
         insert_ir(new_ic(IcReturn, exp));
     }
     // Stmt -> IF LP Exp RP Stmt

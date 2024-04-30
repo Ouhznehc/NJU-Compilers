@@ -1,84 +1,83 @@
-FUNCTION main :
-DEC x 20
-i := #0
-N := #5
-j := #0
+FUNCTION calculate_avg :
+PARAM g
+sum := #0
+k := #0
 LABEL label1 :
-IF i < #5 GOTO label2
+IF k < #10 GOTO label2
 GOTO label3
 LABEL label2 :
-t2 := &x 
-t3 := #4 * i
-t1 := t2 + t3
-READ t4
-*t1 := t4
-t5 := i + #1
-i := t5
+t1 := g + #4
+t3 := #12 * k
+t2 := t1 + t3
+t4 := t2 + #4
+t6 := *t4
+t5 := sum + t6
+sum := t5
+t7 := k + #1
+k := t7
 GOTO label1
 LABEL label3 :
-i := N
+t8 := g + #124
+t9 := sum / #10
+*t8 := t9
+t10 := g + #124
+RETURN t10
+FUNCTION main :
+DEC company 640
+i := #0
+avg := #0
 LABEL label4 :
-IF i > #0 GOTO label5
+IF i < #5 GOTO label5
 GOTO label6
 LABEL label5 :
+j := #0
+t12 := &company 
+t13 := #128 * i
+t11 := t12 + t13
+t14 := t11 + #0
+*t14 := i
 LABEL label7 :
-t6 := i - #1
-IF j < t6 GOTO label8
+IF j < #10 GOTO label8
 GOTO label9
 LABEL label8 :
-t8 := &x 
-t9 := #4 * j
-t7 := t8 + t9
-t10 := j + #1
-t12 := &x 
-t13 := #4 * t10
-t11 := t12 + t13
-t14 := *t7
-t15 := *t11
-IF t14 > t15 GOTO label10
-GOTO label11
-LABEL label10 :
-t17 := &x 
-t18 := #4 * j
-t16 := t17 + t18
-t19 := *t16
-temp := t19
-t21 := &x 
-t22 := #4 * j
-t20 := t21 + t22
-t23 := j + #1
-t25 := &x 
-t26 := #4 * t23
-t24 := t25 + t26
-t27 := *t24
-*t20 := t27
-t28 := j + #1
-t30 := &x 
-t31 := #4 * t28
-t29 := t30 + t31
-*t29 := temp
-LABEL label11 :
-t32 := j + #1
-j := t32
+t16 := &company 
+t17 := #128 * i
+t15 := t16 + t17
+t18 := t15 + #4
+t20 := #12 * j
+t19 := t18 + t20
+t21 := t19 + #4
+t22 := i * #100
+t23 := #3000 + t22
+t24 := j * #150
+t25 := t23 + t24
+*t21 := t25
+t26 := j + #1
+j := t26
 GOTO label7
 LABEL label9 :
-j := #0
-t33 := i - #1
-i := t33
+t28 := &company 
+t29 := #128 * i
+t27 := t28 + t29
+t30 := t27 + #124
+t33 := &company 
+t34 := #128 * i
+t32 := t33 + t34
+ARG t32
+t31 := CALL calculate_avg
+*t30 := t31
+t36 := &company 
+t37 := #128 * i
+t35 := t36 + t37
+t38 := t35 + #124
+t40 := *t38
+t39 := avg + t40
+avg := t39
+t41 := i + #1
+i := t41
 GOTO label4
 LABEL label6 :
-i := #0
-LABEL label12 :
-IF i < #5 GOTO label13
-GOTO label14
-LABEL label13 :
-t35 := &x 
-t36 := #4 * i
-t34 := t35 + t36
-t37 := *t34
-WRITE t37
-t38 := i + #1
-i := t38
-GOTO label12
-LABEL label14 :
+t42 := avg / #5
+avg := t42
+WRITE avg
 RETURN #0
