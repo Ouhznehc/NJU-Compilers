@@ -8,6 +8,9 @@ int AnonymousStruct = 0;
 
 int semantic_error_line = 0;
 
+// In lab3 all the name scope is global, so we do not need stack
+item_t* SymbolTable;
+
 void semantic_error(SemanticErrorType error, int lineno, char* msg) { 
     error_no = 1;
     if (lineno == semantic_error_line) return;
