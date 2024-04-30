@@ -607,7 +607,7 @@ void translate_Args(syntax_t* node) { debug
         node = childs[2];
     }
 
-    for (int i = cnt; i >= cnt; i--) {
+    for (int i = cnt - 1; i >= 0; i--) {
         insert_ir(new_ic(IcParam, args[cnt]));
     }
 
