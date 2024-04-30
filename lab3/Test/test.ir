@@ -8,7 +8,7 @@ IF i < #5 GOTO label2
 GOTO label3
 LABEL label2 :
 t2 := &x 
-t3 := #20 * i
+t3 := #4 * i
 t1 := t2 + t3
 READ t4
 *t1 := t4
@@ -27,11 +27,11 @@ IF j < t6 GOTO label8
 GOTO label9
 LABEL label8 :
 t8 := &x 
-t9 := #20 * j
+t9 := #4 * j
 t7 := t8 + t9
 t10 := j + #1
 t12 := &x 
-t13 := #20 * t10
+t13 := #4 * t10
 t11 := t12 + t13
 t14 := *t7
 t15 := *t11
@@ -39,22 +39,22 @@ IF t14 > t15 GOTO label10
 GOTO label11
 LABEL label10 :
 t17 := &x 
-t18 := #20 * j
+t18 := #4 * j
 t16 := t17 + t18
 t19 := *t16
 temp := t19
 t21 := &x 
-t22 := #20 * j
+t22 := #4 * j
 t20 := t21 + t22
 t23 := j + #1
 t25 := &x 
-t26 := #20 * t23
+t26 := #4 * t23
 t24 := t25 + t26
 t27 := *t24
 *t20 := t27
 t28 := j + #1
 t30 := &x 
-t31 := #20 * t28
+t31 := #4 * t28
 t29 := t30 + t31
 *t29 := temp
 LABEL label11 :
@@ -73,7 +73,7 @@ IF i < #5 GOTO label13
 GOTO label14
 LABEL label13 :
 t35 := &x 
-t36 := #20 * i
+t36 := #4 * i
 t34 := t35 + t36
 t37 := *t34
 WRITE t37
