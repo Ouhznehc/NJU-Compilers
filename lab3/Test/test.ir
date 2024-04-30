@@ -1,7 +1,7 @@
 FUNCTION main :
 READ t1
 n := t1
-IF n  #0 GOTO label1
+IF n > #0 GOTO label1
 GOTO label2
 LABEL label1 :
 WRITE #1
