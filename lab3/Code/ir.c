@@ -638,6 +638,7 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) {
 
     // Exp -> Exp RELOP Exp
     else if (rule == 4) {
+        printf("relop = %s\n", childs[1]->token.value.sval);
         arg_t* relop = new_arg(ArgRelop, childs[1]->token.value.sval, 0, false);
         arg_t* exp1 = translate_Exp(childs[0]);
         arg_t* exp2 = translate_Exp(childs[2]);
