@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     // lab2
     if (!error_no) semantic_check(root);
-
+    printf("lab3 begin ==============\n");
     // lab3
     if (!error_no) generate_ir(root, ir);
 

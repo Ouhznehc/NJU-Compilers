@@ -1,3 +1,0 @@
-FUNCTION main :
-a := #1
-WRITE a
