@@ -79,7 +79,7 @@ struct type_t {
 };
 typedef struct type_t type_t;
 
-
+type_t* Exp(syntax_t* node); 
 struct field_t {
     char name[64];
     struct type_t* type;
