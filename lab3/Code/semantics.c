@@ -931,7 +931,7 @@ type_t* Exp(syntax_t* node) {
         item_t* id = FindScopeItem(childs[0]->token.value.sval);
         if (id == NULL)
             semantic_error(UNDEFINED_VAR, childs[0]->lineno, childs[0]->token.value.sval);
-        else return id->type;
+        else return id->type;assert(0);
         return NULL;
     }
     // Exp -> INT

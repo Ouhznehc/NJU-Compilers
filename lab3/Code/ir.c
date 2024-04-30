@@ -464,7 +464,7 @@ arg_t* translate_Exp(syntax_t* node) {
         arg_t* arg1 = translate_Exp(childs[0]);
         arg_t* arg2 = translate_Exp(childs[2]);
         // ASSIGNOP for Array or Struct recursively
-        if (exp1->kind != Basic) {assert(0);
+        if (exp1->kind != Basic) {
             int size = min(calculate_size(exp1), calculate_size(exp2));
             insert_assign_recursively(arg1, arg2, size);
         }
