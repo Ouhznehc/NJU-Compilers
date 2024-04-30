@@ -552,7 +552,7 @@ arg_t* translate_Exp(syntax_t* node) {  debug
         exp1 = ref(exp1); debug
         exp2 = deref(exp2); debug
         type_t* array = Exp(childs[0]);debug 
-        arg_t* size = new_arg(ArgImm, NULL, calculate_size(array), false); debug
+        arg_t* size = new_arg(ArgImm, NULL, calculate_size(array->array.elem), false); debug
         arg_t* offset = new_arg(ArgTmp, NULL, ++tmp_no, false); debug
         insert_ir(new_ic(IcMul, offset, size, exp2)); debug
         insert_ir(new_ic(IcAdd, ret, exp1, offset)); debug
