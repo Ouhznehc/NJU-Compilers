@@ -469,7 +469,7 @@ arg_t* translate_Exp(syntax_t* node) {
             int size = min(calculate_size(exp1), calculate_size(exp2));
             insert_assign_recursively(arg1, arg2, size);
         }
-        else {assert(0);insert_assign_ir(arg1, arg2);}
+        else {insert_assign_ir(arg1, arg2);}
         return arg1;
     }
     // Exp -> Exp AND Exp

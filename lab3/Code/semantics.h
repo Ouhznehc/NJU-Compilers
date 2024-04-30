@@ -79,7 +79,6 @@ struct type_t {
 };
 typedef struct type_t type_t;
 
-type_t* Exp(syntax_t* node); 
 struct field_t {
     char name[64];
     struct type_t* type;
@@ -92,6 +91,41 @@ type_t* new_type(SemanticBasicType kind, ...);
 void semantic_check(syntax_t* root);
 item_t* FindScopeItem(char* name);
 item_t* FindScopeItemWithType(char* name, int kind);
+
+/* High-level Definitions */
+void Program(syntax_t* node); 
+void ExtDefList(syntax_t* node); 
+void ExtDef(syntax_t* node); 
+void ExtDecList(syntax_t* node, type_t* specifier); 
+
+/* Specifiers */
+type_t* Specifier(syntax_t* node); 
+type_t* StructSpecifier(syntax_t* node); 
+type_t* OptTag(syntax_t* node); 
+type_t* Tag(syntax_t* node); 
+
+/* Declarators */
+item_t* VarDec(syntax_t* node, type_t* specifier); 
+void FunDec(syntax_t* node, type_t* specifier, int type); 
+void VarList(syntax_t* node, item_t* func); 
+item_t* ParamDec(syntax_t* node); 
+
+/* Statements */
+void CompSt(syntax_t* node, type_t* specifier); 
+void StmtList(syntax_t* node, type_t* specifier); 
+void Stmt(syntax_t* node, type_t* specifier);
+
+/* Local Definitions */
+void DefList(syntax_t* node, type_t* record); 
+void Def(syntax_t* node, type_t* record); 
+void Dec(syntax_t* node, type_t* specifier, type_t* record); 
+void DecList(syntax_t* node, type_t* specifier, type_t* record); 
+
+/* Expressions */
+type_t* Exp(syntax_t* node); 
+void Args(syntax_t* node, item_t* func); 
+
+void check_func_definition();
 
 // In lab3 all the name scope is global, so we do not need stack
 item_t* SymbolTable;
