@@ -110,9 +110,9 @@ ir_t* new_ir(ic_t* ic) { debug
 }
 
 
-void insert_ir(ic_t* ic) {
+void insert_ir(ic_t* ic) { debug
     printf("\033[35m%s\033[0m", ic_to_string(ic));
-    ir_t* ir = new_ir(ic);
+    ir_t* ir = new_ir(ic); debug
     if (ir_head == NULL) {
         ir_head = ir_tail = ir;
         ir->next = NULL;
@@ -120,7 +120,7 @@ void insert_ir(ic_t* ic) {
     }
     ir_tail->next = ir;
     ir_tail = ir;
-    ir->next = NULL;
+    ir->next = NULL; debug
     return;
 }
 
