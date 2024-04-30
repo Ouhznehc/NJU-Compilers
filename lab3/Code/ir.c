@@ -660,7 +660,7 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) { debug
 
 }
 
-char* arg_to_string(arg_t* arg) {
+char* arg_to_string(arg_t* arg) { debug
     if (arg == NULL) return NULL;
     char* ret = malloc_safe(sizeof(char) * 64);
     switch (arg->kind) {
@@ -672,7 +672,7 @@ char* arg_to_string(arg_t* arg) {
         case ArgRelop:      sprintf(ret, "%s", arg->name); break;
         case ArgSize:       sprintf(ret, "%d", arg->cons); break;
         default: assert(0);
-    }
+    } debug
     return ret;
 }
 char* ic_to_string(ic_t* ic) { debug
