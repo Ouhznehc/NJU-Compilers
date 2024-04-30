@@ -5,6 +5,7 @@ ir_t *ir_head, *ir_tail;
 int var_no = 0, tmp_no = 0, label_no = 0;
 var_t* varlist;
 char* ic_to_string(ic_t* ic);
+char* arg_to_string(arg_t* arg);
 /* High-level Definitions */
 void translate_Program(syntax_t* node); 
 void translate_ExtDefList(syntax_t* node); 
@@ -599,6 +600,7 @@ void translate_Args(syntax_t* node) { debug
         syntax_t** childs = node->symbol.child;
         type_t* type = Exp(childs[0]); debug
         arg_t* exp = translate_Exp(childs[0]); debug
+        printf("arg = %s \n", arg_to_string(exp));
         if (type->kind == Basic) exp = deref(exp); 
         else exp = ref(exp); debug
         args[cnt++] = exp; debug
