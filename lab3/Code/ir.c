@@ -659,6 +659,7 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) { debug
         arg_t* neq = new_arg(ArgRelop, "!=", 0, false); debug
         arg_t* cons = new_arg(ArgImm, NULL, 0, false); debug
         arg_t* exp = translate_Exp(node); debug
+        exp = deref(exp);
         insert_ir(new_ic(IcBranch, exp, neq, cons, true_l)); debug
         insert_ir(new_ic(IcGoto, false_l)); debug
     }
