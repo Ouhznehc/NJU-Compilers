@@ -112,7 +112,6 @@ ir_t* new_ir(ic_t* ic) { debug
 
 
 void insert_ir(ic_t* ic) { debug
-    printf("ic->result = %s\n", ic->result->name);
     printf("\033[35m%s\033[0m", ic_to_string(ic));
     ir_t* ir = new_ir(ic); debug
     if (ir_head == NULL) {
@@ -663,22 +662,22 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) { debug
 
 }
 
-char* arg_to_string(arg_t* arg) { debug
+char* arg_to_string(arg_t* arg) { 
     if (arg == NULL)  return NULL;
     char* ret = malloc_safe(sizeof(char) * 64);
     switch (arg->kind) {
-        case ArgVar: debug       sprintf(ret, "%s", arg->name); break;
-        case ArgTmp:    debug    sprintf(ret, "t%d", arg->cons); break;
-        case ArgImm:    debug    sprintf(ret, "#%d", arg->cons); break;
-        case ArgLabel:   debug   sprintf(ret, "label%d", arg->cons); break;
-        case ArgFunc:   debug    sprintf(ret, "%s", arg->name); break;
-        case ArgRelop:   debug   sprintf(ret, "%s", arg->name); break;
-        case ArgSize:  debug     sprintf(ret, "%d", arg->cons); break;
+        case ArgVar:        sprintf(ret, "%s", arg->name); break;
+        case ArgTmp:        sprintf(ret, "t%d", arg->cons); break;
+        case ArgImm:        sprintf(ret, "#%d", arg->cons); break;
+        case ArgLabel:      sprintf(ret, "label%d", arg->cons); break;
+        case ArgFunc:       sprintf(ret, "%s", arg->name); break;
+        case ArgRelop:      sprintf(ret, "%s", arg->name); break;
+        case ArgSize:       sprintf(ret, "%d", arg->cons); break;
         default: assert(0);
-    } debug
+    } 
     return ret;
 }
-char* ic_to_string(ic_t* ic) { debug
+char* ic_to_string(ic_t* ic) { 
     char* ret = malloc_safe(sizeof(char) * 64);
     char* result = arg_to_string(ic->result);
     char* arg1 = arg_to_string(ic->arg1);
@@ -706,7 +705,7 @@ char* ic_to_string(ic_t* ic) { debug
         case IcDec:         sprintf(ret, "DEC %s %s\n", result, arg1); break;
         case IcMinus:       sprintf(ret, "%s := #0 - %s\n", result, arg1); break;
         default: assert(0);
-    } debug
+    } 
     return ret;
 }
 
