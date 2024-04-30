@@ -1,84 +1,216 @@
-FUNCTION calculate_avg :
-PARAM g
-sum := #0
-k := #0
+FUNCTION display :
+PARAM chess2
+DEC chessplate 64
+i2 := #0
+j2 := #0
 LABEL label1 :
-IF k < #10 GOTO label2
+IF i2 < #4 GOTO label2
 GOTO label3
 LABEL label2 :
-t1 := g + #4
-t3 := #12 * k
-t2 := t1 + t3
-t4 := t2 + #4
-t6 := *t4
-t5 := sum + t6
-sum := t5
-t7 := k + #1
-k := t7
-GOTO label1
-LABEL label3 :
-t8 := g + #124
-t9 := sum / #10
-*t8 := t9
-t10 := g + #124
-t11 := *t10
-RETURN t11
-FUNCTION main :
-DEC company 640
-i := #0
-avg := #0
+j2 := #0
 LABEL label4 :
-IF i < #5 GOTO label5
+IF j2 < #4 GOTO label5
 GOTO label6
 LABEL label5 :
-j := #0
-t13 := &company 
-t14 := #128 * i
-t12 := t13 + t14
-t15 := t12 + #0
-*t15 := i
-LABEL label7 :
-IF j < #10 GOTO label8
-GOTO label9
-LABEL label8 :
-t17 := &company 
-t18 := #128 * i
-t16 := t17 + t18
-t19 := t16 + #4
-t21 := #12 * j
-t20 := t19 + t21
-t22 := t20 + #4
-t23 := i * #100
-t24 := #3000 + t23
-t25 := j * #150
-t26 := t24 + t25
-*t22 := t26
-t27 := j + #1
-j := t27
-GOTO label7
-LABEL label9 :
-t29 := &company 
-t30 := #128 * i
-t28 := t29 + t30
-t31 := t28 + #124
-t34 := &company 
-t35 := #128 * i
-t33 := t34 + t35
-ARG t33
-t32 := CALL calculate_avg
-*t31 := t32
-t37 := &company 
-t38 := #128 * i
-t36 := t37 + t38
-t39 := t36 + #124
-t41 := *t39
-t40 := avg + t41
-avg := t40
-t42 := i + #1
-i := t42
+t2 := &chessplate 
+t3 := #16 * i2
+t1 := t2 + t3
+t5 := #4 * j2
+t4 := t1 + t5
+t6 := i2 * #4
+t7 := t6 + j2
+t9 := #4 * t7
+t8 := chess2 + t9
+t10 := *t8
+*t4 := t10
+t11 := j2 + #1
+j2 := t11
 GOTO label4
 LABEL label6 :
-t43 := avg / #5
-avg := t43
-WRITE avg
+t12 := i2 + #1
+i2 := t12
+GOTO label1
+LABEL label3 :
+i2 := #0
+j2 := #0
+LABEL label7 :
+IF i2 < #4 GOTO label8
+GOTO label9
+LABEL label8 :
+j2 := #0
+LABEL label10 :
+IF j2 < #4 GOTO label11
+GOTO label12
+LABEL label11 :
+t14 := &chessplate 
+t15 := #16 * i2
+t13 := t14 + t15
+t17 := #4 * j2
+t16 := t13 + t17
+t18 := *t16
+IF t18 == #1 GOTO label13
+GOTO label14
+LABEL label13 :
+WRITE j2
+LABEL label14 :
+t19 := j2 + #1
+j2 := t19
+GOTO label10
+LABEL label12 :
+t20 := i2 + #1
+i2 := t20
+GOTO label7
+LABEL label9 :
+RETURN #0
+FUNCTION PutQueen :
+PARAM chess
+PARAM a
+PARAM b
+PARAM c
+PARAM n
+PARAM sum
+col := #0
+LABEL label15 :
+IF col < #4 GOTO label16
+GOTO label17
+LABEL label16 :
+t22 := #4 * col
+t21 := a + t22
+IF t21 != #0 GOTO label21
+GOTO label19
+LABEL label21 :
+t23 := n + col
+t25 := #4 * t23
+t24 := b + t25
+IF t24 != #0 GOTO label20
+GOTO label19
+LABEL label20 :
+t26 := n - col
+t27 := t26 + #3
+t29 := #4 * t27
+t28 := c + t29
+IF t28 != #0 GOTO label18
+GOTO label19
+LABEL label18 :
+t30 := n * #4
+t31 := t30 + col
+t33 := #4 * t31
+t32 := chess + t33
+*t32 := #1
+t35 := #4 * col
+t34 := a + t35
+*t34 := #0
+t36 := n + col
+t38 := #4 * t36
+t37 := b + t38
+*t37 := #0
+t39 := n - col
+t40 := t39 + #3
+t42 := #4 * t40
+t41 := c + t42
+*t41 := #0
+IF n == #3 GOTO label22
+GOTO label23
+LABEL label22 :
+t43 := sum + #1
+sum := t43
+ARG chess
+t44 := CALL display
+GOTO label24
+LABEL label23 :
+t46 := n + #1
+ARG sum
+ARG t46
+ARG c
+ARG b
+ARG a
+ARG chess
+t45 := CALL PutQueen
+sum := t45
+LABEL label24 :
+t47 := n * #4
+t48 := t47 + col
+t50 := #4 * t48
+t49 := chess + t50
+*t49 := #0
+t51 := n + col
+t53 := #4 * t51
+t52 := b + t53
+*t52 := #1
+t54 := n - col
+t55 := t54 + #3
+t57 := #4 * t55
+t56 := c + t57
+*t56 := #1
+t59 := #4 * col
+t58 := a + t59
+*t58 := #1
+LABEL label19 :
+t60 := col + #1
+col := t60
+GOTO label15
+LABEL label17 :
+RETURN sum
+FUNCTION main :
+DEC chess1 64
+DEC a1 16
+DEC b1 28
+DEC c1 28
+sum1 := #0
+i1 := #0
+LABEL label25 :
+IF i1 < #16 GOTO label26
+GOTO label27
+LABEL label26 :
+t62 := &chess1 
+t63 := #4 * i1
+t61 := t62 + t63
+*t61 := #0
+t64 := i1 + #1
+i1 := t64
+GOTO label25
+LABEL label27 :
+i1 := #0
+LABEL label28 :
+IF i1 < #4 GOTO label29
+GOTO label30
+LABEL label29 :
+t66 := &a1 
+t67 := #4 * i1
+t65 := t66 + t67
+*t65 := #1
+t68 := i1 + #1
+i1 := t68
+GOTO label28
+LABEL label30 :
+i1 := #0
+LABEL label31 :
+IF i1 < #7 GOTO label32
+GOTO label33
+LABEL label32 :
+t70 := &b1 
+t71 := #4 * i1
+t69 := t70 + t71
+*t69 := #1
+t73 := &c1 
+t74 := #4 * i1
+t72 := t73 + t74
+*t72 := #1
+t75 := i1 + #1
+i1 := t75
+GOTO label31
+LABEL label33 :
+t77 := &chess1 
+t78 := &a1 
+t79 := &b1 
+t80 := &c1 
+ARG sum1
+ARG #0
+ARG t80
+ARG t79
+ARG t78
+ARG t77
+t76 := CALL PutQueen
+sum1 := t76
+WRITE sum1
 RETURN #0
