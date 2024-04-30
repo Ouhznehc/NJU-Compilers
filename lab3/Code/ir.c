@@ -110,7 +110,7 @@ ir_t* new_ir(ic_t* ic) {
 
 
 void insert_ir(ic_t* ic) {
-    printf("%s\n", ic_to_string(ic));
+    printf("\033[35m%s\033[0m", ic_to_string(ic));
     ir_t* ir = new_ir(ic);
     if (ir_head == NULL) {
         ir_head = ir_tail = ir;
