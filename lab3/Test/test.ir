@@ -1,7 +1,7 @@
 FUNCTION main :
 i := #5
 WRITE i
-IF i != #0 GOTO label1
+IF #0 != #0 GOTO label1
 GOTO label2
 LABEL label1 :
 WRITE #114
@@ -10,7 +10,7 @@ LABEL label2 :
 t1 := i + #1
 i := t1
 WRITE i
-IF i != #0 GOTO label4
+IF #0 != #0 GOTO label4
 GOTO label5
 LABEL label4 :
 WRITE #514
