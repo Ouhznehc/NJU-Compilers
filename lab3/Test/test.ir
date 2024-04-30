@@ -21,7 +21,8 @@ t8 := g + #124
 t9 := sum / #10
 *t8 := t9
 t10 := g + #124
-RETURN t10
+t11 := *t10
+RETURN t11
 FUNCTION main :
 DEC company 640
 i := #0
@@ -31,53 +32,53 @@ IF i < #5 GOTO label5
 GOTO label6
 LABEL label5 :
 j := #0
-t12 := &company 
-t13 := #128 * i
-t11 := t12 + t13
-t14 := t11 + #0
-*t14 := i
+t13 := &company 
+t14 := #128 * i
+t12 := t13 + t14
+t15 := t12 + #0
+*t15 := i
 LABEL label7 :
 IF j < #10 GOTO label8
 GOTO label9
 LABEL label8 :
-t16 := &company 
-t17 := #128 * i
-t15 := t16 + t17
-t18 := t15 + #4
-t20 := #12 * j
-t19 := t18 + t20
-t21 := t19 + #4
-t22 := i * #100
-t23 := #3000 + t22
-t24 := j * #150
-t25 := t23 + t24
-*t21 := t25
-t26 := j + #1
-j := t26
+t17 := &company 
+t18 := #128 * i
+t16 := t17 + t18
+t19 := t16 + #4
+t21 := #12 * j
+t20 := t19 + t21
+t22 := t20 + #4
+t23 := i * #100
+t24 := #3000 + t23
+t25 := j * #150
+t26 := t24 + t25
+*t22 := t26
+t27 := j + #1
+j := t27
 GOTO label7
 LABEL label9 :
-t28 := &company 
-t29 := #128 * i
-t27 := t28 + t29
-t30 := t27 + #124
-t33 := &company 
-t34 := #128 * i
-t32 := t33 + t34
-ARG t32
-t31 := CALL calculate_avg
-*t30 := t31
-t36 := &company 
-t37 := #128 * i
-t35 := t36 + t37
-t38 := t35 + #124
-t40 := *t38
-t39 := avg + t40
-avg := t39
-t41 := i + #1
-i := t41
+t29 := &company 
+t30 := #128 * i
+t28 := t29 + t30
+t31 := t28 + #124
+t34 := &company 
+t35 := #128 * i
+t33 := t34 + t35
+ARG t33
+t32 := CALL calculate_avg
+*t31 := t32
+t37 := &company 
+t38 := #128 * i
+t36 := t37 + t38
+t39 := t36 + #124
+t41 := *t39
+t40 := avg + t41
+avg := t40
+t42 := i + #1
+i := t42
 GOTO label4
 LABEL label6 :
-t42 := avg / #5
-avg := t42
+t43 := avg / #5
+avg := t43
 WRITE avg
 RETURN #0
