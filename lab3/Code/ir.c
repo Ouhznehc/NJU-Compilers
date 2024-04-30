@@ -232,22 +232,23 @@ VarDec:
 arg_t* translate_VarDec(syntax_t* node) { debug
     assert(node != NULL);
     syntax_t** childs = node->symbol.child;
-    arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false); debug
-    item_t* var = FindScopeItem(childs[0]->token.value.sval); debug
-    printf("ID = %s, var = %s\n", childs[0]->token.value.sval, var->name);
-    arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false); debug
-    switch (node->symbol.rule) {
-        // VarDec -> ID
-        case 1: debug
-            assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
-            if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
-            insert_var(ret);
-            return ret;
-        // VarDec LB INT RB
-        case 2: debug
-            return translate_VarDec(childs[0]);
-        default: assert(0);
+    int rule = node->symbol.rule;
+    // VarDec -> ID
+    if (rule == 1) {
+        arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false); debug
+        item_t* var = FindScopeItem(childs[0]->token.value.sval); debug
+        arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false); debug
+
+        assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
+        if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
+        insert_var(ret);
+        return ret;
     }
+    // VarDec -> VarDec LB INT RB
+    else if (rule == 2) {
+        return translate_VarDec(childs[0]);
+    }
+    else assert(0);
 } 
 
 /*
