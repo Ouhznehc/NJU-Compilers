@@ -666,13 +666,13 @@ char* arg_to_string(arg_t* arg) { debug
     if (arg == NULL) return NULL;
     char* ret = malloc_safe(sizeof(char) * 64);
     switch (arg->kind) {
-        case ArgVar:        sprintf(ret, "%s", arg->name); break;
-        case ArgTmp:        sprintf(ret, "t%d", arg->cons); break;
-        case ArgImm:        sprintf(ret, "#%d", arg->cons); break;
-        case ArgLabel:      sprintf(ret, "label%d", arg->cons); break;
-        case ArgFunc:       sprintf(ret, "%s", arg->name); break;
-        case ArgRelop:      sprintf(ret, "%s", arg->name); break;
-        case ArgSize:       sprintf(ret, "%d", arg->cons); break;
+        case ArgVar: debug       sprintf(ret, "%s", arg->name); break;
+        case ArgTmp:    debug    sprintf(ret, "t%d", arg->cons); break;
+        case ArgImm:    debug    sprintf(ret, "#%d", arg->cons); break;
+        case ArgLabel:   debug   sprintf(ret, "label%d", arg->cons); break;
+        case ArgFunc:   debug    sprintf(ret, "%s", arg->name); break;
+        case ArgRelop:   debug   sprintf(ret, "%s", arg->name); break;
+        case ArgSize:  debug     sprintf(ret, "%d", arg->cons); break;
         default: assert(0);
     } debug
     return ret;
