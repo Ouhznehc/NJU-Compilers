@@ -136,7 +136,7 @@ arg_t* ref(arg_t* arg) {
     return tmp;
 }
 
-void insert_assign_ir(arg_t* left, arg_t* right) {
+void insert_assign_ir(arg_t* left, arg_t* right) {assert(0);
     arg_t* tmp = deref(right);
     if (left->is_addr) insert_ir(new_ic(IcLeftStar, left, tmp));
     else insert_ir(new_ic(IcAssign, left, tmp));
@@ -462,7 +462,7 @@ arg_t* translate_Exp(syntax_t* node) {
         type_t* exp1 = Exp(childs[0]);
         type_t* exp2 = Exp(childs[2]);
         arg_t* arg1 = translate_Exp(childs[0]);
-        arg_t* arg2 = translate_Exp(childs[2]);assert(exp1 != NULL);
+        arg_t* arg2 = translate_Exp(childs[2]);
         // ASSIGNOP for Array or Struct recursively
         if (exp1->kind != Basic) {
             int size = min(calculate_size(exp1), calculate_size(exp2));
