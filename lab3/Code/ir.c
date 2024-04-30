@@ -232,9 +232,9 @@ VarDec:
 arg_t* translate_VarDec(syntax_t* node) { debug
     assert(node != NULL);
     syntax_t** childs = node->symbol.child;
-    arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false);
-    item_t* var = FindScopeItem(childs[0]->token.value.sval);
-    arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false);
+    arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false); debug
+    item_t* var = FindScopeItem(childs[0]->token.value.sval); debug
+    arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false); debug
     switch (node->symbol.rule) {
         // VarDec -> ID
         case 1: debug
