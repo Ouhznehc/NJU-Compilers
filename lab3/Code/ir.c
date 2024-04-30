@@ -136,7 +136,7 @@ arg_t* ref(arg_t* arg) {
     return tmp;
 }
 
-void insert_assign_ir(arg_t* left, arg_t* right) {assert(0);
+void insert_assign_ir(arg_t* left, arg_t* right) {
     arg_t* tmp = deref(right);
     if (left->is_addr) insert_ir(new_ic(IcLeftStar, left, tmp));
     else insert_ir(new_ic(IcAssign, left, tmp));
@@ -468,7 +468,7 @@ arg_t* translate_Exp(syntax_t* node) {
             int size = min(calculate_size(exp1), calculate_size(exp2));
             insert_assign_recursively(arg1, arg2, size);
         }
-        else insert_assign_ir(arg1, arg2);
+        else {assert(0);insert_assign_ir(arg1, arg2);}
         return arg1;
     }
     // Exp -> Exp AND Exp
