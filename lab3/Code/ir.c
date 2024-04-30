@@ -259,6 +259,7 @@ void translate_FunDec(syntax_t* node) { debug
     syntax_t** childs = node->symbol.child;
     debug
     arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false); debug
+    printf("func = %s\n", func->name);
     insert_ir(new_ic(IcFunc, func));
     debug
     type_t* type = FindScopeItem(childs[0]->token.value.sval)->type;
