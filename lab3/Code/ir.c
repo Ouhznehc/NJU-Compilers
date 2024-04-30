@@ -675,7 +675,7 @@ char* arg_to_string(arg_t* arg) {
     }
     return ret;
 }
-char* ic_to_string(ic_t* ic) {
+char* ic_to_string(ic_t* ic) { debug
     char* ret = malloc_safe(sizeof(char) * 64);
     char* result = arg_to_string(ic->result);
     char* arg1 = arg_to_string(ic->arg1);
@@ -703,7 +703,7 @@ char* ic_to_string(ic_t* ic) {
         case IcDec:         sprintf(ret, "DEC %s %s\n", result, arg1); break;
         case IcMinus:       sprintf(ret, "%s := #0 - %s\n", result, arg1); break;
         default: assert(0);
-    }
+    } debug
     return ret;
 }
 
