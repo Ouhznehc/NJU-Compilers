@@ -460,9 +460,9 @@ arg_t* translate_Exp(syntax_t* node) {
     // Exp -> Exp ASSIGNOP Exp
     if (rule == 1) {
         type_t* exp1 = Exp(childs[0]);
-        type_t* exp2 = Exp(childs[2]);assert(exp2 != NULL);
+        type_t* exp2 = Exp(childs[2]);
         arg_t* arg1 = translate_Exp(childs[0]);
-        arg_t* arg2 = translate_Exp(childs[2]);
+        arg_t* arg2 = translate_Exp(childs[2]);assert(0);
         // ASSIGNOP for Array or Struct recursively
         if (exp1->kind != Basic) {
             int size = min(calculate_size(exp1), calculate_size(exp2));
