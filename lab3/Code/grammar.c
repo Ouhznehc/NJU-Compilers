@@ -18,6 +18,7 @@ syntax_t* new_token(char *name, int type, int lineno, value_t value) {
             break;
         case TOKEN_ID:
         case TOKEN_TYPE:
+        case TOKEN_RELOP:
             strcpy(ret->token.value.sval, value.sval);
             break;
         default: break;

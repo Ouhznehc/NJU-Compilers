@@ -145,7 +145,6 @@ value_t new_value(char* name, int type) {
         case TOKEN_TYPE:
         case TOKEN_ID:
         case TOKEN_RELOP:
-        printf("%s\n", name);
             strcpy(ret.sval, name);
             break;
         default:
