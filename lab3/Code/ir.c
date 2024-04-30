@@ -340,6 +340,7 @@ void translate_Stmt(syntax_t* node) {
     }
     // Stmt -> IF LP Exp RP Stmt
     else if (rule == 5) {
+        printf("=-----------\n");
         arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
         arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
         translate_Cond(childs[2], label1, label2);
