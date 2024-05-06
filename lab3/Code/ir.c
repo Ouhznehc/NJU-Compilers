@@ -63,8 +63,12 @@ arg_t* new_arg(int kind, char* name, int cons, bool is_addr) {
         case ArgTmp: case ArgImm: case ArgLabel: case ArgSize:
             ret->cons = cons; 
             break;
-        case ArgFunc: case ArgRelop: case ArgVar:
+        case ArgFunc: case ArgRelop:
             strcpy(ret->name, name); 
+            break;
+        case ArgVar:
+            ret->cons = cons;
+            strcpy(ret->name, name);
             break;
         default: assert(0);
     }
@@ -234,7 +238,7 @@ arg_t* translate_VarDec(syntax_t* node) {
     int rule = node->symbol.rule;
     // VarDec -> ID
     if (rule == 1) {
-        arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, 0, false); 
+        arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, ++var_no, false); 
         item_t* var = FindScopeItem(childs[0]->token.value.sval); 
         arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false); 
 
@@ -267,7 +271,7 @@ void translate_FunDec(syntax_t* node) {
     
     for (field_t* cur = type->function.argv; cur; cur = cur->next) {
         int is_addr = cur->type->kind != Basic ? true : false;
-        arg_t* param = new_arg(ArgVar, cur->name, 0, is_addr);
+        arg_t* param = new_arg(ArgVar, cur->name, ++var_no, is_addr);
         insert_ir(new_ic(IcParam, param));
         insert_var(param);
     }
@@ -667,7 +671,7 @@ char* arg_to_string(arg_t* arg) {
     if (arg == NULL)  return NULL;
     char* ret = malloc_safe(sizeof(char) * 64);
     switch (arg->kind) {
-        case ArgVar:        sprintf(ret, "%s", arg->name); break;
+        case ArgVar:        sprintf(ret, "v%d", arg->cons); break;
         case ArgTmp:        sprintf(ret, "t%d", arg->cons); break;
         case ArgImm:        sprintf(ret, "#%d", arg->cons); break;
         case ArgLabel:      sprintf(ret, "label%d", arg->cons); break;

@@ -26,10 +26,8 @@ typedef enum {
 struct arg_t {
     ArgKind kind;
     bool is_addr;
-    union {
-        int cons; // for const value like: label1, #5, DEC a 100, etc.
-        char name[64]; // for variable name like: a, instance, etc.
-    };
+    int cons; // for const value like: label1, #5, DEC a 100, etc.
+    char name[64]; // for variable name like: a, instance, etc.
 };
 
 // store var(not tmp), for reuse declared variable
