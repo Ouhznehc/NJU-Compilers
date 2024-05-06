@@ -112,7 +112,6 @@ ir_t* new_ir(ic_t* ic) {
 
 
 void insert_ir(ic_t* ic) { 
-    printf("\033[35m%s\033[0m", ic_to_string(ic));
     ir_t* ir = new_ir(ic); 
     if (ir_head == NULL) {
         ir_head = ir_tail = ir;
@@ -602,7 +601,6 @@ void translate_Args(syntax_t* node) {
         syntax_t** childs = node->symbol.child;
         type_t* type = Exp(childs[0]); 
         arg_t* exp = translate_Exp(childs[0]); 
-        printf("arg = %s \n", arg_to_string(exp));
         if (type->kind == Basic) exp = deref(exp); 
         else exp = ref(exp); 
         args[cnt++] = exp; 
