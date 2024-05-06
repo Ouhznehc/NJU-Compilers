@@ -82,11 +82,11 @@ ic_t* new_ic(int kind, ...) {
     va_start(args, kind);
     switch (kind) {
         case IcAssign: case IcCall: case IcMinus: 
-        case IcLeftStar: case IcRightStar: case IcRef: 
+        case IcLeftStar: case IcRightStar: case IcRef: case IcDec: 
             ret->result = va_arg(args, arg_t*);
             ret->arg1 = va_arg(args, arg_t*);
             break;
-        case IcAdd: case IcSub: case IcMul: case IcDiv: case IcDec: 
+        case IcAdd: case IcSub: case IcMul: case IcDiv:
             ret->result = va_arg(args, arg_t*);
             ret->arg1 = va_arg(args, arg_t*);
             ret->arg2 = va_arg(args, arg_t*);
