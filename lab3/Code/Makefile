@@ -43,6 +43,8 @@ syntax-c: $(YFILE)
 
 test: parser
 	@./parser ../Test/test.cmm ../Test/test.ir
+gdb: parser
+	@gdb parser -ex "b main" -ex "run ../Test/test.cmm ../Test/test.ir" 
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	rm -f $(OBJS) $(OBJS:.o=.d)
