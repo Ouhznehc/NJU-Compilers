@@ -13,6 +13,7 @@ void init_var_space(FILE* fp) {
         else fprintf(fp, "v%d: .word 0\n", cur->var->cons);
         cur = cur->next;
     }
+    fprintf(fp, "\n");
 }
 
 void init_space(FILE* fp) {
