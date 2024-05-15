@@ -241,10 +241,11 @@ arg_t* translate_VarDec(syntax_t* node) {
     if (rule == 1) {
         arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, ++var_no, false); 
         item_t* var = FindScopeItem(childs[0]->token.value.sval); 
-        arg_t* size = new_arg(ArgSize, NULL, calculate_size(var->type), false); 
+        int size = calculate_size(var->type);
+        arg_t* arg_size = new_arg(ArgSize, NULL, size, false); 
 
         assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
-        if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, size));
+        if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, arg_size));
         insert_var(ret, size);
         return ret;
     }
