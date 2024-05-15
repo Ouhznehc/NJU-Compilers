@@ -1,5 +1,20 @@
 #include "mips.h"
 
+const char* registers[32] = {
+    "$zero",
+    "$at",
+    "$v0", "$v1",
+    "$a0", "$a1", "$a2", "$a3",
+    "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7",
+    "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7",
+    "$t8", "$t9",
+    "$k0", "$k1",   
+    "$gp",
+    "$sp",
+    "$fp",
+    "$ra"
+};
+
 void init_var_space(FILE* fp) {
     fprintf(fp, "# temp var declaration\n");
     for (int i = 1; i <= tmp_no; i++) {
@@ -51,8 +66,32 @@ void init_space(FILE* fp) {
 
 }
 
-void display_asm(FILE* fp) {
+char* translate_arg(FILE* fp, arg_t* arg) {
+    char* ret = malloc_safe(sizeof(char) * 64);
+    switch (arg->kind){
+        case ArgVar:
 
+            break;
+    
+        default:
+            assert(0);
+    }
+    return ret;
+}
+
+
+char* translate_ic(FILE* fp, ic_t* ic) {
+    char* ret = malloc_safe(sizeof(char) * 64);
+    char* result = translate_arg(fp, ic->result);
+    char* arg1 = translate_arg(fp, ic->arg1);
+    char* arg2 = translate_arg(fp, ic->arg2);
+
+    return ret;
+}
+
+void display_asm(FILE* fp) {
+    for(ir_t* cur = ir_head; cur; cur = cur->next)
+        fprintf(fp, "%s\n", translate_ic(fp, cur->code));
 }
 
 

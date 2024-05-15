@@ -58,5 +58,6 @@ struct ir_t {
 
 
 void generate_ir(syntax_t* root, FILE* fp);
+void* malloc_safe(int size);
 
 #endif
