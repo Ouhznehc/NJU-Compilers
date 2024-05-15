@@ -17,7 +17,6 @@ void init_space(FILE* fp) {
     fprintf(fp, "\n");
 
     fprintf(fp, ".text\n");
-    fprintf(fp, "\n");
     fprintf(fp, "# Function definitions\n");
     fprintf(fp, "read:\n");
     fprintf(fp, "   li $v0, 4\n");
