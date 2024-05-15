@@ -11,6 +11,7 @@ void init_var_space(FILE* fp) {
     while (cur != NULL) {
         if (cur->var->is_addr) fprintf(fp, "v%d: .space %d\n", cur->var->cons, cur->size);
         else fprintf(fp, "v%d: .word 0\n", cur->var->cons);
+        cur = cur->next;
     }
 }
 
