@@ -6,6 +6,7 @@ void init_var_space(FILE* fp) {
 
 void init_space(FILE* fp) {
     fprintf(fp, ".data\n");
+    fprintf(fp, "# For implement convience, store both variable and temp in static area\n");
     fprintf(fp, "_prompt: .asciiz \"Enter an integer:\"\n");
     fprintf(fp, "_ret: .asciiz \"\\n\"\n");
     fprintf(fp, "\n");
