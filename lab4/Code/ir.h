@@ -57,6 +57,6 @@ struct ir_t {
 };
 
 
-void generate_ir(syntax_t* root, FILE* ir_file);
+void generate_ir(syntax_t* root, FILE* fp);
 
 #endif

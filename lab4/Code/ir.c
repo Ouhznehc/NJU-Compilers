@@ -717,17 +717,17 @@ char* ic_to_string(ic_t* ic) {
     return ret;
 }
 
-void display_ir(FILE* ir_file) {
+void display_ir(FILE* fp) {
     ir_t* cur = ir_head;
     while (cur != NULL) {
-        fprintf(ir_file, "%s", ic_to_string(cur->code));
+        fprintf(fp, "%s", ic_to_string(cur->code));
         cur = cur->next;
     }
 }
 
 
-void generate_ir(syntax_t* root, FILE* ir_file) {
+void generate_ir(syntax_t* root, FILE* fp) {
     translate_Program(root);
-    display_ir(ir_file);
+    display_ir(fp);
     return;
 }
