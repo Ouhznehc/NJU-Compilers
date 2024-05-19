@@ -60,4 +60,7 @@ struct ir_t {
 void generate_ir(syntax_t* root, FILE* fp);
 void* malloc_safe(int size);
 
+char* ic_to_string(ic_t* ic);
+char* arg_to_string(arg_t* arg);
+
 #endif

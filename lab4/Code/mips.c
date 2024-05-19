@@ -66,32 +66,40 @@ void init_space(FILE* fp) {
 
 }
 
-char* translate_arg(FILE* fp, arg_t* arg) {
-    char* ret = malloc_safe(sizeof(char) * 64);
-    switch (arg->kind){
-        case ArgVar:
-
-            break;
-    
-        default:
-            assert(0);
-    }
-    return ret;
+void store(FILE* fp, char* reg, char* addr) {
+    fprintf(fp, "   sw %s, %s\n", reg, addr);
 }
 
+void load(FILE* fp, char* reg, char* addr) {
+    fprintf(fp, "   lw %s, %s\n", reg, addr);
+}
 
-char* translate_ic(FILE* fp, ic_t* ic) {
-    char* ret = malloc_safe(sizeof(char) * 64);
-    char* result = translate_arg(fp, ic->result);
-    char* arg1 = translate_arg(fp, ic->arg1);
-    char* arg2 = translate_arg(fp, ic->arg2);
-
-    return ret;
+// only use 3 registers:
+// result -> $s0($16)
+// arg1 -> $s1($17)
+// arg2 -> $s2($18)
+void translate_ic(FILE* fp, ic_t* ic) {
+    fprintf(fp, "# %s", ic_to_string(ic));
+    switch (ic->op) {
+        case IcLabel:
+            fprintf(fp, "label%d:\n", ic->result->cons);
+            break;
+        case IcFunc:
+            fprintf(fp, "\n%s:\n", ic->result->name);
+            break;
+        case IcAssign:
+            load(fp, arg_to_string(ic->result), registers[16]);
+            load(fp, arg_to_string(ic->arg1), registers[17]);
+            fprintf(fp, "   move $s0, $s1\n");
+            store(fp, registers[16], arg_to_string(ic->result));
+            store(fp, registers[17], arg_to_string(ic->arg1));  
+            break;   
+    }
 }
 
 void display_asm(FILE* fp) {
     for(ir_t* cur = ir_head; cur; cur = cur->next)
-        fprintf(fp, "%s\n", translate_ic(fp, cur->code));
+        translate_ic(fp, cur->code);
 }
 
 
