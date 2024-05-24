@@ -110,16 +110,8 @@ void load_three(FILE* fp, ic_t* ic) {
     load(fp, registers[18], ic->arg2);
 }
 
-void store_two(FILE* fp, ic_t* ic) {
-    store(fp, registers[16], ic->result);
-    store(fp, registers[17], ic->arg1);
-}
 
-void store_three(FILE* fp, ic_t* ic) {
-    store(fp, registers[16], ic->result);
-    store(fp, registers[17], ic->arg1);
-    store(fp, registers[18], ic->arg2);
-}
+
 
 // only use 3 registers:
 // result -> $s0($16)
@@ -207,7 +199,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   add $s0, $zero, $s1\n");
-            store_two(fp, ic);
+            store(fp, registers[16], ic->result);
             break;
         case IcLeftStar:
             fprintf(fp, "   # %s", ic_to_string(ic));
