@@ -1,6 +1,7 @@
 FUNCTION main :
 READ t1
 v1 := t1
+WRITE v1
 IF v1 > #0 GOTO label1
 GOTO label2
 LABEL label1 :
