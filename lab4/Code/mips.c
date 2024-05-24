@@ -186,7 +186,13 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[2], ic->result);
             break;
         case IcWrite:
-            // assert(0);
+            fprintf(fp, "   # %s\n", ic_to_string(ic));
+            load(fp, registers[4], ic->result);
+            fprintf(fp, "   addi $sp, $sp, -4\n");
+            fprintf(fp, "	sw $ra, 0($sp)\n");
+            fprintf(fp, "	jal write\n");
+            fprintf(fp, "	lw $ra, 0($sp)\n");
+            fprintf(fp, "	addi $sp, $sp, 4\n");
             break;
         case IcAssign:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -217,7 +223,6 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break; 
         case IcRef:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            load(fp, registers[16], ic->result);
             fprintf(fp, "   la $s0, %s\n", arg_to_string(ic->arg1));
             store(fp, registers[16], ic->result);
             break;     
