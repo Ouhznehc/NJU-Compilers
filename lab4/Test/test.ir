@@ -40,3 +40,4 @@ LABEL label1 :
 WRITE #1
 LABEL label2 :
 WRITE #2
+v1 := #0
