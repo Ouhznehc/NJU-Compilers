@@ -78,6 +78,7 @@ void load(FILE* fp, const char* reg, arg_t* arg) {
             fprintf(fp, "   li %s, %d\n", reg, arg->cons);
             break; 
         default:
+            printf("Invalid Arg: %s\n", arg_to_string(arg));
             assert(0); 
     }
 }
@@ -93,6 +94,7 @@ void store(FILE* fp, const char* reg, arg_t* arg) {
         case ArgImm:
             break; 
         default:
+            printf("Invalid Arg: %s\n", arg_to_string(arg));
             assert(0); 
     }
 }
