@@ -1,5 +1,7 @@
 #include "mips.h"
 
+int param_offset = 4;
+arglist_t* arglist = NULL;
 const char* registers[32] = {
     "$zero",
     "$at",

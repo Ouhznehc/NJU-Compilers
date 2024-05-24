@@ -13,8 +13,6 @@ struct arglist_t {
     arglist_t* next;
 };
 
-arglist_t* arglist;
-int param_offset = 4;
 
 void generate_asm(FILE* fp);
 
