@@ -133,7 +133,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   add $s0, $s1, $s2\n");
-            store_three(fp, ic);
+            store(fp, registers[17], ic->result);
             break;
         case IcSub:
             fprintf(fp, "   # %s", ic_to_string(ic));
