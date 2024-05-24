@@ -216,7 +216,13 @@ void translate_ic(FILE* fp, ic_t* ic) {
             load(fp, registers[16], ic->result);
             fprintf(fp, "   la $s0, %s\n", arg_to_string(ic->arg1));
             store(fp, registers[16], ic->result);
-            break;      
+            break;     
+        case IcBranch:
+            assert(0);
+            break; 
+        default:
+            printf("Invalid Intercode: %s\n", ic_to_string(ic));
+            assert(0);
     }
 }
 
