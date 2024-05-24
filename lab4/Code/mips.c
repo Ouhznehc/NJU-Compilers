@@ -227,7 +227,27 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[16], ic->result);
             break;     
         case IcBranch:
-            assert(0);
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            load(fp, registers[17], ic->arg1);
+            load(fp, registers[18], ic->arg2);
+            if (!strcmp(ic->relop->name, "==")) {
+                fprintf(fp, "   beq $s1, $s2, %s\n", arg_to_string(ic->result));
+            }
+            else if (!strcmp(ic->relop->name, "!=")) {
+                fprintf(fp, "   bne $s1, $s2, %s\n", arg_to_string(ic->result));
+            }
+            else if (!strcmp(ic->relop->name, ">")) {
+                fprintf(fp, "   bgt $s1, $s2, %s\n", arg_to_string(ic->result));
+            }
+            else if (!strcmp(ic->relop->name, "<")) {
+                fprintf(fp, "   blt $s1, $s2, %s\n", arg_to_string(ic->result));
+            }
+            else if (!strcmp(ic->relop->name, ">=")) {
+                fprintf(fp, "   bge $s1, $s2, %s\n", arg_to_string(ic->result));
+            }
+            else if (!strcmp(ic->relop->name, "<=")) {
+                fprintf(fp, "   ble $s1, $s2, %s\n", arg_to_string(ic->result));
+            }
             break; 
         default:
             printf("Invalid Intercode: %s", ic_to_string(ic));
