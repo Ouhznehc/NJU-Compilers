@@ -60,7 +60,7 @@ void init_space(FILE* fp) {
     fprintf(fp, "   li $v0, 1\n");
     fprintf(fp, "   syscall\n");
     fprintf(fp, "   li $v0, 4\n");
-    fprintf(fp, "   li $a0, _ret\n");
+    fprintf(fp, "   la $a0, _ret\n");
     fprintf(fp, "   syscall\n");
     fprintf(fp, "   move $v0, $0\n");
     fprintf(fp, "   jr $ra\n");
