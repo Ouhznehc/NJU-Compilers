@@ -198,21 +198,25 @@ void translate_ic(FILE* fp, ic_t* ic) {
             assert(0);
             break;
         case IcMinus:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   add $s0, $zero, $s1\n");
             store_two(fp, ic);
             break;
         case IcLeftStar:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   sw $s1, 0($s0)\n");
             store_two(fp, ic);
             break;
         case IcRightStar:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   lw $s0, 0($s1)\n");
             store_two(fp, ic);
             break; 
         case IcRef:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             load(fp, registers[16], ic->result);
             fprintf(fp, "   la $s0, %s\n", arg_to_string(ic->arg1));
             store(fp, registers[16], ic->result);
