@@ -117,6 +117,18 @@ void insert_arg(arg_t* arg) {
     arglist = item;
 }
 
+int find_arg(arg_t* arg) {
+    int ret = 4;
+    arglist_t* cur = arglist;
+    while (cur != NULL) {
+        if (cur->arg->kind == arg->kind && cur->arg->cons == arg->cons) {
+            return ret;
+        }
+        ret += 4;
+        cur = cur->next;
+    }
+}
+
 
 // only use 3 registers:
 // result -> $s0($16)
@@ -168,7 +180,10 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   j %s\n", arg_to_string(ic->result));
             break;
         case IcArg:
-            assert(0);
+            insert_arg(ic->result);
+            load(fp, registers[16], ic->result);
+            fprintf(fp, "   addi $sp, $sp, -4\n");
+            fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
             assert(0);
