@@ -102,7 +102,6 @@ void store(FILE* fp, const char* reg, arg_t* arg) {
 // arg1 -> $s1($17)
 // arg2 -> $s2($18)
 void translate_ic(FILE* fp, ic_t* ic) {
-    fprintf(fp, "# %s", ic_to_string(ic));
     switch (ic->op) {
         case IcLabel:
             fprintf(fp, "label%d:\n", ic->result->cons);
@@ -111,6 +110,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "\n%s:\n", ic->result->name);
             break;
         case IcAssign:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             load(fp, ic->result, registers[16]);
             load(fp, ic->arg1, registers[17]);
             fprintf(fp, "   move $s0, $s1\n");
