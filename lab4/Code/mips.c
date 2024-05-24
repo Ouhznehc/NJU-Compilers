@@ -224,7 +224,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
         case IcMinus:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
-            fprintf(fp, "   add $s0, $zero, $s1\n");
+            fprintf(fp, "   sub $s0, $zero, $s1\n");
             store(fp, registers[16], ic->result);
             break;
         case IcLeftStar:

@@ -5,6 +5,7 @@ WRITE v1
 IF v1 > #0 GOTO label1
 GOTO label2
 LABEL label1 :
+WRITE #2
 t2 := #0
 IF v1 > #0 GOTO label4
 GOTO label5
@@ -25,6 +26,7 @@ LABEL label2 :
 IF v1 < #0 GOTO label8
 GOTO label9
 LABEL label8 :
+WRITE #3
 t4 := #0
 IF v1 < #0 GOTO label11
 GOTO label12
