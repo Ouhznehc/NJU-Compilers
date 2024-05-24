@@ -66,7 +66,7 @@ void init_space(FILE* fp) {
 
 }
 
-void load(FILE* fp, arg_t* arg, const char* reg) {
+void load(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
             fprintf(fp, "   lw %s, t%d\n", reg, arg->cons);
@@ -97,17 +97,69 @@ void store(FILE* fp, const char* reg, arg_t* arg) {
     }
 }
 
+void load_two(FILE* fp, ic_t* ic) {
+    load(fp, registers[16], ic->result);
+    load(fp, registers[17], ic->arg1);
+}
+
+void load_three(FILE* fp, ic_t* ic) {
+    load(fp, registers[16], ic->result);
+    load(fp, registers[17], ic->arg1);
+    load(fp, registers[18], ic->arg2);
+}
+
+void store_two(FILE* fp, ic_t* ic) {
+    store(fp, registers[16], ic->result);
+    store(fp, registers[17], ic->arg1);
+}
+
+void store_three(FILE* fp, ic_t* ic) {
+    store(fp, registers[16], ic->result);
+    store(fp, registers[17], ic->arg1);
+    store(fp, registers[18], ic->arg2);
+}
+
 // only use 3 registers:
 // result -> $s0($16)
 // arg1 -> $s1($17)
 // arg2 -> $s2($18)
+// $v0($2)
+// $ra($31)
 void translate_ic(FILE* fp, ic_t* ic) {
     switch (ic->op) {
+        case IcAdd:
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            load_three(fp, ic);
+            fprintf(fp, "   add $s0, $s1, $s2\n");
+            store_three(fp, ic);
+        case IcSub:
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            load_three(fp, ic);
+            fprintf(fp, "   sub $s0, $s1, $s2\n");
+            store_three(fp, ic);
+        case IcMul:
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            load_three(fp, ic);
+            fprintf(fp, "   mul $s0, $s1, $s2\n");
+            store_three(fp, ic);
+        case IcDiv:
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            load_three(fp, ic);
+            fprintf(fp, "   div $s1, $s2\n");
+            fprintf(fp, "   mflo $s0\n");           
+            store_three(fp, ic);
+        case IcDec:
+            break;
         case IcLabel:
             fprintf(fp, "label%d:\n", ic->result->cons);
             break;
         case IcFunc:
             fprintf(fp, "\n%s:\n", ic->result->name);
+            break;
+        case IcReturn:
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            load(fp, registers[2], ic->result);
+            fprintf(fp, "   jr $ra\n");
             break;
         case IcAssign:
             fprintf(fp, "   # %s", ic_to_string(ic));
