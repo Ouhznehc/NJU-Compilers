@@ -1,5 +1,6 @@
 FUNCTION fact :
 PARAM v1
+WRITE v1
 IF v1 == #1 GOTO label1
 GOTO label2
 LABEL label1 :
