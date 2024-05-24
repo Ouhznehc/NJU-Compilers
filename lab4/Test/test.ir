@@ -30,4 +30,13 @@ t20 := t21 + t22
 t24 := *t20
 t23 := t24 - v1
 v1 := t23
+t26 := &v2 
+t27 := #4 * #0
+t25 := t26 + t27
+t28 := *t25
+IF t28 > #0 GOTO label1
+GOTO label2
+LABEL label1 :
 WRITE #1
+LABEL label2 :
+WRITE #2
