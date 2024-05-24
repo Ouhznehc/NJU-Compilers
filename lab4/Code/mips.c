@@ -177,7 +177,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             assert(0);
             break;
         case IcRead:
-            fprintf(fp, "   # %s\n", ic_to_string(ic));
+            fprintf(fp, "   # %s", ic_to_string(ic));
             fprintf(fp, "   addi $sp, $sp, -4\n");
             fprintf(fp, "	sw $ra, 0($sp)\n");
             fprintf(fp, "	jal read\n");
@@ -186,7 +186,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[2], ic->result);
             break;
         case IcWrite:
-            fprintf(fp, "   # %s\n", ic_to_string(ic));
+            fprintf(fp, "   # %s", ic_to_string(ic));
             load(fp, registers[4], ic->result);
             fprintf(fp, "   addi $sp, $sp, -4\n");
             fprintf(fp, "	sw $ra, 0($sp)\n");
@@ -230,7 +230,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             assert(0);
             break; 
         default:
-            printf("Invalid Intercode: %s\n", ic_to_string(ic));
+            printf("Invalid Intercode: %s", ic_to_string(ic));
             assert(0);
     }
 }
