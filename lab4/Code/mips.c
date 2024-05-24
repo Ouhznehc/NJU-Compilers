@@ -186,7 +186,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[2], ic->result);
             break;
         case IcWrite:
-            assert(0);
+            // assert(0);
             break;
         case IcAssign:
             fprintf(fp, "   # %s", ic_to_string(ic));
