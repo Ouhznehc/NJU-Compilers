@@ -9,10 +9,13 @@ int main()
 {
     int m, result;
     m = read();
-    if (m > 1)
+    if (m > 1) {
+        write(m);
         result = fact(m);
-    else
+    }
+    else {
         result = 1;
+    }
     write(result);
     return 0;
 }

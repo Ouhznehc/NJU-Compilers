@@ -1,44 +1,29 @@
-FUNCTION main :
-READ t1
-v1 := t1
-WRITE v1
-IF v1 > #0 GOTO label1
+FUNCTION fact :
+PARAM v1
+IF v1 == #1 GOTO label1
 GOTO label2
 LABEL label1 :
-WRITE #2
-t2 := #0
-IF v1 > #0 GOTO label4
-GOTO label5
-LABEL label4 :
-t2 := #1
-LABEL label5 :
-WRITE t2
-t3 := #0
-IF v1 < #0 GOTO label6
-GOTO label7
-LABEL label6 :
-t3 := #1
-LABEL label7 :
-WRITE t3
-WRITE #1
+RETURN v1
 GOTO label3
 LABEL label2 :
-IF v1 < #0 GOTO label8
-GOTO label9
-LABEL label8 :
-WRITE #3
-t4 := #0
-IF v1 < #0 GOTO label11
-GOTO label12
-LABEL label11 :
-t4 := #1
-LABEL label12 :
-WRITE t4
-t5 := #0 - #1
-WRITE t5
-GOTO label10
-LABEL label9 :
-WRITE #0
-LABEL label10 :
+t2 := v1 - #1
+ARG t2
+t1 := CALL fact
+t3 := v1 * t1
+RETURN t3
 LABEL label3 :
+FUNCTION main :
+READ t4
+v2 := t4
+IF v2 > #1 GOTO label4
+GOTO label5
+LABEL label4 :
+ARG v2
+t5 := CALL fact
+v3 := t5
+GOTO label6
+LABEL label5 :
+v3 := #1
+LABEL label6 :
+WRITE v3
 RETURN #0
