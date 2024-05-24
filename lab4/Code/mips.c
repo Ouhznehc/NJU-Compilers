@@ -66,7 +66,7 @@ void init_space(FILE* fp) {
 
 }
 
-void load(FILE* fp, char* reg, arg_t* arg) {
+void load(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
             fprintf(fp, "   lw %s, t%d\n", reg, arg->cons);
@@ -82,7 +82,7 @@ void load(FILE* fp, char* reg, arg_t* arg) {
     }
 }
 
-void store(FILE* fp, char* reg, arg_t* arg) {
+void store(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
             fprintf(fp, "   sw %s, t%d\n", reg, arg->cons);
