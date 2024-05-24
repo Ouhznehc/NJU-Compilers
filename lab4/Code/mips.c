@@ -165,11 +165,9 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break;
         case IcAssign:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            load(fp, ic->result, registers[16]);
-            load(fp, ic->arg1, registers[17]);
+            load_two(fp, ic);
             fprintf(fp, "   move $s0, $s1\n");
-            store(fp, registers[16], ic->result);
-            store(fp, registers[17], ic->arg1);  
+            store_two(fp, ic);
             break;   
     }
 }
