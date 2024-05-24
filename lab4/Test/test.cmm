@@ -1,5 +1,6 @@
 int fact(int n)
 {
+    write(n);
     if (n == 1)
         return n;
     else

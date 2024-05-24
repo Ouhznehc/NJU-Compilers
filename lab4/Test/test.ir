@@ -18,6 +18,7 @@ v2 := t4
 IF v2 > #1 GOTO label4
 GOTO label5
 LABEL label4 :
+WRITE v2
 ARG v2
 t5 := CALL fact
 v3 := t5
