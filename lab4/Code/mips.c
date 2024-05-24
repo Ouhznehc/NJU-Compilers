@@ -42,7 +42,7 @@ void init_space(FILE* fp) {
 
     init_var_space(fp);
 
-    fprintf(fp, ".globl main\n");
+    fprintf(fp, ".global main\n");
     fprintf(fp, "\n");
 
     fprintf(fp, ".text\n");
