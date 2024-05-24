@@ -167,12 +167,56 @@ void translate_ic(FILE* fp, ic_t* ic) {
             load(fp, registers[2], ic->result);
             fprintf(fp, "   jr $ra\n");
             break;
+        case IcGoto:
+            fprintf(fp, "   j %s\n", arg_to_string(ic->result));
+            break;
+        case IcArg:
+            assert(0);
+            break;
+        case IcParam:
+            assert(0);
+            break;
+        case IcRead:
+            fprintf(fp, "   # %s\n", ic_to_string(ic));
+            fprintf(fp, "   addi $sp, $sp, -4\n");
+            fprintf(fp, "	sw $ra, 0($sp)\n");
+            fprintf(fp, "	jal read\n");
+            fprintf(fp, "	lw $ra, 0($sp)\n");
+            fprintf(fp, "	addi $sp, $sp, 4\n");
+            store(fp, registers[2], ic->result);
+            break;
+        case IcWrite:
+            assert(0);
+            break;
         case IcAssign:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   move $s0, $s1\n");
             store_two(fp, ic);
             break;   
+        case IcCall:
+            assert(0);
+            break;
+        case IcMinus:
+            load_two(fp, ic);
+            fprintf(fp, "   add $s0, $zero, $s1\n");
+            store_two(fp, ic);
+            break;
+        case IcLeftStar:
+            load_two(fp, ic);
+            fprintf(fp, "   sw $s1, 0($s0)\n");
+            store_two(fp, ic);
+            break;
+        case IcRightStar:
+            load_two(fp, ic);
+            fprintf(fp, "   lw $s0, 0($s1)\n");
+            store_two(fp, ic);
+            break; 
+        case IcRef:
+            load(fp, registers[16], ic->result);
+            fprintf(fp, "   la $s0, %s\n", arg_to_string(ic->arg1));
+            store(fp, registers[16], ic->result);
+            break;      
     }
 }
 
