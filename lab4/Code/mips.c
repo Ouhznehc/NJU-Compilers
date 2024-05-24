@@ -117,19 +117,6 @@ void insert_arg(arg_t* arg) {
     arglist = item;
 }
 
-int find_arg(arg_t* arg) {
-    int ret = 4;
-    arglist_t* cur = arglist;
-    while (cur != NULL) {
-        if (cur->arg->kind == arg->kind && cur->arg->cons == arg->cons) {
-            return ret;
-        }
-        ret += 4;
-        cur = cur->next;
-    }
-}
-
-
 // only use 3 registers:
 // result -> $s0($16)
 // arg1 -> $s1($17)
@@ -180,13 +167,17 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   j %s\n", arg_to_string(ic->result));
             break;
         case IcArg:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             insert_arg(ic->result);
             load(fp, registers[16], ic->result);
             fprintf(fp, "   addi $sp, $sp, -4\n");
             fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
-            assert(0);
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            fprintf(fp, "   lw $s0, %d($sp)\n", param_offset);
+            store(fp, registers[16], ic->result);
+            param_offset += 4;
             break;
         case IcRead:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -213,7 +204,20 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[16], ic->result);
             break;   
         case IcCall:
-            assert(0);
+            fprintf(fp, "   # %s", ic_to_string(ic));
+            fprintf(fp, "   addi $sp, $sp, -4\n");
+            fprintf(fp, "	sw $ra, 0($sp)\n");
+            fprintf(fp, "	jal %s\n", arg_to_string(ic->arg1));
+            store(fp, registers[2], ic->result);
+            fprintf(fp, "	lw $ra, 0($sp)\n");
+            fprintf(fp, "	addi $sp, $sp, 4\n");
+            for (arglist_t* cur = arglist; cur; cur = cur->next) {
+                fprintf(fp, "	lw $s0, 0($sp)\n");
+                store(fp, registers[16], cur->arg);
+                fprintf(fp, "	addi $sp, $sp, 4\n");
+            }
+            arglist = NULL;
+            param_offset = 4;
             break;
         case IcMinus:
             fprintf(fp, "   # %s", ic_to_string(ic));
