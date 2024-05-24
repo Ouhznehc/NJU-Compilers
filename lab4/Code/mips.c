@@ -160,7 +160,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "label%d:\n", ic->result->cons);
             break;
         case IcFunc:
-            fprintf(fp, "\n%s:\n", ic->result->name);
+            fprintf(fp, "%s:\n", ic->result->name);
             break;
         case IcReturn:
             fprintf(fp, "   # %s", ic_to_string(ic));
