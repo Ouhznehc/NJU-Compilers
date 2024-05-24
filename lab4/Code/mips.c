@@ -139,20 +139,20 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   sub $s0, $s1, $s2\n");
-            store_three(fp, ic);
+            store(fp, registers[16], ic->result);
             break;
         case IcMul:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   mul $s0, $s1, $s2\n");
-            store_three(fp, ic);
+            store(fp, registers[16], ic->result);
             break;
         case IcDiv:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   div $s1, $s2\n");
             fprintf(fp, "   mflo $s0\n");           
-            store_three(fp, ic);
+            store(fp, registers[16], ic->result);
             break;
         case IcDec:
             break;
