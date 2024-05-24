@@ -134,22 +134,26 @@ void translate_ic(FILE* fp, ic_t* ic) {
             load_three(fp, ic);
             fprintf(fp, "   add $s0, $s1, $s2\n");
             store_three(fp, ic);
+            break;
         case IcSub:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   sub $s0, $s1, $s2\n");
             store_three(fp, ic);
+            break;
         case IcMul:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   mul $s0, $s1, $s2\n");
             store_three(fp, ic);
+            break;
         case IcDiv:
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_three(fp, ic);
             fprintf(fp, "   div $s1, $s2\n");
             fprintf(fp, "   mflo $s0\n");           
             store_three(fp, ic);
+            break;
         case IcDec:
             break;
         case IcLabel:
