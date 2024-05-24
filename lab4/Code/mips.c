@@ -218,7 +218,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   lw $s0, 0($s1)\n");
-            store_two(fp, ic);
+            store(fp,registers[16], ic->result);
             break; 
         case IcRef:
             fprintf(fp, "   # %s", ic_to_string(ic));
