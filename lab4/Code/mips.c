@@ -66,12 +66,35 @@ void init_space(FILE* fp) {
 
 }
 
-void store(FILE* fp, char* reg, char* addr) {
-    fprintf(fp, "   sw %s, %s\n", reg, addr);
+void load(FILE* fp, char* reg, arg_t* arg) {
+    switch (arg->kind) {
+        case ArgTmp:
+            fprintf(fp, "   lw %s, t%d\n", reg, arg->cons);
+            break;
+        case ArgVar:
+            fprintf(fp, "   lw %s, v%d\n", reg, arg->cons);
+            break;
+        case ArgImm:
+            fprintf(fp, "   li %s, %d\n", reg, arg->cons);
+            break; 
+        default:
+            assert(0); 
+    }
 }
 
-void load(FILE* fp, char* reg, char* addr) {
-    fprintf(fp, "   lw %s, %s\n", reg, addr);
+void store(FILE* fp, char* reg, arg_t* arg) {
+    switch (arg->kind) {
+        case ArgTmp:
+            fprintf(fp, "   sw %s, t%d\n", reg, arg->cons);
+            break;
+        case ArgVar:
+            fprintf(fp, "   sw %s, v%d\n", reg, arg->cons);
+            break;
+        case ArgImm:
+            break; 
+        default:
+            assert(0); 
+    }
 }
 
 // only use 3 registers:
@@ -88,11 +111,12 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "\n%s:\n", ic->result->name);
             break;
         case IcAssign:
-            load(fp, arg_to_string(ic->result), registers[16]);
-            load(fp, arg_to_string(ic->arg1), registers[17]);
+            fprintf(fp, "   # %s\n", ic_to_string(ic));
+            load(fp, ic->result, registers[16]);
+            load(fp, ic->arg1, registers[17]);
             fprintf(fp, "   move $s0, $s1\n");
-            store(fp, registers[16], arg_to_string(ic->result));
-            store(fp, registers[17], arg_to_string(ic->arg1));  
+            store(fp, registers[16], ic->result);
+            store(fp, registers[17], ic->arg1);  
             break;   
     }
 }
