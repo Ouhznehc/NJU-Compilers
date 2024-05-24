@@ -213,7 +213,6 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   # %s", ic_to_string(ic));
             load_two(fp, ic);
             fprintf(fp, "   sw $s1, 0($s0)\n");
-            store_two(fp, ic);
             break;
         case IcRightStar:
             fprintf(fp, "   # %s", ic_to_string(ic));
