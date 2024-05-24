@@ -5,17 +5,31 @@ WRITE v1
 IF v1 > #0 GOTO label1
 GOTO label2
 LABEL label1 :
+t2 := #0
+IF v1 > #0 GOTO label4
+GOTO label5
+LABEL label4 :
+t2 := #1
+LABEL label5 :
+WRITE t2
 WRITE #1
 GOTO label3
 LABEL label2 :
-IF v1 < #0 GOTO label4
-GOTO label5
-LABEL label4 :
-t2 := #0 - #1
-WRITE t2
-GOTO label6
-LABEL label5 :
-WRITE #0
+IF v1 < #0 GOTO label6
+GOTO label7
 LABEL label6 :
+t3 := #0
+IF v1 < #0 GOTO label9
+GOTO label10
+LABEL label9 :
+t3 := #1
+LABEL label10 :
+WRITE t3
+t4 := #0 - #1
+WRITE t4
+GOTO label8
+LABEL label7 :
+WRITE #0
+LABEL label8 :
 LABEL label3 :
 RETURN #0
