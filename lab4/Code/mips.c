@@ -110,7 +110,12 @@ void load_three(FILE* fp, ic_t* ic) {
     load(fp, registers[18], ic->arg2);
 }
 
-
+void insert_arg(arg_t* arg) {
+    arglist_t* item = malloc_safe(sizeof(arglist_t));
+    item->arg = arg;
+    item->next = arglist;
+    arglist = item;
+}
 
 
 // only use 3 registers:
