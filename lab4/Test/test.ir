@@ -12,24 +12,31 @@ LABEL label4 :
 t2 := #1
 LABEL label5 :
 WRITE t2
-WRITE #1
-GOTO label3
-LABEL label2 :
+t3 := #0
 IF v1 < #0 GOTO label6
 GOTO label7
 LABEL label6 :
-t3 := #0
-IF v1 < #0 GOTO label9
+t3 := #1
+LABEL label7 :
+WRITE t3
+WRITE #1
+GOTO label3
+LABEL label2 :
+IF v1 < #0 GOTO label8
+GOTO label9
+LABEL label8 :
+t4 := #0
+IF v1 < #0 GOTO label11
+GOTO label12
+LABEL label11 :
+t4 := #1
+LABEL label12 :
+WRITE t4
+t5 := #0 - #1
+WRITE t5
 GOTO label10
 LABEL label9 :
-t3 := #1
-LABEL label10 :
-WRITE t3
-t4 := #0 - #1
-WRITE t4
-GOTO label8
-LABEL label7 :
 WRITE #0
-LABEL label8 :
+LABEL label10 :
 LABEL label3 :
 RETURN #0
