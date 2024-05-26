@@ -112,12 +112,6 @@ void load_three(FILE* fp, ic_t* ic) {
     load(fp, registers[18], ic->arg2);
 }
 
-void insert_arg(arg_t* arg) {
-    arglist_t* item = malloc_safe(sizeof(arglist_t));
-    item->arg = arg;
-    item->next = arglist;
-    arglist = item;
-}
 
 // only use 3 registers:
 // result -> $s0($16)
@@ -170,7 +164,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break;
         case IcArg:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            insert_arg(ic->result);
+            insert_arg(ic->result, arglist);
             load(fp, registers[16], ic->result);
             fprintf(fp, "   addi $sp, $sp, -4\n");
             fprintf(fp, "	sw $s0, 0($sp)\n");

@@ -4,6 +4,9 @@
 ir_t *ir_head, *ir_tail;
 int var_no = 0, tmp_no = 0, label_no = 0;
 var_t* varlist;
+arglist_t* function_record[1024];
+arglist_t* function_cnt;
+
 char* ic_to_string(ic_t* ic);
 char* arg_to_string(arg_t* arg);
 /* High-level Definitions */
@@ -127,6 +130,14 @@ void insert_ir(ic_t* ic) {
     ir_tail = ir;
     ir->next = NULL; 
     return;
+}
+
+void insert_arg(arg_t* arg, arglist_t* head) {
+    arglist_t* item = malloc_safe(sizeof(arglist_t));
+    item->arg = arg;
+    item->next = head;
+    head->prev = item;
+    head = item;
 }
 
 arg_t* deref(arg_t* arg) { 
