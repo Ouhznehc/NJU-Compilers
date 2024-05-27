@@ -175,7 +175,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   move $s4, $sp\n");
             // allocate space for variables
             int func = find_func_no(ic->result->name);
-            fprintf(fp, "   addi $sp, $sp, -%d\n", func);
+            fprintf(fp, "   addi $sp, $sp, -%d\n", func_size[func]);
             break;
         case IcReturn:
             fprintf(fp, "   # %s", ic_to_string(ic));
