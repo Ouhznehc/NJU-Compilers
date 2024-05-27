@@ -43,7 +43,7 @@ syntax-c: $(YFILE)
 
 test: parser
 	@./parser ../Test/test.cmm ../Test/test.asm ../Test/test.ir
-	@spim -file ../Test/test.asm
+	@spim -lstack 1048576 -file ../Test/test.asm
 gdb: parser
 	@gdb parser -ex "b main" -ex "run ../Test/test.cmm ../Test/test.ir ../Test/test.asm" 
 clean:
