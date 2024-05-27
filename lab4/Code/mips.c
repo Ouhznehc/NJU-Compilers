@@ -232,12 +232,13 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   sw $s3, 4($sp)\n");
             fprintf(fp, "   sw $s4, 8($sp)\n");
             fprintf(fp, "   jal %s\n", ic->arg1->name);
-            store(fp, registers[2], ic->result);
+            
             fprintf(fp, "   lw $ra, 0($s4)\n");
             fprintf(fp, "   lw $s3, 4($s4)\n");
             fprintf(fp, "   lw $s4, 8($s4)\n");
             fprintf(fp, "   move $sp, $s3\n");
-
+            // must store return value after the $s4 is restored.
+            store(fp, registers[2], ic->result);
             set_arg_pointer = 0;
             param_offset = 12;
             break;
