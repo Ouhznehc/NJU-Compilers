@@ -1,5 +1,8 @@
 #include "mips.h"
 
+int set_arg_pointer = 0;
+int param_offset = 12;
+
 const char* registers[32] = {
     "$zero",
     "$at",
@@ -50,10 +53,10 @@ void init_space(FILE* fp) {
 void load(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
-            fprintf(fp, "   lw %s, t%d\n", reg, arg->cons);
+            fprintf(fp, "   lw %s, -%d($s4)\n", reg, tmp_offset[arg->cons]);
             break;
         case ArgVar:
-            fprintf(fp, "   lw %s, v%d\n", reg, arg->cons);
+            fprintf(fp, "   lw %s, -%d($s4)\n", reg, var_offset[arg->cons]);
             break;
         case ArgImm:
             fprintf(fp, "   li %s, %d\n", reg, arg->cons);
@@ -67,10 +70,10 @@ void load(FILE* fp, const char* reg, arg_t* arg) {
 void store(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
-            fprintf(fp, "   sw %s, t%d\n", reg, arg->cons);
+            fprintf(fp, "   sw %s, -%d($s4)\n", reg, tmp_offset[arg->cons]);
             break;
         case ArgVar:
-            fprintf(fp, "   sw %s, v%d\n", reg, arg->cons);
+            fprintf(fp, "   sw %s, -%d($s4)\n", reg, var_offset[arg->cons]);
             break;
         case ArgImm:
             break; 
@@ -91,6 +94,13 @@ void load_three(FILE* fp, ic_t* ic) {
     load(fp, registers[18], ic->arg2);
 }
 
+int find_func_no(char* name) {
+    for (int i = 0; i <= func_no; i++) {
+        if (!strcmp(name, func_name[i])) return i;
+    }
+    assert(0);
+}
+
 
 // only use 5 registers:
 // result -> $s0($16)
@@ -98,6 +108,35 @@ void load_three(FILE* fp, ic_t* ic) {
 // arg2 -> $s2($18)
 // $v0($2)
 // $ra($31)
+// $s3(arg pointer)
+// $s4(frame pointer)
+/*
+┌────────────────────────────┐
+│                            │
+├────────────────────────────┤
+│            arg1            │
+├────────────────────────────┤
+│            arg2            │
+├────────────────────────────┤
+│            arg3            │
+├────────────────────────────┤
+│             .              │
+│             .              │
+├────────────────────────────┤
+│      frame pointer(old)    │
+├────────────────────────────┤
+│       arg  pointer(old)    │
+├────────────────────────────┤
+│      return address        │
+├────────────────────────────┤
+│                            │
+│     new func variables     │
+│                            │
+├────────────────────────────┤
+│                            │
+│                            │
+└────────────────────────────┘
+*/
 void translate_ic(FILE* fp, ic_t* ic) {
     switch (ic->op) {
         case IcAdd:
@@ -132,6 +171,11 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break;
         case IcFunc:
             fprintf(fp, "%s:\n", ic->result->name);
+            // update frame pointer to the begin of new func
+            fprintf(fp, "   move $s4, $sp\n");
+            // allocate space for variables
+            int func = find_func_no(ic->result->name);
+            fprintf(fp, "   addi $sp, $sp, -%d\n", func);
             break;
         case IcReturn:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -142,10 +186,18 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   j %s\n", arg_to_string(ic->result));
             break;
         case IcArg:
-            assert(0);
+            if (!set_arg_pointer) {
+                set_arg_pointer = 1;
+                fprintf(fp, "   move $s3, $sp\n");
+            }
+            fprintf(fp, "   addi $sp, $sp, -4\n");
+            load(fp, registers[16], ic->result);
+            fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
-            assert(0);
+            fprintf(fp, "   lw $s0, %d($s4)\n", param_offset);
+            param_offset += 4;
+            store(fp, registers[16], ic->result);
             break;
         case IcRead:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -172,7 +224,16 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[16], ic->result);
             break;   
         case IcCall:
-            assert(0);
+            fprintf(fp, "   addi $sp, $sp, -12\n");
+            fprintf(fp, "   sw $ra, 0($sp)\n");
+            fprintf(fp, "   sw $s3, 4($sp)\n");
+            fprintf(fp, "   sw $s4, 8($sp)\n");
+            fprintf(fp, "   jal %s\n", ic->arg1->name);
+            store(fp, registers[2], ic->result);
+            fprintf(fp, "   lw $ra, 0($s4)\n");
+            fprintf(fp, "   lw $s3, 4($s4)\n");
+            fprintf(fp, "   lw $s4, 8($s4)\n");
+            fprintf(fp, "   move $sp, $s3\n");
             break;
         case IcMinus:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -233,15 +294,5 @@ void display_asm(FILE* fp) {
 
 void generate_asm(FILE* fp) {
     init_space(fp);
-    for (int i = 0; i <= func_no; i++) {
-        printf("func: {name: %s, size = %d}\n", func_name[i], func_size[i]);
-    }
-    for (int i = 1; i <= tmp_no; i++) {
-        printf("tmp: {offset = %d}\n", tmp_offset[i]);
-    }
-    for (int i = 1; i <= var_no; i++) {
-        printf("var: {offset = %d}\n", var_offset[i]);
-    }
-    return;
     display_asm(fp);
 }
