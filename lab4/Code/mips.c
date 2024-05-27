@@ -271,7 +271,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break; 
         case IcRef:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   la $s0, -%d($s4)\n", arg_offset(ic->arg1));
+            fprintf(fp, "   addi $s0, $s4, -%d\n", arg_offset(ic->arg1));
             store(fp, registers[16], ic->result);
             break;     
         case IcBranch:
