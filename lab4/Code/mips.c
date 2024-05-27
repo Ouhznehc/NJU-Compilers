@@ -66,7 +66,7 @@ void load(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
         case ArgVar:
-            fprintf(fp, "   lw %s, -%d($s4)\n", reg, var_offset[arg->cons]);
+            fprintf(fp, "   lw %s, -%d($s4)\n", reg, arg_offset(arg));
             break;
         case ArgImm:
             fprintf(fp, "   li %s, %d\n", reg, arg->cons);
@@ -80,10 +80,8 @@ void load(FILE* fp, const char* reg, arg_t* arg) {
 void store(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
-            fprintf(fp, "   sw %s, -%d($s4)\n", reg, tmp_offset[arg->cons]);
-            break;
         case ArgVar:
-            fprintf(fp, "   sw %s, -%d($s4)\n", reg, var_offset[arg->cons]);
+            fprintf(fp, "   sw %s, -%d($s4)\n", reg, arg_offset(arg));
             break;
         case ArgImm:
             break; 
