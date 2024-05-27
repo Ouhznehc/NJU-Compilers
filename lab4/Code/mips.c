@@ -50,11 +50,21 @@ void init_space(FILE* fp) {
 
 }
 
+int arg_offset(arg_t* arg) {
+    switch (arg->kind) {
+        case ArgTmp:
+            return tmp_offset[arg->cons];
+        case ArgVar:
+            return var_offset[arg->cons];
+        default:
+            printf("Invalid Arg: %s\n", arg_to_string(arg));
+            assert(0);   
+    }
+}
+
 void load(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
-            fprintf(fp, "   lw %s, -%d($s4)\n", reg, tmp_offset[arg->cons]);
-            break;
         case ArgVar:
             fprintf(fp, "   lw %s, -%d($s4)\n", reg, var_offset[arg->cons]);
             break;
@@ -261,7 +271,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break; 
         case IcRef:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   la $s0, %s\n", arg_to_string(ic->arg1));
+            fprintf(fp, "   la $s0, -%d($s4)\n", arg_offset(ic->arg1));
             store(fp, registers[16], ic->result);
             break;     
         case IcBranch:
