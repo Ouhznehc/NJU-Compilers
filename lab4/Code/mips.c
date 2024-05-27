@@ -186,6 +186,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   j %s\n", arg_to_string(ic->result));
             break;
         case IcArg:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             if (!set_arg_pointer) {
                 set_arg_pointer = 1;
                 fprintf(fp, "   move $s3, $sp\n");
@@ -195,6 +196,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             fprintf(fp, "   lw $s0, %d($s4)\n", param_offset);
             param_offset += 4;
             store(fp, registers[16], ic->result);
@@ -224,6 +226,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[16], ic->result);
             break;   
         case IcCall:
+            fprintf(fp, "   # %s", ic_to_string(ic));
             fprintf(fp, "   addi $sp, $sp, -12\n");
             fprintf(fp, "   sw $ra, 0($sp)\n");
             fprintf(fp, "   sw $s3, 4($sp)\n");
@@ -234,6 +237,9 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   lw $s3, 4($s4)\n");
             fprintf(fp, "   lw $s4, 8($s4)\n");
             fprintf(fp, "   move $sp, $s3\n");
+
+            set_arg_pointer = 0;
+            param_offset = 12;
             break;
         case IcMinus:
             fprintf(fp, "   # %s", ic_to_string(ic));
