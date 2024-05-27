@@ -45,8 +45,7 @@ void init_space(FILE* fp) {
     fprintf(fp, "   la $a0, _ret\n");
     fprintf(fp, "   syscall\n");
     fprintf(fp, "   move $v0, $0\n");
-    fprintf(fp, "   jr $ra\n");
-    fprintf(fp, "\n");  
+    fprintf(fp, "   jr $ra\n"); 
 
 }
 
@@ -178,6 +177,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "label%d:\n", ic->result->cons);
             break;
         case IcFunc:
+            fprintf(fp, "\n");
             fprintf(fp, "%s:\n", ic->result->name);
             // update frame pointer to the begin of new func
             fprintf(fp, "   move $s4, $sp\n");
