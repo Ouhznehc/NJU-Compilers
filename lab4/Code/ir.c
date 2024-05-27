@@ -5,11 +5,18 @@ ir_t *ir_head, *ir_tail;
 int var_no = 0, tmp_no = 0, label_no = 0;
 var_t* varlist;
 
+int func_no = -1;
+char* func_name[1024];
+int func_size[1024];
+int var_offset[1024];
+int tmp_offset[1024];
+
+
 char* ic_to_string(ic_t* ic);
 char* arg_to_string(arg_t* arg);
 /* High-level Definitions */
 void translate_Program(syntax_t* node); 
-void translate_ExtDefList(syntax_t* node); 
+void translate_ExtDefList(syntax_t* node);
 void translate_ExtDef(syntax_t* node); 
 
 /* Declarators */
@@ -57,19 +64,28 @@ arg_t* find_var(char* name) {
     assert(0);
 }
 
-arg_t* new_arg(int kind, char* name, int cons, bool is_addr) { 
+arg_t* new_arg(int kind, char* name, int cons, bool is_addr, int size) { 
     arg_t* ret = malloc_safe(sizeof(arg_t));
     ret->kind = kind;
     ret->is_addr = is_addr;
     switch (kind) {
-        case ArgTmp: case ArgImm: case ArgLabel: case ArgSize:
+        case ArgImm: case ArgLabel: case ArgSize:
             ret->cons = cons; 
+            break;
+        case ArgTmp:
+            assert(size == 4);
+            ret->cons = cons;
+            func_size[func_no] += size;
+            tmp_offset[cons] = func_size[func_no];
             break;
         case ArgFunc: case ArgRelop:
             strcpy(ret->name, name); 
             break;
         case ArgVar:
+            assert(size >= 4);
             ret->cons = cons;
+            func_size[func_no] += size;
+            var_offset[cons] = func_size[func_no];
             strcpy(ret->name, name);
             break;
         default: assert(0);
@@ -132,13 +148,13 @@ void insert_ir(ic_t* ic) {
 
 arg_t* deref(arg_t* arg) { 
     if(!arg->is_addr) return arg;
-    arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no, false);
+    arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no, false, 4);
     insert_ir(new_ic(IcRightStar, tmp, arg));
     return tmp;
 }
 arg_t* ref(arg_t* arg) { 
     if(arg->is_addr) return arg;
-    arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no, true);
+    arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no, true, 4);
     insert_ir(new_ic(IcRef, tmp, arg));
     return tmp;
 }
@@ -150,11 +166,11 @@ void insert_assign_ir(arg_t* left, arg_t* right) {
 }
 
 arg_t* fetch_addr(arg_t* base, int offset) { 
-    arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no, true);
+    arg_t* tmp = new_arg(ArgTmp, NULL, ++tmp_no, true, 4);
     if (!base->is_addr) insert_ir(new_ic(IcRef, tmp, base));
     else insert_ir(new_ic(IcAssign, tmp, base));
-    arg_t* off = new_arg(ArgImm, NULL, offset, false);
-    arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true);
+    arg_t* off = new_arg(ArgImm, NULL, offset, false, 0);
+    arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true, 4);
     insert_ir(new_ic(IcAdd, ret, tmp, off));
     return ret;
 }
@@ -240,10 +256,10 @@ arg_t* translate_VarDec(syntax_t* node) {
     int rule = node->symbol.rule;
     // VarDec -> ID
     if (rule == 1) {
-        arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, ++var_no, false); 
         item_t* var = FindScopeItem(childs[0]->token.value.sval); 
         int size = calculate_size(var->type);
-        arg_t* arg_size = new_arg(ArgSize, NULL, size, false); 
+        arg_t* ret = new_arg(ArgVar, childs[0]->token.value.sval, ++var_no, false, size); 
+        arg_t* arg_size = new_arg(ArgSize, NULL, size, false, 0); 
 
         assert(var->type->kind != FuncDec && var->type->kind != FuncDef);
         if(var->type->kind != Basic) insert_ir(new_ic(IcDec, ret, arg_size));
@@ -265,8 +281,14 @@ FunDec:
 void translate_FunDec(syntax_t* node) { 
     assert(node != NULL);
     syntax_t** childs = node->symbol.child;
+
+    // add for lab4
+    func_no++;
+    func_name[func_no] = childs[0]->token.value.sval;
+    func_size[func_no] = 0;
+
     
-    arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false); 
+    arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false, 0); 
     insert_ir(new_ic(IcFunc, func));
     
     type_t* type = FindScopeItem(childs[0]->token.value.sval)->type;
@@ -274,7 +296,7 @@ void translate_FunDec(syntax_t* node) {
     
     for (field_t* cur = type->function.argv; cur; cur = cur->next) {
         int is_addr = cur->type->kind != Basic ? true : false;
-        arg_t* param = new_arg(ArgVar, cur->name, ++var_no, is_addr);
+        arg_t* param = new_arg(ArgVar, cur->name, ++var_no, is_addr, 4);
         insert_ir(new_ic(IcParam, param));
         // param must be basic type
         insert_var(param, 4);
@@ -338,8 +360,8 @@ void translate_Stmt(syntax_t* node) {
     }
     // Stmt -> IF LP Exp RP Stmt
     else if (rule == 4) { 
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
         translate_Cond(childs[2], label1, label2); 
         insert_ir(new_ic(IcLabel, label1)); 
         translate_Stmt(childs[4]); 
@@ -347,9 +369,9 @@ void translate_Stmt(syntax_t* node) {
     }
     // Stmt -> IF LP Exp RP Stmt ELSE Stmt
     else if (rule == 5) { 
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label3 = new_arg(ArgLabel, NULL, ++label_no, false);
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* label3 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
         translate_Cond(childs[2], label1, label2); 
         insert_ir(new_ic(IcLabel, label1));
         translate_Stmt(childs[4]); 
@@ -360,9 +382,9 @@ void translate_Stmt(syntax_t* node) {
     }
     // Stmt -> WHILE LP Exp RP Stmt
     else if (rule == 6) { 
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label3 = new_arg(ArgLabel, NULL, ++label_no, false);
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* label3 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
         insert_ir(new_ic(IcLabel, label1)); 
         translate_Cond(childs[2], label2, label3); 
         insert_ir(new_ic(IcLabel, label2)); 
@@ -488,14 +510,14 @@ arg_t* translate_Exp(syntax_t* node) {
     // Exp -> Exp RELOP Exp
     // Exp -> NOT Exp
     else if (rule == 2 || rule == 3 || rule == 4 || rule == 5) { 
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false);
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false);
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* label2 = new_arg(ArgLabel, NULL, ++label_no, false, 0);
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false, 4);
 
-        insert_ir(new_ic(IcAssign, ret, new_arg(ArgImm, NULL, 0, false))); 
+        insert_ir(new_ic(IcAssign, ret, new_arg(ArgImm, NULL, 0, false, 0))); 
         translate_Cond(node, label1, label2); 
         insert_ir(new_ic(IcLabel, label1)); 
-        insert_ir(new_ic(IcAssign, ret, new_arg(ArgImm, NULL, 1, false))); 
+        insert_ir(new_ic(IcAssign, ret, new_arg(ArgImm, NULL, 1, false, 0))); 
         insert_ir(new_ic(IcLabel, label2)); 
         return ret;
     }
@@ -506,7 +528,7 @@ arg_t* translate_Exp(syntax_t* node) {
     else if (rule == 6 || rule == 7 || rule == 8 || rule == 9) { 
         arg_t* exp1 = translate_Exp(childs[0]); 
         arg_t* exp2 = translate_Exp(childs[2]); 
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false); 
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false, 4); 
         exp1 = deref(exp1); 
         exp2 = deref(exp2); 
         insert_ir(new_ic(rule, ret, exp1, exp2)); 
@@ -520,7 +542,7 @@ arg_t* translate_Exp(syntax_t* node) {
     else if (rule == 11) { 
         arg_t* exp = translate_Exp(childs[1]); 
         exp = deref(exp); 
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false); 
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false, 4); 
         insert_ir(new_ic(IcMinus, ret, exp)); 
         return ret;
     }
@@ -532,18 +554,18 @@ arg_t* translate_Exp(syntax_t* node) {
             arg_t* arg = translate_Exp(child); 
             arg = deref(arg); 
             insert_ir(new_ic(IcWrite, arg)); 
-            return new_arg(ArgImm, NULL, 0, false);
+            return new_arg(ArgImm, NULL, 0, false, 0);
         }
-        arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false); 
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false); 
+        arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false, 0); 
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false, 4); 
         translate_Args(childs[2]); 
         insert_ir(new_ic(IcCall, ret, func)); 
         return ret;
     }
     // Exp -> ID LP RP
     else if (rule == 13) { 
-        arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false); 
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false); 
+        arg_t* func = new_arg(ArgFunc, childs[0]->token.value.sval, 0, false, 0); 
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, false, 4); 
         if(!strcmp(childs[0]->token.value.sval, "read")) {
             insert_ir(new_ic(IcRead, ret)); 
             return ret;
@@ -555,12 +577,12 @@ arg_t* translate_Exp(syntax_t* node) {
     else if (rule == 14) {
         arg_t* exp1 = translate_Exp(childs[0]); 
         arg_t* exp2 = translate_Exp(childs[2]); 
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true); 
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true, 4); 
         exp1 = ref(exp1); 
         exp2 = deref(exp2); 
         type_t* array = Exp(childs[0]); 
-        arg_t* size = new_arg(ArgImm, NULL, calculate_size(array->array.elem), false); 
-        arg_t* offset = new_arg(ArgTmp, NULL, ++tmp_no, false); 
+        arg_t* size = new_arg(ArgImm, NULL, calculate_size(array->array.elem), false, 0); 
+        arg_t* offset = new_arg(ArgTmp, NULL, ++tmp_no, false, 4); 
         insert_ir(new_ic(IcMul, offset, size, exp2)); 
         insert_ir(new_ic(IcAdd, ret, exp1, offset)); 
         return ret;
@@ -568,7 +590,7 @@ arg_t* translate_Exp(syntax_t* node) {
     // Exp -> Exp DOT ID
     else if (rule == 15) {
         arg_t* exp = translate_Exp(childs[0]); 
-        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true); 
+        arg_t* ret = new_arg(ArgTmp, NULL, ++tmp_no, true, 4); 
         type_t* record = Exp(childs[0]); 
         exp = ref(exp); 
         int size = 0;
@@ -576,7 +598,7 @@ arg_t* translate_Exp(syntax_t* node) {
             if (!strcmp(cur->name, childs[2]->token.value.sval)) break;
             size += calculate_size(cur->type); 
         }
-        arg_t* offset = new_arg(ArgImm, NULL, size, false); 
+        arg_t* offset = new_arg(ArgImm, NULL, size, false, 0); 
         insert_ir(new_ic(IcAdd, ret, exp, offset)); 
         return ret;
     }
@@ -586,7 +608,7 @@ arg_t* translate_Exp(syntax_t* node) {
     }
     // Exp -> INT
     else if (rule == 17) { 
-        arg_t* ret = new_arg(ArgImm, NULL, childs[0]->token.value.ival, false); 
+        arg_t* ret = new_arg(ArgImm, NULL, childs[0]->token.value.ival, false, 0); 
         return ret;
     }
     // Exp -> FLOAT
@@ -633,7 +655,7 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) {
 
     // Exp -> Exp AND Exp
     if (rule == 2) { 
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false); 
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false, 0); 
         translate_Cond(childs[0], label1, false_l); 
         insert_ir(new_ic(IcLabel, label1)); 
         translate_Cond(childs[2], true_l, false_l); 
@@ -641,7 +663,7 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) {
 
     // Exp -> Exp OR Exp
     else if (rule == 3) { 
-        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false); 
+        arg_t* label1 = new_arg(ArgLabel, NULL, ++label_no, false, 0); 
         translate_Cond(childs[0], true_l, label1); 
         insert_ir(new_ic(IcLabel, label1)); 
         translate_Cond(childs[2], true_l, false_l); 
@@ -649,7 +671,7 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) {
 
     // Exp -> Exp RELOP Exp
     else if (rule == 4) { 
-        arg_t* relop = new_arg(ArgRelop, childs[1]->token.value.sval, 0, false); 
+        arg_t* relop = new_arg(ArgRelop, childs[1]->token.value.sval, 0, false, 0); 
         arg_t* exp1 = translate_Exp(childs[0]); 
         arg_t* exp2 = translate_Exp(childs[2]); 
         exp1 = deref(exp1); exp2 = deref(exp2); 
@@ -661,8 +683,8 @@ void translate_Cond(syntax_t* node, arg_t* true_l, arg_t* false_l) {
         translate_Cond(childs[1], false_l, true_l); 
     }
     else {
-        arg_t* neq = new_arg(ArgRelop, "!=", 0, false); 
-        arg_t* cons = new_arg(ArgImm, NULL, 0, false); 
+        arg_t* neq = new_arg(ArgRelop, "!=", 0, false, 0); 
+        arg_t* cons = new_arg(ArgImm, NULL, 0, false, 0); 
         arg_t* exp = translate_Exp(node); 
         exp = deref(exp);
         insert_ir(new_ic(IcBranch, exp, neq, cons, true_l)); 

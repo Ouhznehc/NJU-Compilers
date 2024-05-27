@@ -17,7 +17,6 @@ const char* registers[32] = {
 
 void init_space(FILE* fp) {
     fprintf(fp, ".data\n");
-    fprintf(fp, "# For implement convience, store both variable and temp in static area\n");
     fprintf(fp, "_prompt: .asciiz \"Enter an integer:\"\n");
     fprintf(fp, "_ret: .asciiz \"\\n\"\n");
     fprintf(fp, "\n");
@@ -93,7 +92,7 @@ void load_three(FILE* fp, ic_t* ic) {
 }
 
 
-// only use 3 registers:
+// only use 5 registers:
 // result -> $s0($16)
 // arg1 -> $s1($17)
 // arg2 -> $s2($18)
@@ -234,5 +233,9 @@ void display_asm(FILE* fp) {
 
 void generate_asm(FILE* fp) {
     init_space(fp);
+    for (int i = 0; i <= func_no; i++) {
+        printf("func: {name: %s, size = %d}\n", func_name[i], func_size[i]);
+    }
+    return;
     display_asm(fp);
 }
