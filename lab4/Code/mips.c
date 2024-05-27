@@ -236,6 +236,12 @@ void generate_asm(FILE* fp) {
     for (int i = 0; i <= func_no; i++) {
         printf("func: {name: %s, size = %d}\n", func_name[i], func_size[i]);
     }
+    for (int i = 1; i <= tmp_no; i++) {
+        printf("tmp: {offset = %d}\n", tmp_offset[i]);
+    }
+    for (int i = 1; i <= var_no; i++) {
+        printf("var: {offset = %d}\n", var_offset[i]);
+    }
     return;
     display_asm(fp);
 }
