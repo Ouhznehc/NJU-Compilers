@@ -1,7 +1,5 @@
 #include "mips.h"
 
-int param_offset = 4;
-arglist_t* arglist = NULL;
 const char* registers[32] = {
     "$zero",
     "$at",
@@ -17,30 +15,12 @@ const char* registers[32] = {
     "$ra"
 };
 
-void init_var_space(FILE* fp) {
-    fprintf(fp, "# temp var declaration\n");
-    for (int i = 1; i <= tmp_no; i++) {
-        fprintf(fp, "t%d: .word 0\n", i);
-    }
-
-    fprintf(fp, "# variable declaration\n");
-    var_t* cur = varlist;
-    while (cur != NULL) {
-        if (cur->size != 4) fprintf(fp, "v%d: .space %d\n", cur->var->cons, cur->size);
-        else fprintf(fp, "v%d: .word 0\n", cur->var->cons);
-        cur = cur->next;
-    }
-    fprintf(fp, "\n");
-}
-
 void init_space(FILE* fp) {
     fprintf(fp, ".data\n");
     fprintf(fp, "# For implement convience, store both variable and temp in static area\n");
     fprintf(fp, "_prompt: .asciiz \"Enter an integer:\"\n");
     fprintf(fp, "_ret: .asciiz \"\\n\"\n");
     fprintf(fp, "\n");
-
-    init_var_space(fp);
 
     fprintf(fp, ".globl main\n");
     fprintf(fp, "\n");
@@ -163,17 +143,10 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   j %s\n", arg_to_string(ic->result));
             break;
         case IcArg:
-            fprintf(fp, "   # %s", ic_to_string(ic));
-            insert_arg(ic->result, arglist);
-            load(fp, registers[16], ic->result);
-            fprintf(fp, "   addi $sp, $sp, -4\n");
-            fprintf(fp, "	sw $s0, 0($sp)\n");
+            assert(0);
             break;
         case IcParam:
-            fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   lw $s0, %d($sp)\n", param_offset);
-            store(fp, registers[16], ic->result);
-            param_offset += 4;
+            assert(0);
             break;
         case IcRead:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -188,9 +161,9 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   # %s", ic_to_string(ic));
             load(fp, registers[4], ic->result);
             fprintf(fp, "   addi $sp, $sp, -4\n");
-            fprintf(fp, "	sw $ra, 0($sp)\n");
-            fprintf(fp, "	jal write\n");
-            fprintf(fp, "	lw $ra, 0($sp)\n");
+            fprintf(fp, "   sw $ra, 0($sp)\n");
+            fprintf(fp, "   jal write\n");
+            fprintf(fp, "   lw $ra, 0($sp)\n");
             fprintf(fp, "	addi $sp, $sp, 4\n");
             break;
         case IcAssign:
@@ -200,20 +173,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             store(fp, registers[16], ic->result);
             break;   
         case IcCall:
-            fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   addi $sp, $sp, -4\n");
-            fprintf(fp, "	sw $ra, 0($sp)\n");
-            fprintf(fp, "	jal %s\n", arg_to_string(ic->arg1));
-            store(fp, registers[2], ic->result);
-            fprintf(fp, "	lw $ra, 0($sp)\n");
-            fprintf(fp, "	addi $sp, $sp, 4\n");
-            for (arglist_t* cur = arglist; cur; cur = cur->next) {
-                fprintf(fp, "	lw $s0, 0($sp)\n");
-                store(fp, registers[16], cur->arg);
-                fprintf(fp, "	addi $sp, $sp, 4\n");
-            }
-            arglist = NULL;
-            param_offset = 4;
+            assert(0);
             break;
         case IcMinus:
             fprintf(fp, "   # %s", ic_to_string(ic));

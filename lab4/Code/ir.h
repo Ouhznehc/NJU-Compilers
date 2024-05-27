@@ -56,17 +56,11 @@ struct ir_t {
     ir_t* next;
 };
 
-struct arglist_t {
-    arg_t* arg;
-    arglist_t* next;
-    arglist_t* prev;
-};
 
 void generate_ir(syntax_t* root, FILE* fp);
 void* malloc_safe(int size);
 
 char* ic_to_string(ic_t* ic);
 char* arg_to_string(arg_t* arg);
-void insert_arg(arg_t* arg, arglist_t* head);
 
 #endif
