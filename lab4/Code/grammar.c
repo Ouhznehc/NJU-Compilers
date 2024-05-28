@@ -16,10 +16,13 @@ syntax_t* new_token(char *name, int type, int lineno, value_t value) {
         case TOKEN_FLOAT:
             ret->token.value.fval = value.fval;
             break;
-        case TOKEN_ID:
         case TOKEN_TYPE:
         case TOKEN_RELOP:
             strcpy(ret->token.value.sval, value.sval);
+            break;
+        // add for lab4
+        case TOKEN_ID:
+            sprintf(ret->token.value.sval, "__%s__", value.sval);
             break;
         default: break;
     }
