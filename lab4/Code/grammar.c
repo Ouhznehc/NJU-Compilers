@@ -20,7 +20,7 @@ syntax_t* new_token(char *name, int type, int lineno, value_t value) {
         case TOKEN_RELOP:
             strcpy(ret->token.value.sval, value.sval);
             break;
-        // add for lab4
+        // add for lab4: in order to prevent function name collide with mips instruction like: add, addi, etc.
         case TOKEN_ID:
             if (strcmp(value.sval, "read") && strcmp(value.sval, "write") && strcmp(value.sval, "main"))
                 sprintf(ret->token.value.sval, "__%s__", value.sval);
