@@ -215,6 +215,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             }
 
             set_arg_pointer = 0;
+            printf("========\n");
             param_offset = 12;
 
             fprintf(fp, "   addi $sp, $sp, -12\n");
