@@ -8,8 +8,8 @@ var_t* varlist;
 int func_no = -1;
 char* func_name[1024];
 int func_size[1024];
-int var_offset[1024];
-int tmp_offset[1024];
+int var_offset[16384];
+int tmp_offset[16384];
 
 
 char* ic_to_string(ic_t* ic);
