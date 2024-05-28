@@ -177,6 +177,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
+            printf("param_offset = %d\n", param_offset);
             fprintf(fp, "   # %s", ic_to_string(ic));
             fprintf(fp, "   lw $s0, %d($fp)\n", param_offset);
             param_offset += 4;
