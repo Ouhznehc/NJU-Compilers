@@ -1,6 +1,5 @@
 #include "mips.h"
 
-int param_offset = 12;
 int set_arg_pointer = 0;
 
 const char* registers[32] = {
@@ -114,6 +113,7 @@ int find_func_no(char* name) {
 // arg1 -> $s1($17)
 // arg2 -> $s2($18)
 // arg pointer -> $s3($19)
+// param counter -> $s4($20)
 // $v0($2)
 // $ra($31)
 // $fp(frame pointer)
@@ -177,10 +177,10 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
-            printf("param_offset = %d\n", param_offset);
             fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   lw $s0, %d($fp)\n", param_offset);
-            param_offset += 4;
+            fprintf(fp, "   add $s5, $fp, $s4\n");
+            fprintf(fp, "   lw $s0, 0($s5)\n");
+            fprintf(fp, "   addi $s4, $s4, 4\n");
             store(fp, registers[16], ic->result);
             break;  
         case IcRead:
@@ -215,8 +215,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             }
 
             set_arg_pointer = 0;
-            printf("========\n");
-            param_offset = 12;
+            fprintf(fp, "   li $s4, 12\n");
 
             fprintf(fp, "   addi $sp, $sp, -12\n");
             fprintf(fp, "   sw $ra, 0($sp)\n");
