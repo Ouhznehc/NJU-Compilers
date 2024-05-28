@@ -1,7 +1,6 @@
 #include "mips.h"
 
-int set_arg_pointer = 0;
-int param_offset = 12;
+int param_offset = 8;
 
 const char* registers[32] = {
     "$zero",
@@ -65,7 +64,7 @@ void load(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
         case ArgVar:
-            fprintf(fp, "   lw %s, -%d($s4)\n", reg, arg_offset(arg));
+            fprintf(fp, "   lw %s, -%d($fp)\n", reg, arg_offset(arg));
             break;
         case ArgImm:
             fprintf(fp, "   li %s, %d\n", reg, arg->cons);
@@ -80,7 +79,7 @@ void store(FILE* fp, const char* reg, arg_t* arg) {
     switch (arg->kind) {
         case ArgTmp:
         case ArgVar:
-            fprintf(fp, "   sw %s, -%d($s4)\n", reg, arg_offset(arg));
+            fprintf(fp, "   sw %s, -%d($fp)\n", reg, arg_offset(arg));
             break;
         case ArgImm:
             break; 
@@ -115,8 +114,7 @@ int find_func_no(char* name) {
 // arg2 -> $s2($18)
 // $v0($2)
 // $ra($31)
-// $s3(arg pointer)
-// $s4(frame pointer)
+// $fp(frame pointer)
 /*
 ┌────────────────────────────┐
 │                            │
@@ -131,8 +129,6 @@ int find_func_no(char* name) {
 │             .              │
 ├────────────────────────────┤
 │      frame pointer(old)    │
-├────────────────────────────┤
-│       arg  pointer(old)    │
 ├────────────────────────────┤
 │      return address        │
 ├────────────────────────────┤
@@ -180,7 +176,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "\n");
             fprintf(fp, "%s:\n", ic->result->name);
             // update frame pointer to the begin of new func
-            fprintf(fp, "   move $s4, $sp\n");
+            fprintf(fp, "   move $fp, $sp\n");
             // allocate space for variables
             int func = find_func_no(ic->result->name);
             fprintf(fp, "   addi $sp, $sp, -%d\n", func_size[func]);
@@ -195,17 +191,13 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break;
         case IcArg:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            if (!set_arg_pointer) {
-                set_arg_pointer = 1;
-                fprintf(fp, "   move $s3, $sp\n");
-            }
             fprintf(fp, "   addi $sp, $sp, -4\n");
             load(fp, registers[16], ic->result);
             fprintf(fp, "	sw $s0, 0($sp)\n");
             break;
         case IcParam:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   lw $s0, %d($s4)\n", param_offset);
+            fprintf(fp, "   lw $s0, %d($fp)\n", param_offset);
             param_offset += 4;
             store(fp, registers[16], ic->result);
             break;
@@ -235,20 +227,19 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break;   
         case IcCall:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   addi $sp, $sp, -12\n");
+            fprintf(fp, "   addi $sp, $sp, -8\n");
             fprintf(fp, "   sw $ra, 0($sp)\n");
-            fprintf(fp, "   sw $s3, 4($sp)\n");
-            fprintf(fp, "   sw $s4, 8($sp)\n");
+            fprintf(fp, "   sw $fp, 4($sp)\n");
             fprintf(fp, "   jal %s\n", ic->arg1->name);
             
-            fprintf(fp, "   lw $ra, 0($s4)\n");
-            fprintf(fp, "   lw $s3, 4($s4)\n");
-            fprintf(fp, "   lw $s4, 8($s4)\n");
-            fprintf(fp, "   move $sp, $s3\n");
-            // must store return value after the $s4 is restored.
+            fprintf(fp, "   move, $sp, $fp\n");
+            fprintf(fp, "   lw $ra, 0($fp)\n");
+            fprintf(fp, "   lw $fp, 4($fp)\n");
+            fprintf(fp, "   addi $sp, $sp, %d\n", param_offset);
+
+            // must store return value after the $fp is restored.
             store(fp, registers[2], ic->result);
-            set_arg_pointer = 0;
-            param_offset = 12;
+            param_offset = 8;
             break;
         case IcMinus:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -269,7 +260,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break; 
         case IcRef:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            fprintf(fp, "   addi $s0, $s4, -%d\n", arg_offset(ic->arg1));
+            fprintf(fp, "   addi $s0, $fp, -%d\n", arg_offset(ic->arg1));
             store(fp, registers[16], ic->result);
             break;     
         case IcBranch:
