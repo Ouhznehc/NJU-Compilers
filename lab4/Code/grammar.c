@@ -22,7 +22,10 @@ syntax_t* new_token(char *name, int type, int lineno, value_t value) {
             break;
         // add for lab4
         case TOKEN_ID:
-            sprintf(ret->token.value.sval, "__%s__", value.sval);
+            if (strcmp(value.sval, "read") && strcmp(value.sval, "write"))
+                sprintf(ret->token.value.sval, "__%s__", value.sval);
+            else
+                strcpy(ret->token.value.sval, value.sval);
             break;
         default: break;
     }
