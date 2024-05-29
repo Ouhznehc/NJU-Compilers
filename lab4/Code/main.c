@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
     // lab3
     if (!error_no) generate_ir(root, ir_file);
 
+    // lab4
     if (!error_no) generate_asm(asm_file);
 
     return 0;
