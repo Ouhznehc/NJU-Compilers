@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     }
     FILE* asm_file = fopen(argv[2], "w");
     if (!asm_file) {
-        perror(argv[2]);
+        perror(argv[3]);
         return 1;
     }
     FILE* ir_file = fopen(argv[3], "w");
