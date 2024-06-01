@@ -1,0 +1,54 @@
+# GNU make手册：http://www.gnu.org/software/make/manual/make.html
+# ************ 遇到不明白的地方请google以及阅读手册 *************
+
+# 编译器设定和编译选项
+CC = gcc
+FLEX = flex
+BISON = bison
+CFLAGS = -std=c99 -g
+
+# 编译目标：src目录下的所有.c文件
+CFILES = $(shell find ./ -name "*.c")
+OBJS = $(CFILES:.c=.o)
+LFILE = $(shell find ./ -name "*.l")
+YFILE = $(shell find ./ -name "*.y")
+LFC = $(shell find ./ -name "*.l" | sed s/[^/]*\\.l/lex.yy.c/)
+YFC = $(shell find ./ -name "*.y" | sed s/[^/]*\\.y/syntax.tab.c/)
+LFO = $(LFC:.c=.o)
+YFO = $(YFC:.c=.o)
+
+COMPILE_TIME = $(shell date +"%Y-%m-%d %H:%M:%S")
+
+auto-commit:
+	-@git add --all
+	-@git commit -m "Auto commit message: { Compile code at $(COMPILE_TIME) }"
+
+parser: syntax $(filter-out $(LFO),$(OBJS))
+	$(CC) -g -o parser $(filter-out $(LFO),$(OBJS)) -lfl -ly
+	@make auto-commit
+
+syntax: lexical syntax-c
+	$(CC) -g -c $(YFC) -o $(YFO)
+
+lexical: $(LFILE)
+	$(FLEX) -o $(LFC) $(LFILE)
+
+syntax-c: $(YFILE)
+	$(BISON) -o $(YFC) -d -v $(YFILE)
+
+-include $(patsubst %.o, %.d, $(OBJS))
+
+# 定义的一些伪目标
+.PHONY: clean test parser auto-commit
+
+test: parser
+	@./parser ../Test/test.c ../Test/test.asm ../Test/test.ir
+	@spim -file ../Test/test.asm
+gdb: parser
+	@gdb parser -ex "b main" -ex "run ../Test/test.c ../Test/test.ir ../Test/test.asm" 
+clean:
+	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
+	rm -f $(OBJS) $(OBJS:.o=.d)
+	rm -f $(LFC) $(YFC) $(YFC:.c=.h)
+	rm -f *~
+
