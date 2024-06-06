@@ -1,6 +1,5 @@
 #include "mips.h"
 
-int set_arg_pointer = 0;
 int param_offset = 12;
 
 const char* registers[32] = {
@@ -113,7 +112,6 @@ int find_func_no(char* name) {
 // result -> $s0($16)
 // arg1 -> $s1($17)
 // arg2 -> $s2($18)
-// arg pointer -> $s3($19)
 // $v0($2)
 // $ra($31)
 // $fp(frame pointer)
@@ -170,10 +168,6 @@ void translate_ic(FILE* fp, ic_t* ic) {
             break;
         case IcArg:
             fprintf(fp, "   # %s", ic_to_string(ic));
-            if (!set_arg_pointer) {
-                set_arg_pointer = 1;
-                fprintf(fp, "   move $s3, $sp\n");
-            }
             fprintf(fp, "   addi $sp, $sp, -4\n");
             load(fp, registers[16], ic->result);
             fprintf(fp, "	sw $s0, 0($sp)\n");
@@ -211,21 +205,15 @@ void translate_ic(FILE* fp, ic_t* ic) {
         case IcCall:
             fprintf(fp, "   # %s", ic_to_string(ic));
 
-            if (!set_arg_pointer) {
-                fprintf(fp, "   move $s3, $sp\n");
-            }
-
-            set_arg_pointer = 0;
-
-            fprintf(fp, "   addi $sp, $sp, -12\n");
+            fprintf(fp, "   addi $sp, $sp, -8\n");
             fprintf(fp, "   sw $ra, 0($sp)\n");
-            fprintf(fp, "   sw $s3, 4($sp)\n");
-            fprintf(fp, "   sw $fp, 8($sp)\n");
+            fprintf(fp, "   sw $fp, 4($sp)\n");
             fprintf(fp, "   jal %s\n", ic->arg1->name);
+            fprintf(fp, "   move $sp, $fp\n");
             fprintf(fp, "   lw $ra, 0($fp)\n");
-            fprintf(fp, "   lw $s3, 4($fp)\n");
-            fprintf(fp, "   lw $fp, 8($fp)\n");
-            fprintf(fp, "   move $sp, $s3\n");
+            fprintf(fp, "   lw $fp, 4($fp)\n");
+            fprintf(fp, "   addi $sp, $sp, %d\n", func_size[find_func_no(ic->arg1->name)]);
+
 
             // must store return value after the $fp is restored.
             store(fp, registers[2], ic->result);
