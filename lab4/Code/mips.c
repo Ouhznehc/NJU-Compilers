@@ -1,6 +1,6 @@
 #include "mips.h"
 
-int param_offset = 12;
+int param_offset = 8;
 
 const char* registers[32] = {
     "$zero",
@@ -153,10 +153,9 @@ void translate_ic(FILE* fp, ic_t* ic) {
             // update frame pointer to the begin of new func
             fprintf(fp, "   move $fp, $sp\n");
             // allocate space for variables
-            int func = find_func_no(ic->result->name);
-            fprintf(fp, "   addi $sp, $sp, -%d\n", func_size[func]);
+            fprintf(fp, "   addi $sp, $sp, -%d\n", func_size[find_func_no(ic->result->name)]);
 
-            param_offset = 12;
+            param_offset = 8;
             break;
         case IcReturn:
             fprintf(fp, "   # %s", ic_to_string(ic));
@@ -212,7 +211,7 @@ void translate_ic(FILE* fp, ic_t* ic) {
             fprintf(fp, "   move $sp, $fp\n");
             fprintf(fp, "   lw $ra, 0($fp)\n");
             fprintf(fp, "   lw $fp, 4($fp)\n");
-            fprintf(fp, "   addi $sp, $sp, %d\n", func_size[find_func_no(ic->arg1->name)]);
+            fprintf(fp, "   addi $sp, $sp, %d\n", func_size[find_func_no(ic->arg1->name)] + 8);
 
 
             // must store return value after the $fp is restored.
