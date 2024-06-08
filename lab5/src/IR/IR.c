@@ -13,6 +13,7 @@ IR_program *ir_program_global = NULL;
 void IR_block_init(IR_block *block, IR_label label) {
     block->label = label;
     block->dead = false;
+    block->visit = false;
     List_IR_stmt_ptr_init(&block->stmts);
 }
 

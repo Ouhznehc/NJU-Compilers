@@ -75,6 +75,7 @@ extern void IR_stmt_teardown(IR_stmt *stmt);
 typedef struct {
     IR_label label;
     bool dead;
+    bool visit;
     List_IR_stmt_ptr stmts;
 } IR_block, *IR_block_ptr;
 DEF_LIST(IR_block_ptr)

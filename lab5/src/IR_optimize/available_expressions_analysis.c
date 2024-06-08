@@ -58,7 +58,7 @@ AvailableExpressionsAnalysis_newBoundaryFact (AvailableExpressionsAnalysis *t, I
      * OutFact[Entry] = (Bottom: empty set) / (Top: universal set) / other?
      * return NEW(Fact_set_var, is_top?);
      */
-    TODO();
+    return NEW(Fact_set_var, false);
 }
 
 static Fact_set_var*
@@ -68,7 +68,7 @@ AvailableExpressionsAnalysis_newInitialFact (AvailableExpressionsAnalysis *t) {
      * InitFact = (Bottom: empty set) / (Top: universal set) / other?
      * return NEW(Fact_set_var, is_top?);
      */
-    TODO();
+   return NEW(Fact_set_var, true);
 }
 
 static void
@@ -112,7 +112,7 @@ AvailableExpressionsAnalysis_meetInto (AvailableExpressionsAnalysis *t,
      * IN[blk] = union_with / intersect_with (all OUT[pred_blk]) ?
      * return VCALL(target->set, union_with / intersect_with, &fact->set);
      */
-    TODO();
+    return VCALL(target->set, intersect_with, &fact->set);
 }
 
 void AvailableExpressionsAnalysis_transferStmt (AvailableExpressionsAnalysis *t,
@@ -228,10 +228,22 @@ bool simple_expr_optimize(IR_stmt **stmt_ptr_ptr) {
                 RDELETE(IR_stmt, stmt);
                 return true;
             }
+            if (op_stmt->rs1.is_const && op_stmt->rs2.is_const) {
+                op_stmt->rs1.const_val = op_stmt->rs1.const_val + op_stmt->rs2.const_val;
+                *stmt_ptr_ptr = (IR_stmt*)NEW(IR_assign_stmt, op_stmt->rd, op_stmt->rs1);
+                RDELETE(IR_stmt, stmt);
+                return true;
+            }
             break;
         }
         case IR_OP_SUB: {
             if(op_stmt->rs2.is_const && op_stmt->rs2.const_val == 0) {
+                *stmt_ptr_ptr = (IR_stmt*)NEW(IR_assign_stmt, op_stmt->rd, op_stmt->rs1);
+                RDELETE(IR_stmt, stmt);
+                return true;
+            }
+            if (op_stmt->rs1.is_const && op_stmt->rs2.is_const) {
+                op_stmt->rs1.const_val = op_stmt->rs1.const_val - op_stmt->rs2.const_val;
                 *stmt_ptr_ptr = (IR_stmt*)NEW(IR_assign_stmt, op_stmt->rd, op_stmt->rs1);
                 RDELETE(IR_stmt, stmt);
                 return true;
@@ -249,6 +261,22 @@ bool simple_expr_optimize(IR_stmt **stmt_ptr_ptr) {
                 RDELETE(IR_stmt, stmt);
                 return true;
             }
+            if (op_stmt->rs1.is_const && op_stmt->rs2.is_const) {
+                op_stmt->rs1.const_val = op_stmt->rs1.const_val * op_stmt->rs2.const_val;
+                *stmt_ptr_ptr = (IR_stmt*)NEW(IR_assign_stmt, op_stmt->rd, op_stmt->rs1);
+                RDELETE(IR_stmt, stmt);
+                return true;
+            }
+            // if (op_stmt->rs1.is_const && op_stmt->rs1.const_val == 2) {
+            //     *stmt_ptr_ptr = (IR_stmt*)NEW(IR_op_stmt, IR_OP_ADD, op_stmt->rd, op_stmt->rs2, op_stmt->rs2);
+            //     RDELETE(IR_stmt, stmt);
+            //     return true;
+            // }
+            // if (op_stmt->rs2.is_const && op_stmt->rs2.const_val == 2) {
+            //     *stmt_ptr_ptr = (IR_stmt*)NEW(IR_op_stmt, IR_OP_ADD, op_stmt->rd, op_stmt->rs1, op_stmt->rs1);
+            //     RDELETE(IR_stmt, stmt);
+            //     return true;
+            // }
             break;
         }
         case IR_OP_DIV: {
@@ -257,6 +285,12 @@ bool simple_expr_optimize(IR_stmt **stmt_ptr_ptr) {
                 RDELETE(IR_stmt, stmt);
                 return true;
             }
+            // if (op_stmt->rs1.is_const && op_stmt->rs2.is_const) {
+            //     op_stmt->rs1.const_val = op_stmt->rs1.const_val / op_stmt->rs2.const_val;
+            //     *stmt_ptr_ptr = (IR_stmt*)NEW(IR_assign_stmt, op_stmt->rd, op_stmt->rs1);
+            //     RDELETE(IR_stmt, stmt);
+            //     return true;
+            // }
             break;
         }
     }

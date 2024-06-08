@@ -30,9 +30,11 @@ void IR_function_build_graph(IR_function *ir_func) {
             case IR_IF_STMT: {
                 IR_if_stmt *if_stmt = (IR_if_stmt*)last_stmt;
                 IR_block *next_blk = i->nxt->val;
+                // printf("true_label = %d, false_label = %d\n", if_stmt->true_label, if_stmt->false_label);
                 IR_block *true_blk = VCALL(ir_func->map_blk_label, get, if_stmt->true_label);
                 IR_block *false_blk = if_stmt->false_label == IR_LABEL_NONE ?
                                       next_blk : VCALL(ir_func->map_blk_label, get, if_stmt->false_label);
+                // printf("true_blk = %p, false_blk = %p\n", true_blk, false_blk);
                 if_stmt->true_blk = true_blk;
                 if_stmt->false_blk = false_blk;
                 add_edge(ir_func, i->val, true_blk);

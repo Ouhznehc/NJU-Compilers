@@ -93,8 +93,16 @@ static void IR_call_stmt_print(IR_stmt *stmt, FILE *out) {
             call_stmt->rd, call_stmt->func_name);
 }
 
+
+
 static void IR_if_stmt_print(IR_stmt *stmt, FILE *out) {
     IR_if_stmt *if_stmt = (IR_if_stmt*)stmt;
+    if (if_stmt->false_blk->dead) {
+        if(if_stmt->true_label != IR_LABEL_NONE)
+            fprintf(out, "GOTO L%u\n", if_stmt->true_label);
+        return;
+    }
+    if (if_stmt->rs1.is_const && if_stmt->rs2.is_const) return;
     fprintf(out, "IF ");
     IR_val_print(if_stmt->rs1, out);
     IR_RELOP_TYPE_print(if_stmt->relop, out);

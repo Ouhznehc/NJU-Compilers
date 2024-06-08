@@ -18,7 +18,7 @@ static void LiveVariableAnalysis_teardown(LiveVariableAnalysis *t) {
 static bool
 LiveVariableAnalysis_isForward (LiveVariableAnalysis *t) {
     // TODO: return isForward?;
-    TODO();
+    return false;
 }
 
 static Set_IR_var*
@@ -63,7 +63,7 @@ LiveVariableAnalysis_meetInto (LiveVariableAnalysis *t,
      * meet: union/intersect?
      * return VCALL(*target, union_with/intersect_with?, fact);
      */
-    TODO();
+    return VCALL(*target, union_with, fact);
 }
 
 void LiveVariableAnalysis_transferStmt (LiveVariableAnalysis *t,
@@ -87,7 +87,16 @@ void LiveVariableAnalysis_transferStmt (LiveVariableAnalysis *t,
      *      VCALL(*fact, insert/delete?, def); // kill/gen ?
      *  }
      */
-    TODO();
+    if(def != IR_VAR_NONE) { // 生成新def
+        VCALL(*fact, delete, def); // kill
+    }
+    for(unsigned i = 0; i < use.use_cnt; i ++) {
+        IR_val use_val = use.use_vec[i];
+        if(!use_val.is_const) {
+            IR_var use = use_val.var;
+            VCALL(*fact, insert, use); // gen
+        }     
+    }
 }
 
 bool LiveVariableAnalysis_transferBlock (LiveVariableAnalysis *t,
@@ -150,6 +159,7 @@ void LiveVariableAnalysis_init(LiveVariableAnalysis *t) {
 //// ============================ Optimize ============================
 
 static bool block_remove_dead_def (LiveVariableAnalysis *t, IR_block *blk) {
+    if (blk->dead) return false;
     bool updated = false;
     Set_IR_var *blk_out_fact = VCALL(*t, getOutFact, blk);
     Set_IR_var *new_out_fact = LiveVariableAnalysis_newInitialFact(t);
@@ -166,7 +176,10 @@ static bool block_remove_dead_def (LiveVariableAnalysis *t, IR_block *blk) {
              *      updated = true;
              *  }
              */
-            TODO();
+            if(VCALL(*new_out_fact, exist, def) == false) {
+                stmt->dead = true;
+                updated = true;
+            }
         }
         LiveVariableAnalysis_transferStmt(t, stmt, new_out_fact);
     }

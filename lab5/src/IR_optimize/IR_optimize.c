@@ -7,12 +7,14 @@
 #include <constant_propagation.h>
 #include <available_expressions_analysis.h>
 #include <copy_propagation.h>
+#include <const_condition.h>
 
 void remove_dead_block(IR_function *func) {
     // remove
     for(ListNode_IR_block_ptr *i = func->blocks.head; i;) {
         IR_block *blk = i->val;
-        if(blk->dead) { // remove dead block
+        if(blk->dead) {
+            printf("remove dead block\n"); // remove dead block
             RDELETE(IR_block, blk); // IR_block_teardown(blk); free(blk);
             i = VCALL(func->blocks, delete, i);
         } else i = i->nxt;
@@ -20,6 +22,7 @@ void remove_dead_block(IR_function *func) {
 }
 
 void remove_dead_stmt(IR_block *blk) {
+    if (blk->dead) return;
     for(ListNode_IR_stmt_ptr *j = blk->stmts.head; j;) {
         IR_stmt *stmt = j->val;
         if(stmt->dead) { // remove dead stmt
@@ -49,6 +52,7 @@ void IR_optimize() {
             ConstantPropagation_constant_folding(constantPropagation, func);
             DELETE(constantPropagation);
 
+
             //// Available Expressions Analysis
 
             availableExpressionsAnalysis = NEW(AvailableExpressionsAnalysis);
@@ -65,6 +69,7 @@ void IR_optimize() {
             // VCALL(*copyPropagation, printResult, func);
             CopyPropagation_replace_available_use_copy(copyPropagation, func);
             DELETE(copyPropagation);
+
         }
         
 
@@ -87,5 +92,7 @@ void IR_optimize() {
             if(!updated) break;
         }
 
+        const_condition_delete(func);
+        delete_dead_code(func);
     }
 }

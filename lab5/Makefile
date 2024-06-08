@@ -118,4 +118,4 @@ gdb: all
 	gdb $(PARSER)
 
 test: all # Add args
-	$(PARSER) 
+	$(PARSER) test/in.ir test/out.ir
