@@ -67,6 +67,7 @@ void const_condition_delete(IR_function *func) {
             delete_edge(func, i->val, if_stmt->false_blk);
         }
         if (condition == 0) {
+            delete_edge(func, i->val, if_stmt->true_blk);
             // if_stmt->true_blk->label = IR_LABEL_NONE;
             // if_stmt->false_blk->label = IR_LABEL_NONE;
         } 
