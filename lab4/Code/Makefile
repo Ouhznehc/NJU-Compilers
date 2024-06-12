@@ -42,7 +42,7 @@ syntax-c: $(YFILE)
 .PHONY: clean test parser auto-commit
 
 test: parser
-	@./parser ../Test/test.cmm ../Test/test.asm ../Test/test.ir
+	@./parser ../Test/test.cmm ../Test/test.asm 
 	@spim -file ../Test/test.asm
 gdb: parser
 	@gdb parser -ex "b main" -ex "run ../Test/test.cmm ../Test/test.ir ../Test/test.asm" 
