@@ -61,8 +61,8 @@ void const_condition_delete(IR_function *func) {
         IR_stmt *last_stmt = i->val->stmts.tail->val;
         if (last_stmt->stmt_type != IR_IF_STMT) continue;
         IR_if_stmt *if_stmt = (IR_if_stmt*)last_stmt;
-        // printf("true_blk = %p, false_blk = %p\n", if_stmt->true_blk, if_stmt->false_blk);
         int condition = check_condition(if_stmt);
+        // printf("true_blk = %p, false_blk = %p\n", if_stmt->true_blk, if_stmt->false_blk);
         if (condition == 1) {
             delete_edge(func, i->val, if_stmt->false_blk);
         }
