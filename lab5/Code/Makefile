@@ -53,7 +53,7 @@ YACC_FLAGS    += -d -v
 INC_PATH      += ./include
 INCLUDES       = $(addprefix -I, $(INC_PATH))
 
-COMMON_CFLAGS += -MMD -c -Wall $(INCLUDES) -O2 -Wno-unused-variable -Wno-unused-function
+COMMON_CFLAGS += -MMD -c -Wall $(INCLUDES) -O2
 CFLAGS        += $(COMMON_CFLAGS)
 CXX_FLAGS     += $(COMMON_CFLAGS) -std=c++17
 LDFLAGS       += -lfl -ly
@@ -118,4 +118,4 @@ gdb: all
 	gdb $(PARSER)
 
 test: all # Add args
-	$(PARSER) ../Test/in.ir ../Test/out.ir
+	$(PARSER) 
