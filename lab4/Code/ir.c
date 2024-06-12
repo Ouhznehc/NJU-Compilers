@@ -751,6 +751,6 @@ void display_ir(FILE* fp) {
 
 void generate_ir(syntax_t* root, FILE* fp) {
     translate_Program(root);
-    display_ir(fp);
+    // display_ir(fp);
     return;
 }

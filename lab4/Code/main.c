@@ -11,10 +11,10 @@ int error_no = 0;
 
 int main(int argc, char **argv) {   
     if (argc <= 1) return 1;
-    if (argc != 4) {
-        printf("Usage: ./parser <source.cmm> <output.asm> <output.ir>\n");
-        return 1;
-    }
+    // if (argc != 4) {
+    //     printf("Usage: ./parser <source.cmm> <output.asm> <output.ir>\n");
+    //     return 1;
+    // }
     FILE* src_file = fopen(argv[1], "r");
     if (!src_file){
         perror(argv[1]);
@@ -27,8 +27,8 @@ int main(int argc, char **argv) {
     }
     FILE* ir_file = fopen(argv[3], "w");
     if (!ir_file) {
-        perror(argv[3]);
-        return 1;
+        // perror(argv[3]);
+        // return 1;
     }
 
 
